@@ -318,23 +318,30 @@ const revealObs = new IntersectionObserver((entries) => {
 }, { threshold: 0.07, rootMargin: '0px 0px -44px 0px' });
 document.querySelectorAll('.rv, .rv-l, .rv-r').forEach(el => revealObs.observe(el));
 
-document.getElementById('contactForm').addEventListener('submit', function(e) {
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   const btn = this.querySelector('[type="submit"]');
-  const name = this.querySelector('#name').value;
-  const email = this.querySelector('#email').value;
-  const phone = this.querySelector('#phone').value;
-  const service = this.querySelector('#service').value;
-  const budget = this.querySelector('#budget').value;
-  const message = this.querySelector('#message').value;
   btn.textContent = 'Sending…';
   btn.disabled = true;
-  const body = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nService: ${service}\nBudget: ${budget}\n\nMessage:\n${message}`;
-  window.location.href = `mailto:webbes.in@gmail.com?subject=Project Inquiry — ${encodeURIComponent(name)}&body=${encodeURIComponent(body)}`;
-  this.reset();
-  document.getElementById('formSuccess').style.display = 'block';
-  btn.textContent = 'Send Message →';
-  btn.disabled = false;
+  try {
+    const res = await fetch('https://formspree.io/f/xreodonl', {
+      method: 'POST',
+      body: new FormData(this),
+      headers: { 'Accept': 'application/json' }
+    });
+    if (res.ok) {
+      this.reset();
+      document.getElementById('formSuccess').style.display = 'block';
+      btn.textContent = 'Sent ✓';
+      setTimeout(() => { btn.textContent = 'Send Message →'; btn.disabled = false; }, 3000);
+    } else {
+      btn.textContent = 'Error — Try Again';
+      btn.disabled = false;
+    }
+  } catch (err) {
+    btn.textContent = 'Error — Try Again';
+    btn.disabled = false;
+  }
 });
 </script>
 </body>
