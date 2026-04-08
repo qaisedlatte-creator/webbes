@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ===== PRIMARY SEO ===== -->
+  <title>The Team Behind Webbes — Qais Ahmed &amp; Muhammed Falah | Web &amp; AI Agency, Kochi</title>
+  <meta name="description" content="Meet the founders of Webbes — Qais Ahmed (developer) and Muhammed Falah (co-founder). A web design and AI automation agency in Kochi, India, serving businesses across India and the GCC.">
+  <meta name="keywords" content="web designer Kochi, AI developer India, Webbes founder, web development Kerala, freelance web designer India, AI automation developer Kerala">
+  <meta name="author" content="Qais Ahmed, Webbes">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.webbes.in/team">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- ===== OPEN GRAPH ===== -->
+  <meta property="og:type" content="profile">
+  <meta property="og:url" content="https://www.webbes.in/team">
+  <meta property="og:title" content="Qais Ahmed — Founder of Webbes | Web Designer &amp; AI Developer">
+  <meta property="og:description" content="Hands-on developer. Direct communication. Real results. Based in Kochi, Kerala — serving India &amp; the GCC.">
+  <meta property="og:locale" content="en_IN">
+
+  <!-- ===== STRUCTURED DATA: Person + Portfolio ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://www.webbes.in/team#qais",
+        "name": "Qais Ahmed",
+        "jobTitle": "Founder & Web Developer",
+        "worksFor": {
+          "@type": "Organization",
+          "name": "Webbes",
+          "url": "https://www.webbes.in/"
+        },
+        "url": "https://www.webbes.in/team",
+        "sameAs": ["https://www.instagram.com/__qaizx__"],
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Kochi",
+          "addressRegion": "Kerala",
+          "addressCountry": "IN"
+        },
+        "knowsAbout": ["Web Development", "AI Automation", "Shopify", "React", "n8n", "Digital Marketing", "UI/UX Design"]
+      },
+      {
+        "@type": "ItemList",
+        "name": "Webbes Portfolio",
+        "description": "Live client projects built by Webbes",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Pearl Imperial International",
+            "url": "https://www.pearlimperialintl.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Dept Store",
+            "url": "https://deptstore.in/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Prism India",
+            "url": "https://prismindia.co/"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <!-- ===== FONTS ===== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="navbar" role="navigation" aria-label="Main navigation">
+  <a href="index.html" class="nav-logo" aria-label="Webbes — Go to homepage">
+    <svg class="logo-mark" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g stroke="currentColor" stroke-width="16" fill="none">
+        <rect x="24" y="24" width="152" height="152" rx="32"/>
+        <line x1="100" y1="176" x2="100" y2="60"/>
+        <line x1="100" y1="120" x2="176" y2="120"/>
+      </g>
+      <circle cx="62" cy="60" r="14" fill="currentColor"/>
+    </svg>
+    webbes
+  </a>
+  <ul class="nav-links" role="list">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="index.html#process">Process</a></li>
+    <li><a href="index.html#faq">FAQ</a></li>
+    <li><a href="team" aria-current="page">Team</a></li>
+    <li><a href="blog">Blog</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="https://instagram.com/__qaizx__" target="_blank" rel="noopener noreferrer" class="nav-social" aria-label="Qais on Instagram">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <rect x="2" y="2" width="20" height="20" rx="5"/>
+        <circle cx="12" cy="12" r="5"/>
+        <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/>
+      </svg>
+    </a>
+    <a href="index.html#contact" class="btn btn-primary">Get Started</a>
+  </div>
+  <button class="hamburger" id="hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileMenu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Navigation menu">
+  <a href="index.html#about" onclick="closeMobile()">About</a>
+  <a href="index.html#services" onclick="closeMobile()">Services</a>
+  <a href="index.html#process" onclick="closeMobile()">Process</a>
+  <a href="index.html#faq" onclick="closeMobile()">FAQ</a>
+  <a href="blog" onclick="closeMobile()">Blog</a>
+  <a href="index.html#contact" class="btn btn-primary" onclick="closeMobile()">Get Started</a>
+</div>
+
+<!-- FOUNDER HERO -->
+<section style="padding-top:clamp(110px,14vw,160px); padding-bottom:clamp(40px,6vw,60px);" aria-labelledby="founder-heading">
+  <div class="rv">
+    <div class="label">The People Behind Webbes</div>
+  </div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,6vw,80px); align-items:start; margin-top:32px">
+    <div class="rv-l">
+      <h1 class="founder-name" id="founder-heading">Qais Ahmed</h1>
+      <p class="founder-role">Founder &amp; Developer · Webbes · Kochi, Kerala, India</p>
+      <div class="founder-bio">
+        <p>I started Webbes because I genuinely enjoy building things that work — websites that actually bring in customers, automations that actually save time. Not just pretty screens that sit there.</p>
+        <p>When you work with Webbes, you work directly with me. No account managers, no middlemen, no telephone game. Just honest, fast communication and real results delivered on time.</p>
+        <p>I believe every digital tool should have a measurable impact on your business. Every project has a clear goal — more leads, more sales, more time saved — and I don't stop until we hit it.</p>
+      </div>
+      <div class="skill-chips">
+        <span class="skill-chip">React &amp; Next.js</span>
+        <span class="skill-chip">Shopify</span>
+        <span class="skill-chip">n8n Automation</span>
+        <span class="skill-chip">ChatGPT API</span>
+        <span class="skill-chip">WordPress</span>
+        <span class="skill-chip">UI/UX Design</span>
+        <span class="skill-chip">Google Ads</span>
+        <span class="skill-chip">Technical SEO</span>
+      </div>
+      <div class="founder-links">
+        <a href="https://instagram.com/__qaizx__" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" rx="5"/>
+            <circle cx="12" cy="12" r="5"/>
+            <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/>
+          </svg>
+          @__qaizx__
+        </a>
+        <a href="index.html#contact" class="btn btn-primary">Start a Project →</a>
+      </div>
+    </div>
+    <div class="value-list rv-r">
+      <div class="value-item">
+        <div class="value-icon" aria-hidden="true">🤖</div>
+        <div>
+          <h4>Currently Focused On</h4>
+          <p>AI automations for small businesses and high-converting websites for startups across India and the GCC.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon" aria-hidden="true">⚡</div>
+        <div>
+          <h4>Fast Turnaround</h4>
+          <p>Most projects completed in 1–3 weeks. I reply within hours — you'll never be left wondering what's happening.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon" aria-hidden="true">🌍</div>
+        <div>
+          <h4>India &amp; GCC Markets</h4>
+          <p>Based in Kochi, serving businesses across India, UAE, Saudi Arabia, Qatar, and the rest of the Gulf.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon" aria-hidden="true">💬</div>
+        <div>
+          <h4>Direct Communication</h4>
+          <p>You talk to the person who builds your product. No layers, no delays. Decisions happen same day.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CO-FOUNDER: MUHAMMED FALAH -->
+<section style="padding-top:clamp(32px,5vw,56px); padding-bottom:clamp(40px,6vw,60px); border-top: 1px solid var(--navy-10);" aria-labelledby="cofounder-heading">
+  <div class="rv">
+    <div class="label">Co-Founder</div>
+  </div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,6vw,80px); align-items:start; margin-top:32px">
+    <div class="rv-l">
+      <h2 class="founder-name" id="cofounder-heading" style="font-size:clamp(2rem,4vw,3rem)">Muhammed Falah</h2>
+      <p class="founder-role">Co-Founder · Webbes · Kochi, Kerala, India</p>
+      <div class="founder-bio">
+        <p>Falah brings the strategic edge to Webbes. He's the one thinking three steps ahead — making sure every project we take on is set up for long-term success, not just a good-looking launch.</p>
+        <p>His focus is on client relationships, business development, and making sure the work we deliver actually solves real problems. He pushes back when something isn't right, and that makes the output better every time.</p>
+        <p>Between Qais and Falah, you get both the technical execution and the business sense — on every project, from start to finish.</p>
+      </div>
+      <div class="skill-chips">
+        <span class="skill-chip">Business Strategy</span>
+        <span class="skill-chip">Client Management</span>
+        <span class="skill-chip">Growth Marketing</span>
+        <span class="skill-chip">Project Delivery</span>
+        <span class="skill-chip">Brand Strategy</span>
+        <span class="skill-chip">GCC Markets</span>
+      </div>
+    </div>
+    <div class="value-list rv-r">
+      <div class="value-item">
+        <div class="value-icon" aria-hidden="true">🎯</div>
+        <div>
+          <h4>Client-First</h4>
+          <p>Every decision runs through a simple filter: does this actually help the client grow? If not, we rethink it.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon" aria-hidden="true">🌍</div>
+        <div>
+          <h4>GCC Expertise</h4>
+          <p>Deep understanding of the Gulf market — how businesses operate, what builds trust, and what drives conversions in the region.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon" aria-hidden="true">📊</div>
+        <div>
+          <h4>Results Focused</h4>
+          <p>Websites and automations are only worth something if they deliver. Falah keeps that accountability front and centre.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon" aria-hidden="true">🤝</div>
+        <div>
+          <h4>Direct Partner</h4>
+          <p>Not an account manager — an actual partner who cares whether your project succeeds long after launch day.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio" aria-labelledby="portfolio-heading">
+  <div class="rv" style="text-align:center;max-width:560px;margin:0 auto">
+    <div class="label label-center">Select Work</div>
+    <h2 class="section-title" id="portfolio-heading">Live Projects.</h2>
+    <p class="section-desc" style="margin:12px auto 0">Real websites, live on the internet. Click through to see the work.</p>
+  </div>
+  <div class="portfolio-grid">
+
+    <div class="portfolio-card rv">
+      <div class="portfolio-url">pearlimperialintl.com</div>
+      <h3>Pearl Imperial International</h3>
+      <p>Full B2B corporate website for a UAE-based general trading company. Product catalog, company profile, and contact integration — built to establish credibility in the Gulf market.</p>
+      <div class="portfolio-foot">
+        <div class="portfolio-tags"><span>Corporate</span><span>B2B</span><span>UAE</span></div>
+        <a href="https://www.pearlimperialintl.com/" target="_blank" rel="noopener noreferrer" class="portfolio-link">View Site ↗</a>
+      </div>
+    </div>
+
+    <div class="portfolio-card rv">
+      <div class="portfolio-url">deptstore.in</div>
+      <h3>Dept Store</h3>
+      <p>Indian e-commerce storefront with product listings, cart functionality, and a clean shopping experience — designed to feel premium while staying fast and mobile-first.</p>
+      <div class="portfolio-foot">
+        <div class="portfolio-tags"><span>E-Commerce</span><span>India</span><span>Retail</span></div>
+        <a href="https://deptstore.in/" target="_blank" rel="noopener noreferrer" class="portfolio-link">View Site ↗</a>
+      </div>
+    </div>
+
+    <div class="portfolio-card rv">
+      <div class="portfolio-url">prismindia.co</div>
+      <h3>Prism India</h3>
+      <p>Custom Shopify e-commerce store built for an Indian retail brand — product catalog, mobile-first shopping experience, and a checkout flow designed to convert.</p>
+      <div class="portfolio-foot">
+        <div class="portfolio-tags"><span>Shopify</span><span>E-Commerce</span><span>India</span></div>
+        <a href="https://prismindia.co/" target="_blank" rel="noopener noreferrer" class="portfolio-link">View Site ↗</a>
+      </div>
+    </div>
+
+    <div class="portfolio-card rv">
+      <div class="portfolio-url">AI Automation Case Study</div>
+      <h3>AI Lead Follow-Up System</h3>
+      <p>Automated lead qualification and follow-up pipeline built with n8n + ChatGPT. Responds to inbound inquiries within minutes, qualifies prospects, and routes hot leads — running 24/7 with zero manual input.</p>
+      <div class="portfolio-foot">
+        <div class="portfolio-tags"><span>n8n</span><span>ChatGPT</span><span>Automation</span></div>
+        <a href="index.html#contact" class="portfolio-link">Build This For Me →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contact" aria-labelledby="contact-f-heading" style="text-align:center">
+  <div class="rv" style="max-width:520px;margin:0 auto">
+    <div class="label label-center">Work With Me</div>
+    <h2 class="section-title" id="contact-f-heading">Have a Project in Mind?</h2>
+    <p class="section-desc" style="margin:12px auto 24px">I'll give you an honest assessment and a clear plan within 24 hours. No sales pitch — just straight talk.</p>
+    <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap" class="rv">
+      <a href="https://wa.me/918075959157" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">WhatsApp Me →</a>
+      <a href="mailto:webbes.in@gmail.com" class="btn btn-outline btn-lg">Send an Email</a>
+    </div>
+    <p style="margin-top:16px;font-size:0.8rem;color:var(--navy-45)">
+      Or DM on Instagram:
+      <a href="https://instagram.com/__qaizx__" target="_blank" rel="noopener noreferrer" style="color:var(--navy-70);font-weight:500">@__qaizx__</a>
+      &nbsp;·&nbsp;
+      <a href="https://instagram.com/webbes.in" target="_blank" rel="noopener noreferrer" style="color:var(--navy-70);font-weight:500">@webbes.in</a>
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="index.html" class="nav-logo" aria-label="Webbes — Home">
+        <svg class="logo-mark" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g stroke="currentColor" stroke-width="16" fill="none">
+            <rect x="24" y="24" width="152" height="152" rx="32"/>
+            <line x1="100" y1="176" x2="100" y2="60"/>
+            <line x1="100" y1="120" x2="176" y2="120"/>
+          </g>
+          <circle cx="62" cy="60" r="14" fill="currentColor"/>
+        </svg>
+        webbes
+      </a>
+      <p>Web design &amp; AI automation agency in Kochi, India. Serving businesses across India and the GCC.</p>
+    </div>
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <div class="footer-col">
+        <h5>Services</h5>
+        <a href="index.html#services">Website Development</a>
+        <a href="index.html#services">AI Automation</a>
+        <a href="index.html#services">E-Commerce</a>
+        <a href="index.html#services">Shopify</a>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <a href="index.html#about">About Webbes</a>
+        <a href="index.html#process">Our Process</a>
+        <a href="index.html#faq">FAQ</a>
+        <a href="team" aria-current="page">Meet the Team</a>
+        <a href="blog">Blog</a>
+        <a href="index.html#contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h5>Connect</h5>
+        <a href="https://instagram.com/webbes.in" target="_blank" rel="noopener noreferrer">Agency Instagram</a>
+        <a href="https://instagram.com/__qaizx__" target="_blank" rel="noopener noreferrer">Personal Instagram</a>
+        <a href="mailto:webbes.in@gmail.com">Email Us</a>
+        <a href="https://wa.me/918075959157" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+      </div>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <p>&#169; 2026 Webbes. All rights reserved. | Web Design Agency, Kochi, India</p>
+    <p>Crafted with obsession in India &#127470;&#127475;</p>
+  </div>
+</footer>
+
+<script>
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 40); }, { passive: true });
+
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  const isOpen = mobileMenu.classList.contains('open');
+  mobileMenu.classList.toggle('open');
+  hamburger.setAttribute('aria-expanded', String(!isOpen));
+  hamburger.setAttribute('aria-label', !isOpen ? 'Close navigation menu' : 'Open navigation menu');
+  document.body.style.overflow = !isOpen ? 'hidden' : '';
+});
+function closeMobile() {
+  mobileMenu.classList.remove('open');
+  hamburger.setAttribute('aria-expanded', 'false');
+  hamburger.setAttribute('aria-label', 'Open navigation menu');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMobile(); });
+
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('vis'), i * 50);
+      revealObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.07, rootMargin: '0px 0px -44px 0px' });
+document.querySelectorAll('.rv, .rv-l, .rv-r').forEach(el => revealObs.observe(el));
+</script>
+</body>
+</html>
