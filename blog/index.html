@@ -1,66 +1,287 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Main Pages -->
-  <url>
-    <loc>https://www.webbes.in/</loc>
-    <priority>1.0</priority>
-  </url>
+  <!-- ===== PRIMARY SEO ===== -->
+  <title>Blog — Webbes | Web Design, AI &amp; Digital Strategy Insights from Kerala</title>
+  <meta name="description" content="Articles on web design, real estate websites, AI automation, and digital strategy for businesses in Kerala, India, and the GCC. Written by Webbes, a Kochi-based web design agency.">
+  <meta name="keywords" content="web design blog Kerala, digital marketing blog India, real estate website tips, AI automation insights, Webbes blog">
+  <meta name="author" content="Webbes">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.webbes.in/blog">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
 
-  <url>
-    <loc>https://www.webbes.in/services</loc>
-    <priority>0.9</priority>
-  </url>
+  <!-- ===== OPEN GRAPH ===== -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.webbes.in/blog">
+  <meta property="og:title" content="Blog — Webbes | Web Design &amp; AI Insights">
+  <meta property="og:description" content="Actionable insights on web design, real estate websites, and digital strategy for businesses in Kerala and the GCC.">
+  <meta property="og:locale" content="en_IN">
+  <meta property="og:site_name" content="Webbes">
 
-  <url>
-    <loc>https://www.webbes.in/web-design-kerala</loc>
-    <priority>0.9</priority>
-  </url>
+  <!-- ===== TWITTER CARD ===== -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Blog — Webbes | Web Design &amp; AI Insights">
+  <meta name="twitter:description" content="Actionable insights on web design, real estate websites, and digital strategy for businesses in Kerala and the GCC.">
 
-  <url>
-    <loc>https://www.webbes.in/ai-automation</loc>
-    <priority>0.9</priority>
-  </url>
+  <!-- ===== GEO / LOCAL SEO ===== -->
+  <meta name="geo.region" content="IN-KL">
+  <meta name="geo.placename" content="Kochi, Kerala, India">
 
-  <url>
-    <loc>https://www.webbes.in/team</loc>
-    <priority>0.6</priority>
-  </url>
+  <!-- ===== STRUCTURED DATA ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Blog",
+        "@id": "https://www.webbes.in/blog#blog",
+        "name": "Webbes Blog",
+        "description": "Web design, AI automation, and digital strategy insights for businesses in Kerala, India, and the GCC.",
+        "url": "https://www.webbes.in/blog",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Webbes",
+          "url": "https://www.webbes.in/"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.webbes.in/"},
+          {"@type": "ListItem", "position": 2, "name": "Blog"}
+        ]
+      }
+    ]
+  }
+  </script>
 
-  <url>
-    <loc>https://www.webbes.in/contact</loc>
-    <priority>0.8</priority>
-  </url>
+  <!-- ===== FONTS ===== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
 
-  <url>
-    <loc>https://www.webbes.in/blog</loc>
-    <priority>0.7</priority>
-  </url>
+  <!-- NAV -->
+  <nav class="nav" id="navbar" role="navigation" aria-label="Main navigation">
+    <a href="/" class="nav-logo" aria-label="Webbes — Home">
+      <svg class="logo-mark" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g stroke="currentColor" stroke-width="16" fill="none">
+          <rect x="24" y="24" width="152" height="152" rx="32" />
+          <line x1="100" y1="176" x2="100" y2="60" />
+          <line x1="100" y1="120" x2="176" y2="120" />
+        </g>
+        <circle cx="62" cy="60" r="14" fill="currentColor" />
+      </svg>
+      webbes
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="/services">Services</a></li>
+      <li><a href="/blog" aria-current="page">Blog</a></li>
+      <li><a href="/team">Team</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="https://instagram.com/webbes.in" target="_blank" rel="noopener noreferrer" class="nav-social" aria-label="Webbes on Instagram">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="2" y="2" width="20" height="20" rx="5" />
+          <circle cx="12" cy="12" r="5" />
+          <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none" />
+        </svg>
+      </a>
+      <a href="/contact" class="btn btn-primary">Get Started</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileMenu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
 
-  <!-- Blog Posts -->
-  <url>
-    <loc>https://www.webbes.in/blog/website-cost-kerala-2026</loc>
-    <priority>0.8</priority>
-  </url>
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Navigation menu">
+    <a href="/services" onclick="closeMobile()">Services</a>
+    <a href="/blog" onclick="closeMobile()">Blog</a>
+    <a href="/team" onclick="closeMobile()">Team</a>
+    <a href="/contact" onclick="closeMobile()">Contact</a>
+    <a href="/contact" class="btn btn-primary" onclick="closeMobile()">Get Started</a>
+  </div>
 
-  <url>
-    <loc>https://www.webbes.in/blog/kerala-real-estate-website-mistakes</loc>
-    <priority>0.8</priority>
-  </url>
+  <!-- BLOG INDEX HERO -->
+  <section style="padding-top:clamp(110px,14vw,160px); padding-bottom:clamp(40px,6vw,60px);" aria-labelledby="blog-heading">
+    <div class="rv" style="text-align:center;max-width:600px;margin:0 auto">
+      <div class="label label-center">Insights</div>
+      <h1 class="section-title" id="blog-heading" style="font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;letter-spacing:-1.5px">The Webbes Blog</h1>
+      <p class="section-desc" style="margin:14px auto 0;text-align:center">Actionable insights on web design, digital strategy, and AI automation — written for businesses in Kerala, India, and the GCC.</p>
+    </div>
+  </section>
 
-  <url>
-    <loc>https://www.webbes.in/blog/why-kochi-business-needs-website</loc>
-    <priority>0.8</priority>
-  </url>
+  <!-- BLOG LISTING -->
+  <section style="padding-top:0;" aria-label="Blog articles">
+    <div class="blog-grid">
 
-  <url>
-    <loc>https://www.webbes.in/blog/ai-chatbot-leads-small-business</loc>
-    <priority>0.8</priority>
-  </url>
+      <a href="/blog/kerala-real-estate-website-mistakes" class="blog-card rv" id="blog-card-1">
+        <div class="blog-card-content">
+          <div class="blog-card-meta">
+            <span class="blog-tag">Web Design</span>
+            <span class="blog-tag">Real Estate</span>
+            <time datetime="2026-04-08">April 8, 2026</time>
+          </div>
+          <h2 class="blog-card-title">Why Kerala Real Estate Companies Are Losing Serious Buyers Because of Their Website</h2>
+          <p class="blog-card-excerpt">The NRI market, local buyers on mobile, and five fatal website mistakes that cost Kerala builders crores in lost inquiries — plus how to fix it.</p>
+          <span class="blog-card-link">Read Article →</span>
+        </div>
+      </a>
 
-  <url>
-    <loc>https://www.webbes.in/blog/high-converting-business-website</loc>
-    <priority>0.8</priority>
-  </url>
+      <a href="/blog/website-cost-kerala-2026" class="blog-card rv">
+        <div class="blog-card-content">
+          <div class="blog-card-meta">
+            <span class="blog-tag">Pricing</span>
+            <time>April 2026</time>
+          </div>
+          <h2 class="blog-card-title">Website Cost in Kerala (2026 Guide)</h2>
+          <p class="blog-card-excerpt">How much should a website actually cost in Kerala? Here's what businesses are paying — and what you should avoid.</p>
+          <span class="blog-card-link">Read Article →</span>
+        </div>
+      </a>
 
-</urlset>
+      <a href="/blog/why-kochi-business-needs-website" class="blog-card rv">
+        <div class="blog-card-content">
+          <div class="blog-card-meta">
+            <span class="blog-tag">Business</span>
+            <time>April 2026</time>
+          </div>
+          <h2 class="blog-card-title">Why Every Kochi Business Needs a Website</h2>
+          <p class="blog-card-excerpt">If your business isn't online properly, you're losing customers daily. Here's why it matters more than ever.</p>
+          <span class="blog-card-link">Read Article →</span>
+        </div>
+      </a>
+
+      <a href="/blog/ai-chatbot-leads-small-business" class="blog-card rv">
+        <div class="blog-card-content">
+          <div class="blog-card-meta">
+            <span class="blog-tag">AI</span>
+            <time>April 2026</time>
+          </div>
+          <h2 class="blog-card-title">How AI Chatbots Generate Leads for Small Businesses</h2>
+          <p class="blog-card-excerpt">AI isn't hype — if used right, it can bring you real leads. Here's how small businesses are using it.</p>
+          <span class="blog-card-link">Read Article →</span>
+        </div>
+      </a>
+
+      <a href="/blog/high-converting-business-website" class="blog-card rv">
+        <div class="blog-card-content">
+          <div class="blog-card-meta">
+            <span class="blog-tag">Conversion</span>
+            <time>April 2026</time>
+          </div>
+          <h2 class="blog-card-title">What Makes a High-Converting Business Website?</h2>
+          <p class="blog-card-excerpt">Traffic means nothing if your website doesn't convert. These are the elements that actually bring clients.</p>
+          <span class="blog-card-link">Read Article →</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="text-align:center" aria-labelledby="blog-cta-heading">
+    <div class="rv" style="max-width:520px;margin:0 auto">
+      <div class="label label-center">Want More?</div>
+      <h2 class="section-title" id="blog-cta-heading">Have a Question About Your Website?</h2>
+      <p class="section-desc" style="margin:12px auto 24px;text-align:center">We'll give you an honest answer within 24 hours — no strings attached.</p>
+      <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap" class="rv">
+        <a href="https://wa.me/918075959157" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">WhatsApp Us →</a>
+        <a href="/contact" class="btn btn-outline btn-lg">Get In Touch</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="/" class="nav-logo" aria-label="Webbes — Home">
+          <svg class="logo-mark" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <g stroke="currentColor" stroke-width="16" fill="none">
+              <rect x="24" y="24" width="152" height="152" rx="32" />
+              <line x1="100" y1="176" x2="100" y2="60" />
+              <line x1="100" y1="120" x2="176" y2="120" />
+            </g>
+            <circle cx="62" cy="60" r="14" fill="currentColor" />
+          </svg>
+          webbes
+        </a>
+        <p>Web design &amp; AI automation agency in Kochi, India. Serving businesses across India and the GCC.</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <div class="footer-col">
+          <h5>Services</h5>
+          <a href="/services">Website Development</a>
+          <a href="/ai-automation">AI Automation</a>
+          <a href="/services">E-Commerce &amp; Shopify</a>
+          <a href="/services">Digital Marketing</a>
+          <a href="/web-design-kerala">Web Design Kerala</a>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <a href="/#about">About Webbes</a>
+          <a href="/#process">Our Process</a>
+          <a href="/#faq">FAQ</a>
+          <a href="/team">Meet the Team</a>
+          <a href="/blog" aria-current="page">Blog</a>
+          <a href="/contact">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h5>Connect</h5>
+          <a href="https://instagram.com/webbes.in" target="_blank" rel="noopener noreferrer">Instagram</a>
+          <a href="mailto:webbes.in@gmail.com">Email Us</a>
+          <a href="https://wa.me/918075959157" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        </div>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <p>&#169; 2026 Webbes. All rights reserved. | Web Design Agency, Kochi, India</p>
+      <p>Crafted with obsession in India &#127470;&#127475;</p>
+    </div>
+  </footer>
+
+  <script>
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive: true });
+
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.contains('open');
+    mobileMenu.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', String(!isOpen));
+    hamburger.setAttribute('aria-label', !isOpen ? 'Close navigation menu' : 'Open navigation menu');
+    document.body.style.overflow = !isOpen ? 'hidden' : '';
+  });
+  function closeMobile() {
+    mobileMenu.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    hamburger.setAttribute('aria-label', 'Open navigation menu');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMobile();
+  });
+
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('vis'), i * 50);
+        revealObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.07, rootMargin: '0px 0px -44px 0px' });
+  document.querySelectorAll('.rv, .rv-l, .rv-r').forEach(el => revealObs.observe(el));
+  </script>
+</body>
+</html>
