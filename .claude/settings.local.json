@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(cp -r blog public/)",
+      "Bash(cp -r contact public/)",
+      "Bash(cp -r services public/)",
+      "Bash(cp -r ai-automation public/)",
+      "Bash(cp -r web-design-kerala public/)",
+      "Bash(npm install:*)"
+    ]
+  }
+}
