@@ -58,7 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="geo.region" content="IN-KL" />
         <meta name="geo.placename" content="Kochi, Kerala, India" />
       </head>
-      <body className="bg-white text-[#0a0a0a]">
+      <body className="bg-[#FAF9F6] text-[#0a0a0a]">
         <Nav />
         {children}
         <Footer />

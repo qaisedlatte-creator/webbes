@@ -4,7 +4,7 @@
 
 /* Force light mode site-wide — no dark: overrides anywhere */
 html {
-  background: #FAF6F0;
+  background: #FAF9F6;
   color-scheme: light;
 }
 
@@ -30,7 +30,7 @@ html {
 }
 
 body {
-  background: #FAF6F0;
+  background: #FAF9F6;
   color: #1A1209;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
