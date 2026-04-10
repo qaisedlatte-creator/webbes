@@ -69,57 +69,40 @@ export default function HomePage() {
           }
         >
           {/* ── Dark card ── */}
-          <div className="h-full w-full bg-[#0d0d0d] rounded-2xl p-6 md:p-8 flex flex-col gap-5 overflow-hidden">
-            {/* Browser chrome */}
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-              <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-              <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-              <div className="flex-1 h-5 bg-[#1a1a1a] rounded-md ml-3 flex items-center px-3">
-                <span className="text-[10px] text-[#555] font-mono">webbes.in</span>
-              </div>
-            </div>
+          <div className="h-full w-full bg-[#0d0d0d] rounded-2xl p-7 md:p-10 flex flex-col justify-between overflow-hidden">
 
-            {/* Before / After columns */}
-            <div className="grid grid-cols-2 gap-3 flex-1 min-h-0">
-              {/* Before */}
-              <div className="flex flex-col gap-2">
-                <span className="text-[9px] text-[#444] tracking-[0.15em] uppercase font-semibold">Before</span>
-                <div className="bg-[#111] rounded-xl p-4 flex flex-col gap-3 h-full">
-                  <p className="text-[#2a2a2a] text-[11px] font-semibold leading-tight">Generic template site</p>
-                  <p className="text-[#222] text-[10px] leading-snug">Invisible on Google. Zero enquiries coming in.</p>
-                  <p className="text-[#1e1e1e] text-[10px] leading-snug">Slow on mobile. Looks like 2012.</p>
-                  <p className="text-[#1c1c1c] text-[10px] leading-snug">No WhatsApp button. Customers give up.</p>
-                  <div className="mt-auto">
-                    <div className="h-7 bg-[#1a1a1a] border border-[#222] rounded-lg w-3/5 flex items-center justify-center">
-                      <span className="text-[9px] text-[#2e2e2e] font-medium">Contact Us</span>
-                    </div>
-                  </div>
+            {/* Top label */}
+            <p className="text-[11px] tracking-[0.2em] text-[#444] uppercase font-medium">What we do for your business</p>
+
+            {/* Main bold points */}
+            <div className="flex flex-col gap-5 my-auto py-6">
+              <div className="flex items-start gap-4">
+                <span className="text-white text-2xl md:text-3xl font-bold leading-none mt-0.5">01</span>
+                <div>
+                  <p className="text-white text-xl md:text-2xl font-bold leading-tight">We build your website</p>
+                  <p className="text-[#555] text-[13px] mt-1">Fast, professional, looks great on mobile and desktop.</p>
                 </div>
               </div>
-
-              {/* After */}
-              <div className="flex flex-col gap-2">
-                <span className="text-[9px] text-[#3a7a3a] tracking-[0.15em] uppercase font-semibold">After Webbes</span>
-                <div className="bg-[#0a120a] border border-[#1a2e1a] rounded-xl p-4 flex flex-col gap-3 h-full">
-                  <p className="text-[#4ade80] text-[11px] font-semibold leading-tight">Custom-designed, built to convert</p>
-                  <p className="text-[#2d6a2d] text-[10px] leading-snug">Ranking on Google for your city + service.</p>
-                  <p className="text-[#2a5e2a] text-[10px] leading-snug">Loads in under 2 seconds on 4G.</p>
-                  <p className="text-[#265226] text-[10px] leading-snug">WhatsApp CTA on every page. Leads roll in.</p>
-                  <div className="mt-auto">
-                    <div className="h-7 bg-[#166534] rounded-lg w-3/5 flex items-center justify-center gap-1">
-                      <span className="text-[9px] text-[#bbf7d0] font-semibold">Chat on WhatsApp</span>
-                    </div>
-                  </div>
+              <div className="w-full h-px bg-[#1a1a1a]" />
+              <div className="flex items-start gap-4">
+                <span className="text-white text-2xl md:text-3xl font-bold leading-none mt-0.5">02</span>
+                <div>
+                  <p className="text-white text-xl md:text-2xl font-bold leading-tight">Customers find you on Google</p>
+                  <p className="text-[#555] text-[13px] mt-1">We set it up so people searching for your service see you first.</p>
+                </div>
+              </div>
+              <div className="w-full h-px bg-[#1a1a1a]" />
+              <div className="flex items-start gap-4">
+                <span className="text-white text-2xl md:text-3xl font-bold leading-none mt-0.5">03</span>
+                <div>
+                  <p className="text-white text-xl md:text-2xl font-bold leading-tight">AI replies to enquiries for you</p>
+                  <p className="text-[#555] text-[13px] mt-1">WhatsApp bot answers questions 24/7 — even at night and on holidays.</p>
                 </div>
               </div>
             </div>
 
-            {/* Footer strip */}
-            <div className="pt-3 border-t border-[#161616] flex items-center justify-between flex-shrink-0">
-              <p className="text-[10px] text-[#333]">Web design · AI automation · Kochi, Kerala</p>
-              <p className="text-[10px] text-[#2d5a2d] font-medium">webbes.in</p>
-            </div>
+            {/* Bottom label */}
+            <p className="text-[11px] text-[#333]">Webbes · Kochi, Kerala · webbes.in</p>
           </div>
         </ContainerScroll>
 
