@@ -302,6 +302,71 @@
   </div>
 </section>
 
+<!-- CASE STUDY: Before / After -->
+<section id="case-study" aria-labelledby="case-study-heading" style="padding:80px 0">
+  <div style="max-width:900px;margin:0 auto;padding:0 24px">
+
+    <div class="rv label label-center" style="text-align:center;margin-bottom:10px">Real Results</div>
+    <h2 class="section-title rv" id="case-study-heading" style="text-align:center;margin-bottom:8px">Before &amp; After</h2>
+    <p class="section-desc rv" style="text-align:center;max-width:560px;margin:0 auto 48px">
+      Thomas Associates came to us with a site that was losing them leads every day. Here's what we built.
+    </p>
+
+    <!-- Slider -->
+    <div class="rv" style="position:relative;overflow:hidden;border-radius:16px;cursor:col-resize;user-select:none;border:1px solid var(--border)" id="baSlider">
+      <!-- After image (base layer) -->
+      <img
+        src="../after-site.png"
+        alt="After — new Webbes-built site"
+        id="baAfterImg"
+        style="display:block;width:100%;aspect-ratio:16/9;object-fit:cover;object-position:top;pointer-events:none;user-select:none"
+        draggable="false"
+      />
+      <!-- Before image (clipped) -->
+      <div id="baBeforeWrap" style="position:absolute;inset:0;clip-path:inset(0 50% 0 0)">
+        <img
+          src="../before-site.png"
+          alt="Before — old client site"
+          style="display:block;width:100%;height:100%;object-fit:cover;object-position:top;pointer-events:none;user-select:none"
+          draggable="false"
+        />
+      </div>
+      <!-- Divider -->
+      <div id="baDivider" style="position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff;box-shadow:0 0 8px rgba(0,0,0,0.4);transform:translateX(-50%);pointer-events:none"></div>
+      <!-- Handle -->
+      <div id="baHandle" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:#fff;box-shadow:0 4px 16px rgba(0,0,0,0.18);display:flex;align-items:center;justify-content:center;pointer-events:none">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M6 10H14M6 10L8.5 7.5M6 10L8.5 12.5M14 10L11.5 7.5M14 10L11.5 12.5" stroke="#1A1209" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <!-- Labels -->
+      <div style="position:absolute;bottom:12px;left:12px;background:rgba(0,0,0,0.55);color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;letter-spacing:0.08em;text-transform:uppercase;pointer-events:none">Before</div>
+      <div style="position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,0.55);color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;letter-spacing:0.08em;text-transform:uppercase;pointer-events:none">After</div>
+    </div>
+
+    <!-- Client + stats -->
+    <div class="rv" style="margin-top:36px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;text-align:center">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 16px">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.15em;color:var(--navy-45);font-weight:600;margin-bottom:6px">Old Load Time</div>
+        <div style="font-size:1.5rem;font-weight:700;color:var(--navy)">8–12 s</div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 16px">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.15em;color:var(--navy-45);font-weight:600;margin-bottom:6px">New Load Time</div>
+        <div style="font-size:1.5rem;font-weight:700;color:var(--accent)">&lt; 2 s</div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 16px">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.15em;color:var(--navy-45);font-weight:600;margin-bottom:6px">Mobile Optimised</div>
+        <div style="font-size:1.5rem;font-weight:700;color:var(--accent)">Yes</div>
+      </div>
+    </div>
+
+    <p class="rv" style="text-align:center;margin-top:20px;font-size:0.78rem;color:var(--navy-45)">
+      Client: Thomas Associates, Kozhikode &nbsp;·&nbsp; * Demo build. Live deployment pending client sign-off.
+    </p>
+
+  </div>
+</section>
+
 <!-- CTA -->
 <section id="contact" aria-labelledby="contact-f-heading" style="text-align:center">
   <div class="rv" style="max-width:520px;margin:0 auto">
@@ -400,6 +465,33 @@ const revealObs = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.07, rootMargin: '0px 0px -44px 0px' });
 document.querySelectorAll('.rv, .rv-l, .rv-r').forEach(el => revealObs.observe(el));
+
+// Before/After slider
+(function() {
+  const slider = document.getElementById('baSlider');
+  const beforeWrap = document.getElementById('baBeforeWrap');
+  const divider = document.getElementById('baDivider');
+  const handle = document.getElementById('baHandle');
+  if (!slider) return;
+
+  let dragging = false;
+
+  function setPos(clientX) {
+    const rect = slider.getBoundingClientRect();
+    let pct = Math.max(2, Math.min(98, ((clientX - rect.left) / rect.width) * 100));
+    beforeWrap.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
+    divider.style.left = pct + '%';
+    handle.style.left = pct + '%';
+  }
+
+  slider.addEventListener('mousedown', function(e) { dragging = true; setPos(e.clientX); e.preventDefault(); });
+  window.addEventListener('mousemove', function(e) { if (dragging) setPos(e.clientX); });
+  window.addEventListener('mouseup', function() { dragging = false; });
+
+  slider.addEventListener('touchstart', function(e) { dragging = true; setPos(e.touches[0].clientX); }, { passive: true });
+  slider.addEventListener('touchmove', function(e) { if (dragging) setPos(e.touches[0].clientX); }, { passive: true });
+  slider.addEventListener('touchend', function() { dragging = false; });
+})();
 </script>
 </body>
 </html>
