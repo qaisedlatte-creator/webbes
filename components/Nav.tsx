@@ -29,12 +29,12 @@ export default function Nav() {
         aria-label="Main navigation"
         className={cn(
           'fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 h-16',
-          'bg-[#131619]/95 backdrop-blur-md transition-all duration-300',
-          scrolled && 'shadow-[0_1px_0_rgba(240,237,232,0.06)]'
+          'bg-[#F8F4EE]/95 backdrop-blur-md transition-all duration-300',
+          scrolled && 'shadow-[0_1px_0_rgba(26,18,9,0.08)]'
         )}
       >
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-bold text-[15px] tracking-tight text-[#F0EDE8]" aria-label="Webbes — Home">
+        <Link href="/" className="flex items-center gap-2 font-bold text-[15px] tracking-tight text-[#1A1209]" aria-label="Webbes — Home">
           <svg className="w-[26px] h-[26px]" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <g stroke="currentColor" strokeWidth="16" fill="none">
               <rect x="24" y="24" width="152" height="152" rx="32" />
@@ -52,7 +52,7 @@ export default function Nav() {
             <li key={item}>
               <Link
                 href={`/${item.toLowerCase()}`}
-                className="text-[13px] text-[#F0EDE8]/45 hover:text-[#F0EDE8] transition-colors duration-150"
+                className="text-[13px] text-[#1A1209]/50 hover:text-[#1A1209] transition-colors duration-150"
               >
                 {item}
               </Link>
@@ -67,7 +67,7 @@ export default function Nav() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Webbes on Instagram"
-            className="text-[#F0EDE8]/30 hover:text-[#F0EDE8] transition-colors"
+            className="text-[#1A1209]/30 hover:text-[#1A1209] transition-colors"
           >
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               <rect x="2" y="2" width="20" height="20" rx="5" />
@@ -77,7 +77,7 @@ export default function Nav() {
           </a>
           <Link
             href="/contact"
-            className="text-[12px] font-semibold bg-[#F0EDE8] text-[#131619] px-4 py-2 rounded-full hover:bg-white transition-colors duration-150"
+            className="text-[12px] font-semibold bg-[#2563EB] text-white px-4 py-2 rounded-full hover:bg-[#1d4ed8] transition-colors duration-150"
           >
             Get Started
           </Link>
@@ -91,9 +91,9 @@ export default function Nav() {
           aria-expanded={mobileOpen}
           aria-controls="mobileMenu"
         >
-          <span className={cn('block h-[1.5px] w-5 bg-[#F0EDE8] transition-all duration-200 origin-center', mobileOpen && 'rotate-45 translate-y-[6.5px]')} />
-          <span className={cn('block h-[1.5px] w-5 bg-[#F0EDE8] transition-all duration-200', mobileOpen && 'opacity-0')} />
-          <span className={cn('block h-[1.5px] w-5 bg-[#F0EDE8] transition-all duration-200 origin-center', mobileOpen && '-rotate-45 -translate-y-[6.5px]')} />
+          <span className={cn('block h-[1.5px] w-5 bg-[#1A1209] transition-all duration-200 origin-center', mobileOpen && 'rotate-45 translate-y-[6.5px]')} />
+          <span className={cn('block h-[1.5px] w-5 bg-[#1A1209] transition-all duration-200', mobileOpen && 'opacity-0')} />
+          <span className={cn('block h-[1.5px] w-5 bg-[#1A1209] transition-all duration-200 origin-center', mobileOpen && '-rotate-45 -translate-y-[6.5px]')} />
         </button>
       </nav>
 
@@ -104,7 +104,7 @@ export default function Nav() {
         aria-modal="true"
         aria-label="Navigation menu"
         className={cn(
-          'fixed inset-0 z-40 bg-[#131619] flex flex-col pt-24 px-8 gap-6 transition-opacity duration-200',
+          'fixed inset-0 z-40 bg-[#F8F4EE] flex flex-col pt-24 px-8 gap-6 transition-opacity duration-200',
           mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         )}
       >
@@ -112,7 +112,7 @@ export default function Nav() {
           <Link
             key={item}
             href={`/${item.toLowerCase()}`}
-            className="text-3xl font-semibold text-[#F0EDE8] tracking-tight hover:text-[#F0EDE8]/60 transition-colors"
+            className="text-3xl font-semibold text-[#1A1209] tracking-tight hover:text-[#1A1209]/50 transition-colors"
             onClick={() => setMobileOpen(false)}
           >
             {item}
@@ -120,7 +120,7 @@ export default function Nav() {
         ))}
         <Link
           href="/contact"
-          className="mt-4 inline-flex justify-center text-[13px] font-semibold bg-[#F0EDE8] text-[#131619] px-6 py-3 rounded-full w-fit hover:bg-white transition-colors"
+          className="mt-4 inline-flex justify-center text-[13px] font-semibold bg-[#2563EB] text-white px-6 py-3 rounded-full w-fit hover:bg-[#1d4ed8] transition-colors"
           onClick={() => setMobileOpen(false)}
         >
           Get Started
