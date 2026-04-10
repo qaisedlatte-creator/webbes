@@ -29,7 +29,7 @@ export default function Nav() {
         aria-label="Main navigation"
         className={cn(
           'fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 h-16',
-          'bg-[#F8F4EE]/95 backdrop-blur-md transition-all duration-300',
+          'bg-[#FAF6F0]/95 backdrop-blur-md transition-all duration-300',
           scrolled && 'shadow-[0_1px_0_rgba(26,18,9,0.08)]'
         )}
       >
@@ -104,7 +104,7 @@ export default function Nav() {
         aria-modal="true"
         aria-label="Navigation menu"
         className={cn(
-          'fixed inset-0 z-40 bg-[#F8F4EE] flex flex-col pt-24 px-8 gap-6 transition-opacity duration-200',
+          'fixed inset-0 z-40 bg-[#FAF6F0] flex flex-col pt-24 px-8 gap-6 transition-opacity duration-200',
           mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         )}
       >

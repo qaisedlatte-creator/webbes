@@ -10,9 +10,9 @@ const N45          = 'rgba(26,18,9,0.45)'
 const N20          = 'rgba(26,18,9,0.18)'
 const BORDER       = 'rgba(26,18,9,0.10)'
 const BORDER_S     = 'rgba(26,18,9,0.20)'
-const BG           = '#F8F4EE'
-const BG_CARD      = '#F0EBE2'
-const BG_HOVER     = '#E8E1D5'
+const BG           = '#FAF6F0'
+const BG_CARD      = '#F3EDE4'
+const BG_HOVER     = '#EAE3D8'
 const ACCENT       = '#2563EB'
 
 // ─── Motion variants ──────────────────────────────────────────────────────────
