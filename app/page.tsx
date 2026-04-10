@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { BeforeAfterSlider } from '@/components/ui/before-after-slider'
 
 const N = '#2D3A4A'
 const N70 = 'rgba(45,58,74,0.70)'
@@ -82,6 +83,67 @@ export default function HomePage() {
           <span>15+ Projects Live</span>
         </div>
       </header>
+
+      {/* ── BEFORE / AFTER CASE STUDY ────────────────────────────────────── */}
+      <section className="border-t border-neutral-200 py-24 px-6 bg-[#FAF9F6]">
+        <div className="max-w-5xl mx-auto">
+          <div className="mb-12">
+            <p className="text-[11px] tracking-[0.25em] text-neutral-400 uppercase mb-4">
+              Real work · Kerala real estate
+            </p>
+            <h2 className="text-[#0a0a0a] text-3xl md:text-4xl font-bold tracking-tight mb-3">
+              This is what we fix.
+            </h2>
+            <p className="text-neutral-500 text-[15px] max-w-lg leading-relaxed">
+              A Kozhikode real estate company running on a 2005-era portal —
+              ad banners, zero mobile support, no WhatsApp lead capture.
+              We rebuilt it from scratch. Drag to compare.
+            </p>
+          </div>
+
+          <BeforeAfterSlider
+            beforeImage="/case-study-before.png"
+            afterImage="/case-study-after.png"
+            beforeLabel="Before"
+            afterLabel="After — Webbes"
+            className="mb-4"
+          />
+
+          <p className="text-[11px] text-neutral-300">* Demo build.</p>
+        </div>
+      </section>
+
+      {/* ── LIVE PORTFOLIO ───────────────────────────────────────────────── */}
+      <section className="border-t border-neutral-200 py-24 px-6 bg-[#FAF9F6]">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-[11px] tracking-[0.25em] text-neutral-400 uppercase mb-16">
+            Live work
+          </p>
+          <div className="flex flex-col">
+            {[
+              { name: 'Pearl Imperial International', tag: 'B2B Corporate · UAE', url: 'https://pearlimperialintl.com' },
+              { name: 'Dept Store', tag: 'E-Commerce · India', url: 'https://deptstore.in' },
+              { name: 'Prism India', tag: 'Shopify · India', url: 'https://prismindia.co' },
+            ].map((p, i) => (
+              <a
+                key={p.name}
+                href={p.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group flex items-center justify-between py-7 border-t border-neutral-200 hover:pl-2 transition-all duration-200${i === 2 ? ' border-b' : ''}`}
+              >
+                <div>
+                  <p className="text-[#0a0a0a] text-xl md:text-2xl font-medium group-hover:text-neutral-500 transition-colors">
+                    {p.name}
+                  </p>
+                  <p className="text-neutral-400 text-xs mt-1">{p.tag}</p>
+                </div>
+                <span className="text-neutral-300 group-hover:text-neutral-600 transition-colors text-xl">↗</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ── TICKER ───────────────────────────────────────────────────────── */}
       <div style={{ borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, overflow: 'hidden', padding: '14px 0', background: BG_CARD }} aria-hidden="true">
