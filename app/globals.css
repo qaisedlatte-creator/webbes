@@ -4,7 +4,7 @@
 
 /* Force light mode site-wide — no dark: overrides anywhere */
 html {
-  background: #ffffff;
+  background: #FAF6F0;
   color-scheme: light;
 }
 
@@ -30,8 +30,8 @@ html {
 }
 
 body {
-  background: #ffffff;
-  color: #0a0a0a;
+  background: #FAF6F0;
+  color: #1A1209;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: var(--font-dm-sans), -apple-system, BlinkMacSystemFont, sans-serif;

@@ -1,5 +1,7 @@
 "use client";
+
 import { useRef, useState, useCallback, useEffect } from "react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface BeforeAfterSliderProps {
@@ -23,97 +25,87 @@ export function BeforeAfterSlider({
 
   const getPos = useCallback((clientX: number) => {
     const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const pos = ((clientX - rect.left) / rect.width) * 100;
-    setSliderPos(Math.min(Math.max(pos, 2), 98));
+    if (!rect) return 50;
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+    return (x / rect.width) * 100;
   }, []);
 
-  const onMouseDown = () => setIsDragging(true);
-  const onMouseUp = () => setIsDragging(false);
-  const onMouseMove = useCallback(
-    (e: React.MouseEvent) => { if (isDragging) getPos(e.clientX); },
-    [isDragging, getPos]
-  );
-  const onTouchMove = useCallback(
-    (e: React.TouchEvent) => { getPos(e.touches[0].clientX); },
-    [getPos]
-  );
+  const onMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+    setSliderPos(getPos(e.clientX));
+  }, [getPos]);
+
+  const onMouseMove = useCallback((e: MouseEvent) => {
+    if (!isDragging) return;
+    setSliderPos(getPos(e.clientX));
+  }, [isDragging, getPos]);
+
+  const onMouseUp = useCallback(() => setIsDragging(false), []);
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    setIsDragging(true);
+    setSliderPos(getPos(e.touches[0].clientX));
+  }, [getPos]);
+
+  const onTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!isDragging) return;
+    setSliderPos(getPos(e.touches[0].clientX));
+  }, [isDragging, getPos]);
 
   useEffect(() => {
-    const up = () => setIsDragging(false);
-    window.addEventListener("mouseup", up);
-    return () => window.removeEventListener("mouseup", up);
-  }, []);
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, [onMouseMove, onMouseUp]);
 
   return (
     <div
       ref={containerRef}
-      className={cn(
-        "relative w-full overflow-hidden rounded-2xl cursor-col-resize select-none border border-neutral-100",
-        className
-      )}
-      style={{ aspectRatio: "16/9" }}
-      onMouseMove={onMouseMove}
+      className={cn("relative overflow-hidden select-none rounded-2xl cursor-col-resize", className)}
       onMouseDown={onMouseDown}
-      onMouseUp={onMouseUp}
+      onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
+      onTouchEnd={onMouseUp}
     >
-      {/* After image — base layer, full width */}
-      <img
-        src={afterImage}
-        alt={afterLabel}
-        className="absolute inset-0 w-full h-full object-cover object-top"
-        draggable={false}
-      />
+      {/* After (full width, base layer) */}
+      <div className="relative w-full" style={{ aspectRatio: "16/9" }}>
+        <Image src={afterImage} alt={afterLabel} fill className="object-cover object-top" draggable={false} />
+      </div>
 
-      {/* Before image — clipped to sliderPos% width */}
+      {/* Before (clipped) */}
       <div
-        className="absolute inset-0 overflow-hidden"
-        style={{ width: `${sliderPos}%` }}
+        className="absolute inset-0"
+        style={{ clipPath: `inset(0 ${100 - sliderPos}% 0 0)` }}
       >
-        <img
-          src={beforeImage}
-          alt={beforeLabel}
-          className="absolute inset-0 h-full object-cover object-top"
-          style={{ width: `${(100 / sliderPos) * 100}%`, maxWidth: "none" }}
-          draggable={false}
-        />
+        <Image src={beforeImage} alt={beforeLabel} fill className="object-cover object-top" draggable={false} />
       </div>
 
       {/* Divider line */}
       <div
-        className="absolute top-0 bottom-0 w-px bg-white z-10"
-        style={{ left: `${sliderPos}%` }}
+        className="absolute top-0 bottom-0 w-[2px] bg-white shadow-lg pointer-events-none"
+        style={{ left: `${sliderPos}%`, transform: "translateX(-50%)" }}
       />
 
       {/* Handle */}
       <div
-        className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-20 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center border border-neutral-200"
-        style={{ left: `${sliderPos}%` }}
+        className="absolute top-1/2 w-10 h-10 rounded-full bg-white shadow-xl flex items-center justify-center pointer-events-none"
+        style={{ left: `${sliderPos}%`, transform: "translate(-50%, -50%)" }}
       >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path
-            d="M5 8L2 5M2 5L5 2M2 5H14M11 8L14 5M14 5L11 2M14 5H2"
-            stroke="#0a0a0a"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 10H14M6 10L8.5 7.5M6 10L8.5 12.5M14 10L11.5 7.5M14 10L11.5 12.5" stroke="#1A1209" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
 
-      {/* Before label */}
-      <div className="absolute bottom-4 left-4 z-10">
-        <span className="text-[10px] tracking-[0.15em] uppercase bg-white/90 text-[#0a0a0a] px-2.5 py-1 rounded-full font-medium">
-          {beforeLabel}
-        </span>
+      {/* Labels */}
+      <div className="absolute bottom-3 left-3 bg-black/60 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full pointer-events-none tracking-wide uppercase">
+        {beforeLabel}
       </div>
-
-      {/* After label */}
-      <div className="absolute bottom-4 right-4 z-10">
-        <span className="text-[10px] tracking-[0.15em] uppercase bg-[#0a0a0a]/80 text-white px-2.5 py-1 rounded-full font-medium">
-          {afterLabel}
-        </span>
+      <div className="absolute bottom-3 right-3 bg-black/60 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full pointer-events-none tracking-wide uppercase">
+        {afterLabel}
       </div>
     </div>
   );
