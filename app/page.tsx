@@ -4,15 +4,15 @@ import { useState } from 'react'
 import { motion, AnimatePresence, Variants } from 'framer-motion'
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
-const N            = '#1A1209'
-const N70          = 'rgba(26,18,9,0.68)'
-const N45          = 'rgba(26,18,9,0.45)'
-const N20          = 'rgba(26,18,9,0.18)'
-const BORDER       = 'rgba(26,18,9,0.10)'
-const BORDER_S     = 'rgba(26,18,9,0.20)'
-const BG           = '#F8F4EE'
-const BG_CARD      = '#F0EBE2'
-const BG_HOVER     = '#E8E1D5'
+const N            = '#F0EDE8'
+const N70          = 'rgba(240,237,232,0.68)'
+const N45          = 'rgba(240,237,232,0.42)'
+const N20          = 'rgba(240,237,232,0.15)'
+const BORDER       = 'rgba(240,237,232,0.08)'
+const BORDER_S     = 'rgba(240,237,232,0.16)'
+const BG           = '#131619'
+const BG_CARD      = '#1D2125'
+const BG_HOVER     = '#252B30'
 
 // ─── Motion variants ──────────────────────────────────────────────────────────
 const E: [number,number,number,number] = [0.22, 1, 0.36, 1]   // premium ease-out
@@ -151,7 +151,7 @@ export default function HomePage() {
             whileHover={{ scale: 1.025, boxShadow:`0 8px 32px ${N20}` }}
             whileTap={{ scale: 0.97 }}
             transition={{ type:'spring', stiffness:400, damping:24 }}
-            style={{ display:'inline-flex', alignItems:'center', background:N, color:BG, borderRadius:10, padding:'14px 28px', fontFamily:'var(--font-plus-jakarta)', fontWeight:700, fontSize:'0.9rem', letterSpacing:'-0.1px', cursor:'pointer' }}
+            style={{ display:'inline-flex', alignItems:'center', background:'#F0EDE8', color:'#131619', borderRadius:10, padding:'14px 28px', fontFamily:'var(--font-plus-jakarta)', fontWeight:700, fontSize:'0.9rem', letterSpacing:'-0.1px', cursor:'pointer' }}
           >
             Start a Project
           </motion.a>
