@@ -51,6 +51,14 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 /* Remove default list styles */
 ul,
 ol {
