@@ -4,8 +4,13 @@
 
 /* Force light mode site-wide — no dark: overrides anywhere */
 html {
-  background: #ffffff;
+  background: #ECEAE3;
   color-scheme: light;
+}
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 
 *,
@@ -15,8 +20,8 @@ html {
 }
 
 body {
-  background: #ffffff;
-  color: #0a0a0a;
+  background: #ECEAE3;
+  color: #2D3A4A;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: var(--font-dm-sans), -apple-system, BlinkMacSystemFont, sans-serif;
