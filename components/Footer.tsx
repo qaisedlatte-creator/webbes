@@ -19,7 +19,7 @@ const COMPANY_LINKS = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-neutral-100 bg-white">
+    <footer className="border-t bg-[#F0EBE2]" style={{ borderColor:'rgba(26,18,9,0.1)' }}>
       <div className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-12">
         {/* Brand */}
         <div className="md:col-span-1">
@@ -34,19 +34,19 @@ export default function Footer() {
             </svg>
             webbes
           </Link>
-          <p className="text-neutral-400 text-[13px] leading-relaxed">
+          <p className="text-[#1A1209]/40 text-[13px] leading-relaxed">
             Web design &amp; AI automation agency in Kochi, India. Serving businesses across India and the GCC.
           </p>
         </div>
 
         {/* Services */}
         <div>
-          <h5 className="text-[10px] tracking-[0.2em] text-neutral-400 uppercase mb-5 font-semibold">Services</h5>
+          <h5 className="text-[10px] tracking-[0.2em] text-[#1A1209]/40 uppercase mb-5 font-semibold">Services</h5>
           {SERVICES_LINKS.map((link) => (
             <Link
               key={link.label}
               href={link.href}
-              className="block text-neutral-500 text-[13px] mb-2.5 hover:text-[#0a0a0a] transition-colors duration-150"
+              className="block text-[#1A1209]/50 text-[13px] mb-2.5 hover:text-[#1A1209] transition-colors duration-150"
             >
               {link.label}
             </Link>
@@ -55,12 +55,12 @@ export default function Footer() {
 
         {/* Company */}
         <div>
-          <h5 className="text-[10px] tracking-[0.2em] text-neutral-400 uppercase mb-5 font-semibold">Company</h5>
+          <h5 className="text-[10px] tracking-[0.2em] text-[#1A1209]/40 uppercase mb-5 font-semibold">Company</h5>
           {COMPANY_LINKS.map((link) => (
             <Link
               key={link.label}
               href={link.href}
-              className="block text-neutral-500 text-[13px] mb-2.5 hover:text-[#0a0a0a] transition-colors duration-150"
+              className="block text-[#1A1209]/50 text-[13px] mb-2.5 hover:text-[#1A1209] transition-colors duration-150"
             >
               {link.label}
             </Link>
@@ -69,17 +69,17 @@ export default function Footer() {
 
         {/* Connect */}
         <div>
-          <h5 className="text-[10px] tracking-[0.2em] text-neutral-400 uppercase mb-5 font-semibold">Connect</h5>
-          <a href="https://instagram.com/webbes.in" target="_blank" rel="noopener noreferrer" className="block text-neutral-500 text-[13px] mb-2.5 hover:text-[#0a0a0a] transition-colors duration-150">Instagram</a>
-          <a href="mailto:webbes.in@gmail.com" className="block text-neutral-500 text-[13px] mb-2.5 hover:text-[#0a0a0a] transition-colors duration-150">Email Us</a>
-          <a href="https://wa.me/919149681874" target="_blank" rel="noopener noreferrer" className="block text-neutral-500 text-[13px] mb-2.5 hover:text-[#0a0a0a] transition-colors duration-150">WhatsApp</a>
+          <h5 className="text-[10px] tracking-[0.2em] text-[#1A1209]/40 uppercase mb-5 font-semibold">Connect</h5>
+          <a href="https://instagram.com/webbes.in" target="_blank" rel="noopener noreferrer" className="block text-[#1A1209]/50 text-[13px] mb-2.5 hover:text-[#1A1209] transition-colors duration-150">Instagram</a>
+          <a href="mailto:webbes.in@gmail.com" className="block text-[#1A1209]/50 text-[13px] mb-2.5 hover:text-[#1A1209] transition-colors duration-150">Email Us</a>
+          <a href="https://wa.me/919149681874" target="_blank" rel="noopener noreferrer" className="block text-[#1A1209]/50 text-[13px] mb-2.5 hover:text-[#1A1209] transition-colors duration-150">WhatsApp</a>
         </div>
       </div>
 
-      <div className="border-t border-neutral-100">
+      <div className="border-t" style={{ borderColor:'rgba(26,18,9,0.1)' }}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-2">
-          <p className="text-[11px] text-neutral-400">&#169; 2026 Webbes. All rights reserved. | Web Design Agency, Kochi, India</p>
-          <p className="text-[11px] text-neutral-400">Crafted with care in India &#127470;&#127475;</p>
+          <p className="text-[11px] text-[#1A1209]/40">&#169; 2026 Webbes. All rights reserved. | Web Design Agency, Kochi, India</p>
+          <p className="text-[11px] text-[#1A1209]/40">Crafted with care in India &#127470;&#127475;</p>
         </div>
       </div>
     </footer>

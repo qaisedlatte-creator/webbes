@@ -4,15 +4,15 @@ import { useState } from 'react'
 import { motion, AnimatePresence, Variants } from 'framer-motion'
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
-const N            = '#2D3A4A'
-const N70          = 'rgba(45,58,74,0.70)'
-const N45          = 'rgba(45,58,74,0.45)'
-const N20          = 'rgba(45,58,74,0.20)'
-const BORDER       = 'rgba(45,58,74,0.13)'
-const BORDER_S     = 'rgba(45,58,74,0.24)'
-const BG           = '#ECEAE3'
-const BG_CARD      = '#E8E5DD'
-const BG_HOVER     = '#E2DFD6'
+const N            = '#1A1209'
+const N70          = 'rgba(26,18,9,0.68)'
+const N45          = 'rgba(26,18,9,0.45)'
+const N20          = 'rgba(26,18,9,0.18)'
+const BORDER       = 'rgba(26,18,9,0.10)'
+const BORDER_S     = 'rgba(26,18,9,0.20)'
+const BG           = '#F8F4EE'
+const BG_CARD      = '#F0EBE2'
+const BG_HOVER     = '#E8E1D5'
 
 // ─── Motion variants ──────────────────────────────────────────────────────────
 const E: [number,number,number,number] = [0.22, 1, 0.36, 1]   // premium ease-out
