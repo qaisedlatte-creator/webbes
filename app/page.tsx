@@ -69,40 +69,55 @@ export default function HomePage() {
           }
         >
           {/* ── Dark card ── */}
-          <div className="h-full w-full bg-[#0d0d0d] rounded-2xl p-7 md:p-10 flex flex-col justify-between overflow-hidden">
+          <div className="h-full w-full bg-[#0d0d0d] rounded-2xl overflow-hidden flex flex-col">
 
-            {/* Top label */}
-            <p className="text-[11px] tracking-[0.2em] text-[#444] uppercase font-medium">What we do for your business</p>
+            {/* Column headers */}
+            <div className="grid grid-cols-2 border-b border-[#1a1a1a]">
+              <div className="px-5 py-3 border-r border-[#1a1a1a]">
+                <span className="text-[10px] tracking-[0.18em] text-[#ff4444] uppercase font-bold">Before</span>
+              </div>
+              <div className="px-5 py-3">
+                <span className="text-[10px] tracking-[0.18em] text-[#22c55e] uppercase font-bold">After Webbes</span>
+              </div>
+            </div>
 
-            {/* Main bold points */}
-            <div className="flex flex-col gap-5 my-auto py-6">
-              <div className="flex items-start gap-4">
-                <span className="text-white text-2xl md:text-3xl font-bold leading-none mt-0.5">01</span>
-                <div>
-                  <p className="text-white text-xl md:text-2xl font-bold leading-tight">We build your website</p>
-                  <p className="text-[#555] text-[13px] mt-1">Fast, professional, looks great on mobile and desktop.</p>
+            {/* Screenshot row */}
+            <div className="grid grid-cols-2 flex-1 min-h-0">
+              {/* Before screenshot */}
+              <div className="relative border-r border-[#1a1a1a] overflow-hidden">
+                {/* Red tint overlay */}
+                <div className="absolute inset-0 bg-red-900/20 z-10" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/before-site.png"
+                  alt="Outdated website example"
+                  className="w-full h-full object-cover object-top opacity-80"
+                />
+                {/* Labels */}
+                <div className="absolute bottom-0 left-0 right-0 z-20 p-3 bg-gradient-to-t from-black/90 to-transparent">
+                  <p className="text-white text-[12px] font-bold leading-tight">Laggy. Outdated.</p>
+                  <p className="text-[#ff6666] text-[10px] mt-0.5">Unprofessional · Customers leave immediately</p>
                 </div>
               </div>
-              <div className="w-full h-px bg-[#1a1a1a]" />
-              <div className="flex items-start gap-4">
-                <span className="text-white text-2xl md:text-3xl font-bold leading-none mt-0.5">02</span>
-                <div>
-                  <p className="text-white text-xl md:text-2xl font-bold leading-tight">Customers find you on Google</p>
-                  <p className="text-[#555] text-[13px] mt-1">We set it up so people searching for your service see you first.</p>
-                </div>
-              </div>
-              <div className="w-full h-px bg-[#1a1a1a]" />
-              <div className="flex items-start gap-4">
-                <span className="text-white text-2xl md:text-3xl font-bold leading-none mt-0.5">03</span>
-                <div>
-                  <p className="text-white text-xl md:text-2xl font-bold leading-tight">AI replies to enquiries for you</p>
-                  <p className="text-[#555] text-[13px] mt-1">WhatsApp bot answers questions 24/7 — even at night and on holidays.</p>
+
+              {/* After screenshot */}
+              <div className="relative overflow-hidden">
+                {/* Green tint overlay */}
+                <div className="absolute inset-0 bg-green-900/10 z-10" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/after-site.png"
+                  alt="Modern Webbes website example"
+                  className="w-full h-full object-cover object-top"
+                />
+                {/* Labels */}
+                <div className="absolute bottom-0 left-0 right-0 z-20 p-3 bg-gradient-to-t from-black/90 to-transparent">
+                  <p className="text-white text-[12px] font-bold leading-tight">Fast. Modern. Professional.</p>
+                  <p className="text-[#4ade80] text-[10px] mt-0.5">Built to convert · Customers stay & enquire</p>
                 </div>
               </div>
             </div>
 
-            {/* Bottom label */}
-            <p className="text-[11px] text-[#333]">Webbes · Kochi, Kerala · webbes.in</p>
           </div>
         </ContainerScroll>
 
