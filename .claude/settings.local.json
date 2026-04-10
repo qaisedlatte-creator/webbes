@@ -7,7 +7,12 @@
       "Bash(cp -r services public/)",
       "Bash(cp -r ai-automation public/)",
       "Bash(cp -r web-design-kerala public/)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(ls /c/Users/qaise/webbes/*.html /c/Users/qaise/webbes/vercel.json)",
+      "Bash(npx next:*)"
     ]
   }
 }
