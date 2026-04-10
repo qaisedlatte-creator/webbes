@@ -1,447 +1,256 @@
 'use client'
 
-import { useState } from 'react'
-import { motion, AnimatePresence, Variants } from 'framer-motion'
-
-// ─── Design tokens ────────────────────────────────────────────────────────────
-const N            = '#1A1209'
-const N70          = 'rgba(26,18,9,0.68)'
-const N45          = 'rgba(26,18,9,0.45)'
-const N20          = 'rgba(26,18,9,0.18)'
-const BORDER       = 'rgba(26,18,9,0.10)'
-const BORDER_S     = 'rgba(26,18,9,0.20)'
-const BG           = '#FAF6F0'
-const BG_CARD      = '#F3EDE4'
-const BG_HOVER     = '#EAE3D8'
-const ACCENT       = '#2563EB'
-
-// ─── Motion variants ──────────────────────────────────────────────────────────
-const E: [number,number,number,number] = [0.22, 1, 0.36, 1]   // premium ease-out
-
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 28 },
-  show:   { opacity: 1, y: 0,  transition: { duration: 0.65, ease: E } },
-}
-
-const fadeIn: Variants = {
-  hidden: { opacity: 0 },
-  show:   { opacity: 1, transition: { duration: 0.55, ease: E } },
-}
-
-const stagger: Variants = {
-  hidden: {},
-  show:   { transition: { staggerChildren: 0.09, delayChildren: 0.05 } },
-}
-
-const staggerSlow: Variants = {
-  hidden: {},
-  show:   { transition: { staggerChildren: 0.07 } },
-}
-
-const VIEW = { once: true, margin: '-80px' as const }
-
-// ─── Reusable section header ──────────────────────────────────────────────────
-function SectionLabel({ text, center = false }: { text: string; center?: boolean }) {
-  return (
-    <motion.div variants={fadeIn} style={{
-      fontSize: '0.68rem', letterSpacing: 2.5, textTransform: 'uppercase',
-      color: N45, fontWeight: 600,
-      display: 'flex', alignItems: 'center', justifyContent: center ? 'center' : 'flex-start',
-      gap: 10, marginBottom: 14,
-    }}>
-      {!center && <motion.span
-        initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }}
-        viewport={VIEW}
-        transition={{ duration: 0.5, ease: E }}
-        style={{ width: 20, height: 1.5, background: 'currentColor', display: 'inline-block', transformOrigin: 'left' }}
-      />}
-      {text}
-      {center && <motion.span
-        initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }}
-        viewport={VIEW}
-        transition={{ duration: 0.5, ease: E }}
-        style={{ width: 20, height: 1.5, background: 'currentColor', display: 'inline-block', transformOrigin: 'left' }}
-      />}
-    </motion.div>
-  )
-}
-
-// ─── Data ─────────────────────────────────────────────────────────────────────
-const TICKER_ITEMS = ['Website Development','AI Automation','Shopify Stores','E-Commerce','Digital Marketing','UI/UX Design']
+import { ContainerScroll } from '@/components/ui/container-scroll-animation'
+import { GooeyText } from '@/components/ui/gooey-text-morphing'
+import { HoverButton } from '@/components/ui/hover-button'
+import { LiquidButton } from '@/components/ui/liquid-glass-button'
+import { MetalButton } from '@/components/ui/liquid-glass-button'
+import { BeforeAfterSlider } from '@/components/ui/before-after-slider'
 
 const SERVICES = [
-  { n:'01', icon:'⚡', title:'AI Automation',        desc:'Intelligent workflows, chatbots, lead scoring, and business process automation that eliminates busywork and amplifies output.',  tags:['n8n','Make','OpenAI','Zapier'] },
-  { n:'02', icon:'🖥️', title:'Website Development',  desc:'Fast, pixel-perfect websites — corporate sites, landing pages, and web apps built to convert visitors into customers.',            tags:['React','Next.js','Custom Code'] },
-  { n:'03', icon:'🛒', title:'E-Commerce Stores',    desc:'End-to-end online stores with product catalogs, payment gateways, and inventory management — built to sell.',                    tags:['Shopify','WooCommerce','Custom'] },
+  {
+    num: '01',
+    title: 'Websites',
+    sub: 'Fast, custom, built to convert visitors into WhatsApp leads. No templates.',
+  },
+  {
+    num: '02',
+    title: 'AI Automation',
+    sub: 'Chatbots, lead capture bots, WhatsApp flows. Running 24/7 while you sleep.',
+  },
+  {
+    num: '03',
+    title: 'E-Commerce',
+    sub: 'Shopify and custom stores built to sell. Product pages, payments, inventory.',
+  },
 ]
 
-const PROCESS = [
-  { n:'1', title:'Discover',       desc:'Deep dive into your business, goals, target audience, and competitive landscape.' },
-  { n:'2', title:'Design',         desc:'Wireframes, mockups, and prototypes — crafted to pixel-perfect standards before a single line of code.' },
-  { n:'3', title:'Develop',        desc:'Clean, scalable code with smooth interactions and flawless performance on every device.' },
-  { n:'4', title:'Deploy & Grow',  desc:'Launch, monitor, optimise, and scale — with dedicated ongoing support whenever you need it.' },
+const PORTFOLIO = [
+  {
+    name: 'Pearl Imperial International',
+    tag: 'B2B Corporate · UAE',
+    url: 'https://pearlimperialintl.com',
+  },
+  {
+    name: 'Dept Store',
+    tag: 'E-Commerce · India',
+    url: 'https://deptstore.in',
+  },
+  {
+    name: 'Prism India',
+    tag: 'Shopify · India',
+    url: 'https://prismindia.co',
+  },
 ]
 
-const TECH = ['React','Next.js','Shopify','WordPress','n8n','Make (Integromat)','OpenAI API','Figma','Google Ads','Meta Ads Manager','Webflow','Node.js']
-
-const WHY = [
-  { icon:'🛠️', title:'We Actually Build It',    desc:"No outsourcing, no generic templates. Every project is custom-built hands-on. Real craftsmanship, not recycled designs." },
-  { icon:'⚡',  title:'1–3 Week Delivery',       desc:"Most websites delivered in 1–3 weeks. We respond within hours, not days. You always know exactly where your project stands." },
-  { icon:'🔓', title:'You Own Everything',      desc:"Full source code, full access, zero lock-in. If we're not delivering value, you can walk — no contracts, no strings." },
-]
-
-const FAQS = [
-  { q:'What services does Webbes offer?',               a:"We specialise in Website Development (custom sites, Shopify, WordPress), AI Automation (workflows, chatbots, process automation), and E-Commerce (full online store setup with payments and inventory management)." },
-  { q:'How long does a website project take?',          a:"A landing page: 3–5 days. A full website: 2–4 weeks. Complex e-commerce or AI automation setups: 4–8 weeks. We give you a precise timeline in your first call — no vague estimates." },
-  { q:'Do you work with clients outside India?',        a:"Absolutely. We actively serve clients across India and the GCC region (UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, Oman). We're built for remote collaboration across time zones." },
-  { q:'What makes Webbes different from other agencies?', a:"Every project is handled directly by Qais and Falah — no middlemen, no account managers. AI-first approach, direct communication, fast delivery, and you own everything we build." },
-  { q:'Do you offer support after launch?',             a:"Yes. We offer post-launch support covering maintenance, performance monitoring, content updates, and ongoing optimisation to keep your site performing at its best." },
-]
-
-const VALUES = [
-  { icon:'🎯', title:'Mission-Driven',     desc:"Building something we'd be genuinely proud of — a Kochi agency known for honest work and real outcomes." },
-  { icon:'⚡',  title:'Rapid Delivery',    desc:"Tight cycles, meticulous quality, and on-time delivery — every time." },
-  { icon:'🤝', title:'True Partnership',  desc:"Your growth is our growth. Your success is our reputation." },
-  { icon:'🔬', title:'AI-First Approach', desc:"We embed AI and automation into everything we build — giving your business an unfair competitive edge." },
-]
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
 export default function HomePage() {
-  const [openFaq, setOpenFaq] = useState<number | null>(null)
-
   return (
-    <div style={{ background: BG, color: N, minHeight: '100vh', overflowX: 'hidden' }}>
+    <div className="bg-white text-[#0a0a0a] overflow-x-hidden">
 
-      {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <motion.header
-        variants={stagger} initial="hidden" animate="show"
-        style={{ padding: 'clamp(110px,13vw,170px) clamp(20px,5vw,64px) clamp(72px,9vw,120px)', maxWidth: 1200, margin: '0 auto' }}
-      >
-        {/* Eyebrow */}
-        <motion.div variants={fadeIn} style={{ display:'flex', alignItems:'center', gap:8, marginBottom:32, fontSize:'0.78rem', fontWeight:600, color:N45, letterSpacing:1 }}>
-          <span style={{ width:7, height:7, borderRadius:'50%', background:ACCENT, display:'inline-block', animation:'pulse-dot 2s ease-in-out infinite' }} />
-          Now Accepting New Projects
-        </motion.div>
-
-        {/* Headline — each line reveals independently */}
-        <div style={{ overflow:'hidden', marginBottom:8 }}>
-          <motion.h1
-            variants={fadeUp}
-            style={{ fontFamily:'var(--font-plus-jakarta)', fontSize:'clamp(3rem,7.5vw,6rem)', fontWeight:800, lineHeight:1.04, letterSpacing:'-2.5px', color:N, margin:0 }}
-          >
-            Websites. AI.
-          </motion.h1>
-        </div>
-        <div style={{ overflow:'hidden', marginBottom:32 }}>
-          <motion.h1
-            variants={fadeUp}
-            style={{ fontFamily:'var(--font-plus-jakarta)', fontSize:'clamp(3rem,7.5vw,6rem)', fontWeight:800, lineHeight:1.04, letterSpacing:'-2.5px', color:N, margin:0 }}
-          >
-            Results.
-          </motion.h1>
-        </div>
-
-        <motion.p variants={fadeUp} style={{ fontSize:'1.05rem', lineHeight:1.75, color:N70, maxWidth:520, marginBottom:36 }}>
-          We build websites that bring in customers, AI automations that save real hours, and e-commerce stores that actually sell — for businesses across <strong>India</strong> and the <strong>GCC.</strong>
-        </motion.p>
-
-        {/* Buttons */}
-        <motion.div variants={fadeUp} style={{ display:'flex', gap:12, flexWrap:'wrap', marginBottom:44 }}>
-          <motion.a
-            href="/contact"
-            whileHover={{ scale: 1.025, boxShadow:`0 8px 32px ${N20}` }}
-            whileTap={{ scale: 0.97 }}
-            transition={{ type:'spring', stiffness:400, damping:24 }}
-            style={{ display:'inline-flex', alignItems:'center', background:ACCENT, color:'#fff', borderRadius:10, padding:'14px 28px', fontFamily:'var(--font-plus-jakarta)', fontWeight:700, fontSize:'0.9rem', letterSpacing:'-0.1px', cursor:'pointer' }}
-          >
-            Start a Project
-          </motion.a>
-          <motion.a
-            href="/services"
-            whileHover={{ scale: 1.025, borderColor: N }}
-            whileTap={{ scale: 0.97 }}
-            transition={{ type:'spring', stiffness:400, damping:24 }}
-            style={{ display:'inline-flex', alignItems:'center', border:`1.5px solid ${N20}`, color:N, borderRadius:10, padding:'14px 28px', fontFamily:'var(--font-plus-jakarta)', fontWeight:600, fontSize:'0.9rem', background:'transparent', cursor:'pointer' }}
-          >
-            See Services
-          </motion.a>
-        </motion.div>
-
-        <motion.div variants={fadeIn} style={{ display:'flex', gap:24, flexWrap:'wrap', fontSize:'0.8rem', color:N45, alignItems:'center' }}>
-          <span>Based in Kochi, India</span>
-          <span style={{ width:1, height:12, background:N20, display:'inline-block' }} />
-          <span>Serving India &amp; GCC</span>
-          <span style={{ width:1, height:12, background:N20, display:'inline-block' }} />
-          <span>15+ Projects Live</span>
-        </motion.div>
-      </motion.header>
-
-      {/* ── TICKER ───────────────────────────────────────────────────────── */}
-      <div style={{ borderTop:`1px solid ${BORDER}`, borderBottom:`1px solid ${BORDER}`, overflow:'hidden', padding:'14px 0', background:BG_CARD }} className="ticker-fade" aria-hidden="true">
-        <div style={{ display:'flex', width:'max-content', animation:'ticker 28s linear infinite' }}>
-          {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
-            <span key={i} style={{ display:'inline-flex', alignItems:'center', gap:20, paddingRight:20, fontFamily:'var(--font-plus-jakarta)', fontWeight:600, fontSize:'0.8rem', color:N45, whiteSpace:'nowrap' }}>
-              {item}
-              <span style={{ color:N20 }}>◆</span>
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* ── ABOUT ────────────────────────────────────────────────────────── */}
-      <motion.section
-        variants={stagger} initial="hidden" whileInView="show" viewport={VIEW}
-        style={{ padding:'clamp(80px,9vw,130px) clamp(20px,5vw,64px)', maxWidth:1200, margin:'0 auto' }}
-      >
-        <motion.div variants={fadeUp} style={{ marginBottom:52 }}>
-          <SectionLabel text="Who We Are" />
-          <h2 style={{ fontFamily:'var(--font-plus-jakarta)', fontSize:'clamp(1.9rem,4vw,3rem)', fontWeight:700, lineHeight:1.12, letterSpacing:'-0.8px', color:N }}>
-            Two founders from Kochi.<br />Every project, personally.
-          </h2>
-        </motion.div>
-
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:56 }}>
-          <motion.div variants={fadeUp}>
-            <p style={{ fontSize:'1rem', lineHeight:1.8, color:N70, marginBottom:18 }}><strong>Webbes</strong> is built and run by Qais and Falah — two co-founders from Kochi who started this because we got tired of watching good businesses settle for overpriced, underwhelming work from agencies that never actually cared. We handle every project ourselves. No outsourcing, no account managers, no telephone game.</p>
-            <p style={{ fontSize:'1rem', lineHeight:1.8, color:N70, marginBottom:18 }}>We work with local businesses across Kerala — from Kochi to Kozhikode — who want a real digital presence without dealing with a big agency. We also work with businesses across India and the GCC who need fast delivery and honest communication.</p>
-            <p style={{ fontSize:'1rem', lineHeight:1.8, color:N70 }}>Technical depth, direct access to the people doing the work, and results you can measure. That&apos;s what we built Webbes to be.</p>
-          </motion.div>
-
-          <motion.div variants={stagger} style={{ display:'flex', flexDirection:'column', gap:28 }}>
-            {VALUES.map(v => (
-              <motion.div key={v.title} variants={fadeUp} style={{ display:'flex', gap:16, alignItems:'flex-start' }}>
-                <span style={{ fontSize:'1.3rem', flexShrink:0, marginTop:2 }}>{v.icon}</span>
-                <div>
-                  <h4 style={{ fontFamily:'var(--font-plus-jakarta)', fontWeight:700, fontSize:'0.92rem', color:N, marginBottom:5 }}>{v.title}</h4>
-                  <p style={{ fontSize:'0.87rem', lineHeight:1.65, color:N70 }}>{v.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* ── METRICS ──────────────────────────────────────────────────────── */}
-      <motion.div
-        initial="hidden" whileInView="show" variants={stagger} viewport={VIEW}
-        style={{ borderTop:`1px solid ${BORDER}`, borderBottom:`1px solid ${BORDER}`, background:BG_CARD }}
-      >
-        <div style={{ maxWidth:1200, margin:'0 auto', padding:'clamp(36px,5vw,56px) clamp(20px,5vw,64px)', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))', gap:32 }}>
-          {[
-            { num:'Founded in Kochi', label:'Kerala, India' },
-            { num:'Websites + AI',    label:'One team, one roof' },
-            { num:'Direct founders',  label:'No middlemen, ever' },
-          ].map(m => (
-            <motion.div key={m.label} variants={fadeUp} style={{ textAlign:'center', padding:'16px 0' }}>
-              <div style={{ fontFamily:'var(--font-plus-jakarta)', fontWeight:700, fontSize:'clamp(1.1rem,2.5vw,1.4rem)', letterSpacing:'-0.5px', color:N, marginBottom:5 }}>{m.num}</div>
-              <div style={{ fontSize:'0.8rem', color:N45, fontWeight:500 }}>{m.label}</div>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* ── SERVICES ─────────────────────────────────────────────────────── */}
-      <motion.section
-        variants={stagger} initial="hidden" whileInView="show" viewport={VIEW}
-        style={{ padding:'clamp(80px,9vw,130px) clamp(20px,5vw,64px)', maxWidth:1200, margin:'0 auto' }}
-      >
-        <motion.div variants={fadeUp} style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-end', flexWrap:'wrap', gap:24, marginBottom:52 }}>
-          <div>
-            <SectionLabel text="What We Do" />
-            <h2 style={{ fontFamily:'var(--font-plus-jakarta)', fontSize:'clamp(1.9rem,4vw,3rem)', fontWeight:700, lineHeight:1.12, letterSpacing:'-0.8px', color:N }}>
-              Everything Your<br />Business Needs Online.
-            </h2>
-          </div>
-          <p style={{ fontSize:'0.97rem', lineHeight:1.75, color:N70, maxWidth:360 }}>From intelligent automations to stunning storefronts — we cover every angle of your digital presence.</p>
-        </motion.div>
-
-        <motion.div variants={stagger} style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:20 }}>
-          {SERVICES.map(s => (
-            <motion.div
-              key={s.n} variants={fadeUp}
-              whileHover={{ y:-6, boxShadow:`0 16px 48px rgba(45,58,74,0.10)`, background:BG_HOVER }}
-              transition={{ type:'spring', stiffness:300, damping:22 }}
-              style={{ background:BG_CARD, border:`1px solid ${BORDER}`, borderRadius:20, padding:'32px 28px', position:'relative', cursor:'default' }}
-            >
-              <span style={{ position:'absolute', top:20, right:24, fontSize:'0.72rem', color:N20, fontFamily:'var(--font-plus-jakarta)', fontWeight:700 }}>{s.n}</span>
-              <div style={{ fontSize:'2.2rem', marginBottom:18 }}>{s.icon}</div>
-              <h3 style={{ fontFamily:'var(--font-plus-jakarta)', fontWeight:700, fontSize:'1.1rem', color:N, marginBottom:10 }}>{s.title}</h3>
-              <p style={{ fontSize:'0.88rem', lineHeight:1.7, color:N70, marginBottom:20 }}>{s.desc}</p>
-              <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-                {s.tags.map(t => (
-                  <span key={t} style={{ fontSize:'0.72rem', color:N45, border:`1px solid ${BORDER}`, borderRadius:6, padding:'3px 10px', fontWeight:500 }}>{t}</span>
-                ))}
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        <motion.div variants={fadeUp} style={{ textAlign:'center', marginTop:44 }}>
-          <p style={{ fontSize:'0.88rem', color:N45, marginBottom:18 }}>Also: Shopify, WordPress, Digital Marketing, UI/UX Design, SEO &amp; more</p>
-          <motion.a
-            href="/services"
-            whileHover={{ scale:1.025, borderColor:N }}
-            whileTap={{ scale:0.97 }}
-            transition={{ type:'spring', stiffness:400, damping:24 }}
-            style={{ display:'inline-flex', alignItems:'center', border:`1.5px solid ${BORDER_S}`, color:N, borderRadius:10, padding:'13px 26px', fontFamily:'var(--font-plus-jakarta)', fontWeight:600, fontSize:'0.88rem', cursor:'pointer' }}
-          >
-            View All Services →
-          </motion.a>
-        </motion.div>
-      </motion.section>
-
-      {/* ── PROCESS ──────────────────────────────────────────────────────── */}
-      <motion.section
-        variants={stagger} initial="hidden" whileInView="show" viewport={VIEW}
-        style={{ padding:'clamp(80px,9vw,130px) clamp(20px,5vw,64px)', maxWidth:1200, margin:'0 auto', borderTop:`1px solid ${BORDER}` }}
-      >
-        <motion.div variants={fadeUp} style={{ textAlign:'center', maxWidth:560, margin:'0 auto 56px' }}>
-          <SectionLabel text="How We Work" center />
-          <h2 style={{ fontFamily:'var(--font-plus-jakarta)', fontSize:'clamp(1.9rem,4vw,3rem)', fontWeight:700, lineHeight:1.12, letterSpacing:'-0.8px', color:N }}>Simple Process.<br />Serious Results.</h2>
-        </motion.div>
-        <motion.div variants={stagger} style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))', gap:36 }}>
-          {PROCESS.map(p => (
-            <motion.div key={p.n} variants={fadeUp} style={{ textAlign:'center' }}>
-              <motion.div
-                whileHover={{ scale:1.08 }}
-                transition={{ type:'spring', stiffness:400, damping:20 }}
-                style={{ width:48, height:48, border:`1.5px solid ${N20}`, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 18px', fontFamily:'var(--font-plus-jakarta)', fontWeight:700, fontSize:'1rem', color:N }}
-              >
-                {p.n}
-              </motion.div>
-              <h4 style={{ fontFamily:'var(--font-plus-jakarta)', fontWeight:700, color:N, marginBottom:8, fontSize:'0.95rem' }}>{p.title}</h4>
-              <p style={{ fontSize:'0.86rem', lineHeight:1.68, color:N70 }}>{p.desc}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-      </motion.section>
-
-      {/* ── TECH STACK ───────────────────────────────────────────────────── */}
-      <motion.section
-        variants={stagger} initial="hidden" whileInView="show" viewport={VIEW}
-        style={{ padding:'clamp(80px,9vw,130px) clamp(20px,5vw,64px)', maxWidth:1200, margin:'0 auto', borderTop:`1px solid ${BORDER}` }}
-      >
-        <motion.div variants={fadeUp} style={{ textAlign:'center', maxWidth:560, margin:'0 auto 48px' }}>
-          <SectionLabel text="Our Toolkit" center />
-          <h2 style={{ fontFamily:'var(--font-plus-jakarta)', fontSize:'clamp(1.9rem,4vw,3rem)', fontWeight:700, lineHeight:1.12, letterSpacing:'-0.8px', color:N }}>Tools We Master.</h2>
-        </motion.div>
-        <motion.div variants={staggerSlow} style={{ display:'flex', flexWrap:'wrap', gap:10, justifyContent:'center' }}>
-          {TECH.map(t => (
-            <motion.span
-              key={t} variants={fadeIn}
-              whileHover={{ scale:1.05, background:ACCENT, color:'#fff', borderColor:ACCENT }}
-              transition={{ type:'spring', stiffness:400, damping:20 }}
-              style={{ border:`1px solid ${BORDER_S}`, borderRadius:8, padding:'9px 18px', fontSize:'0.85rem', color:N70, fontWeight:500, background:BG_CARD, cursor:'default', display:'inline-block' }}
-            >
-              {t}
-            </motion.span>
-          ))}
-        </motion.div>
-      </motion.section>
-
-      {/* ── WHY WEBBES ───────────────────────────────────────────────────── */}
-      <motion.section
-        variants={stagger} initial="hidden" whileInView="show" viewport={VIEW}
-        style={{ padding:'clamp(80px,9vw,130px) clamp(20px,5vw,64px)', maxWidth:1200, margin:'0 auto', borderTop:`1px solid ${BORDER}` }}
-      >
-        <motion.div variants={fadeUp} style={{ textAlign:'center', maxWidth:560, margin:'0 auto 52px' }}>
-          <SectionLabel text="Why Webbes" center />
-          <h2 style={{ fontFamily:'var(--font-plus-jakarta)', fontSize:'clamp(1.9rem,4vw,3rem)', fontWeight:700, lineHeight:1.12, letterSpacing:'-0.8px', color:N }}>Why Businesses<br />Choose Us.</h2>
-        </motion.div>
-        <motion.div variants={stagger} style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))', gap:20 }}>
-          {WHY.map(w => (
-            <motion.div
-              key={w.title} variants={fadeUp}
-              whileHover={{ y:-6, boxShadow:`0 16px 48px rgba(45,58,74,0.10)`, background:BG_HOVER }}
-              transition={{ type:'spring', stiffness:300, damping:22 }}
-              style={{ background:BG_CARD, border:`1px solid ${BORDER}`, borderRadius:20, padding:'36px 28px', cursor:'default' }}
-            >
-              <div style={{ fontSize:'2.2rem', marginBottom:18 }}>{w.icon}</div>
-              <h4 style={{ fontFamily:'var(--font-plus-jakarta)', fontWeight:700, color:N, marginBottom:10, fontSize:'1rem' }}>{w.title}</h4>
-              <p style={{ fontSize:'0.88rem', lineHeight:1.7, color:N70 }}>{w.desc}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-      </motion.section>
-
-      {/* ── FAQ ──────────────────────────────────────────────────────────── */}
-      <motion.section
-        variants={stagger} initial="hidden" whileInView="show" viewport={VIEW}
-        style={{ padding:'clamp(80px,9vw,130px) clamp(20px,5vw,64px)', maxWidth:1200, margin:'0 auto', borderTop:`1px solid ${BORDER}` }}
-      >
-        <motion.div variants={fadeUp} style={{ textAlign:'center', maxWidth:560, margin:'0 auto 52px' }}>
-          <SectionLabel text="FAQ" center />
-          <h2 style={{ fontFamily:'var(--font-plus-jakarta)', fontSize:'clamp(1.9rem,4vw,3rem)', fontWeight:700, lineHeight:1.12, letterSpacing:'-0.8px', color:N }}>Common Questions.</h2>
-        </motion.div>
-        <motion.div variants={stagger} style={{ maxWidth:720, margin:'0 auto' }}>
-          {FAQS.map((f, i) => (
-            <motion.div key={i} variants={fadeUp} style={{ borderTop:`1px solid ${BORDER}`, ...(i===FAQS.length-1?{borderBottom:`1px solid ${BORDER}`}:{}) }}>
-              <button
-                onClick={() => setOpenFaq(openFaq===i ? null : i)}
-                style={{ width:'100%', display:'flex', justifyContent:'space-between', alignItems:'center', padding:'22px 0', background:'none', border:'none', cursor:'pointer', textAlign:'left', color:N, fontFamily:'var(--font-plus-jakarta)', fontWeight:600, fontSize:'0.97rem', gap:16 }}
-              >
-                {f.q}
-                <motion.span
-                  animate={{ rotate: openFaq===i ? 45 : 0 }}
-                  transition={{ duration:0.25, ease:E }}
-                  style={{ fontSize:'1.5rem', fontWeight:300, color:N45, flexShrink:0, display:'inline-block' }}
-                >+</motion.span>
-              </button>
-              <AnimatePresence initial={false}>
-                {openFaq===i && (
-                  <motion.div
-                    key="answer"
-                    initial={{ height:0, opacity:0 }}
-                    animate={{ height:'auto', opacity:1 }}
-                    exit={{ height:0, opacity:0 }}
-                    transition={{ duration:0.32, ease:E }}
-                    style={{ overflow:'hidden' }}
-                  >
-                    <p style={{ paddingBottom:24, fontSize:'0.93rem', lineHeight:1.75, color:N70 }}>{f.a}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          ))}
-        </motion.div>
-      </motion.section>
-
-      {/* ── CONTACT CTA ──────────────────────────────────────────────────── */}
-      <motion.section
-        variants={stagger} initial="hidden" whileInView="show" viewport={VIEW}
-        style={{ padding:'clamp(80px,9vw,130px) clamp(20px,5vw,64px)', maxWidth:1200, margin:'0 auto', borderTop:`1px solid ${BORDER}` }}
-      >
-        <motion.div
-          variants={fadeUp}
-          style={{ textAlign:'center', maxWidth:600, margin:'0 auto', padding:'clamp(48px,7vw,80px) clamp(24px,5vw,56px)', border:`1px solid ${BORDER_S}`, borderRadius:24, background:BG_CARD }}
+      {/* ── SECTION 1: HERO ──────────────────────────────────────────────── */}
+      <section className="bg-white">
+        <ContainerScroll
+          titleComponent={
+            <>
+              <p className="text-[11px] tracking-[0.25em] text-neutral-400 uppercase mb-5">
+                Kochi · Kerala · GCC
+              </p>
+              <h1 className="text-[clamp(52px,9vw,108px)] font-extrabold text-[#0a0a0a] leading-[1.0] tracking-tight mb-6">
+                Stop killing<br />your brand.
+              </h1>
+              <p className="text-neutral-400 text-[17px] max-w-[420px] mx-auto leading-relaxed">
+                Websites and AI automations for Kerala businesses
+                that are done being invisible.
+              </p>
+            </>
+          }
         >
-          <SectionLabel text="Get In Touch" center />
-          <h2 style={{ fontFamily:'var(--font-plus-jakarta)', fontSize:'clamp(1.8rem,4vw,2.8rem)', fontWeight:700, lineHeight:1.12, letterSpacing:'-0.8px', color:N, marginBottom:14 }}>
-            Let&apos;s Build Something<br />That Works.
-          </h2>
-          <p style={{ fontSize:'0.97rem', lineHeight:1.75, color:N70, marginBottom:28 }}>Tell us about your project and we&apos;ll get back within 24 hours. No sales pitch — just straight talk.</p>
-          <div style={{ display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap' }}>
-            <motion.a
-              href="/contact"
-              whileHover={{ scale:1.03, boxShadow:`0 8px 32px ${N20}` }}
-              whileTap={{ scale:0.97 }}
-              transition={{ type:'spring', stiffness:400, damping:22 }}
-              style={{ display:'inline-flex', alignItems:'center', background:N, color:BG, borderRadius:10, padding:'14px 28px', fontFamily:'var(--font-plus-jakarta)', fontWeight:700, fontSize:'0.9rem', cursor:'pointer' }}
-            >
-              Start a Project
-            </motion.a>
-            <motion.a
-              href="https://wa.me/919149681874" target="_blank" rel="noopener noreferrer"
-              whileHover={{ scale:1.03, borderColor:N }}
-              whileTap={{ scale:0.97 }}
-              transition={{ type:'spring', stiffness:400, damping:22 }}
-              style={{ display:'inline-flex', alignItems:'center', border:`1.5px solid ${N20}`, color:N, borderRadius:10, padding:'14px 28px', fontFamily:'var(--font-plus-jakarta)', fontWeight:600, fontSize:'0.9rem', background:'transparent', cursor:'pointer' }}
-            >
-              WhatsApp Us
-            </motion.a>
+          {/* Dark card inside ContainerScroll */}
+          <div className="h-full w-full bg-[#0d0d0d] rounded-2xl p-6 md:p-8 flex flex-col gap-5 overflow-hidden">
+            {/* Browser chrome */}
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+              <div className="flex-1 h-5 bg-[#1a1a1a] rounded-md ml-3 flex items-center px-3">
+                <span className="text-[10px] text-[#444] font-mono">webbes.in</span>
+              </div>
+            </div>
+
+            {/* Before / After columns */}
+            <div className="grid grid-cols-2 gap-3 flex-1">
+              <div className="flex flex-col gap-2">
+                <span className="text-[9px] text-[#444] tracking-[0.15em] uppercase">Before</span>
+                <div className="bg-[#111] rounded-xl p-4 flex flex-col gap-3 h-full">
+                  <div className="h-1.5 bg-[#1e1e1e] rounded w-3/5" />
+                  <div className="h-1.5 bg-[#181818] rounded w-full" />
+                  <div className="h-1.5 bg-[#181818] rounded w-4/5" />
+                  <div className="h-1.5 bg-[#181818] rounded w-2/3" />
+                  <div className="mt-auto h-7 bg-[#1a1a1a] rounded-lg w-2/5" />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <span className="text-[9px] text-[#2d5a2d] tracking-[0.15em] uppercase">After Webbes</span>
+                <div className="bg-[#0a120a] border border-[#1a2e1a] rounded-xl p-4 flex flex-col gap-3 h-full">
+                  <div className="h-1.5 bg-[#1a3a1a] rounded w-3/5" />
+                  <div className="h-1.5 bg-[#162816] rounded w-full" />
+                  <div className="h-1.5 bg-[#162816] rounded w-4/5" />
+                  <div className="h-1.5 bg-[#162816] rounded w-2/3" />
+                  <div className="mt-auto h-7 bg-[#1e3e1e] rounded-lg w-2/5" />
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-[#161616] flex items-center justify-between">
+              <p className="text-[10px] text-[#333]">Web design · AI automation · Kochi</p>
+              <div className="flex gap-1.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#2d5a2d]" />
+                <div className="w-1.5 h-1.5 rounded-full bg-[#2d5a2d] opacity-50" />
+                <div className="w-1.5 h-1.5 rounded-full bg-[#2d5a2d] opacity-20" />
+              </div>
+            </div>
           </div>
-        </motion.div>
-      </motion.section>
+        </ContainerScroll>
+
+        {/* CTA buttons below the scroll card */}
+        <div className="flex gap-4 justify-center pb-20 px-6">
+          <LiquidButton onClick={() => { window.location.href = '/contact' }}>
+            Start a Project
+          </LiquidButton>
+          <HoverButton onClick={() => { window.location.href = '/team' }}>
+            See Our Work
+          </HoverButton>
+        </div>
+      </section>
+
+      {/* ── SECTION 2: MORPHING STATEMENT ─────────────────────────────────── */}
+      <section className="py-32 px-6 text-center border-t border-neutral-100 bg-white">
+        <p className="text-[11px] tracking-[0.25em] text-neutral-400 uppercase mb-10">
+          What we build
+        </p>
+        <div className="h-20 flex items-center justify-center mb-10">
+          <GooeyText
+            texts={['Websites', 'AI Chatbots', 'E-Commerce', 'Automations', 'Real Results']}
+            morphTime={1.2}
+            cooldownTime={0.4}
+            textClassName="text-[#0a0a0a] font-extrabold"
+            className="w-full"
+          />
+        </div>
+        <p className="text-neutral-400 text-[15px] max-w-xs mx-auto leading-relaxed">
+          For local businesses in Kerala and the Gulf who are done being invisible online.
+        </p>
+      </section>
+
+      {/* ── SECTION 3: BEFORE / AFTER CASE STUDY ─────────────────────────── */}
+      <section className="border-t border-neutral-100 py-24 px-6 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="mb-12">
+            <p className="text-[11px] tracking-[0.25em] text-neutral-400 uppercase mb-4">
+              Real work · Kerala real estate
+            </p>
+            <h2 className="text-[#0a0a0a] text-3xl md:text-4xl font-bold tracking-tight mb-3">
+              This is what we fix.
+            </h2>
+            <p className="text-neutral-400 text-[15px] max-w-lg leading-relaxed">
+              A Kozhikode real estate company running on a 2005-era portal —
+              ad banners, zero mobile support, no WhatsApp lead capture.
+              We rebuilt it from scratch. Drag to compare.
+            </p>
+          </div>
+
+          <BeforeAfterSlider
+            beforeImage="/case-study-before.png"
+            afterImage="/case-study-after.png"
+            beforeLabel="Before"
+            afterLabel="After — Webbes"
+            className="mb-4"
+          />
+
+          <p className="text-[11px] text-neutral-300">
+            * Demo build for a Kozhikode real estate client. Live deployment pending sign-off.
+          </p>
+        </div>
+      </section>
+
+      {/* ── SECTION 4: SERVICES ───────────────────────────────────────────── */}
+      <section className="border-t border-neutral-100 bg-white">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="py-16">
+            <p className="text-[11px] tracking-[0.25em] text-neutral-400 uppercase">
+              What we do
+            </p>
+          </div>
+          {SERVICES.map((s, i) => (
+            <div
+              key={s.num}
+              className={[
+                'flex items-start gap-12 py-10 border-t border-neutral-100',
+                'hover:bg-neutral-50 transition-colors px-4 -mx-4 cursor-default',
+                i === SERVICES.length - 1 ? 'border-b' : '',
+              ].join(' ')}
+            >
+              <p className="text-[11px] text-neutral-300 font-mono pt-1 min-w-[24px]">{s.num}</p>
+              <div className="flex-1 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                <p className="text-[#0a0a0a] text-2xl md:text-3xl font-semibold tracking-tight">
+                  {s.title}
+                </p>
+                <p className="text-neutral-400 text-[14px] max-w-xs leading-relaxed">{s.sub}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── SECTION 5: LIVE PORTFOLIO ─────────────────────────────────────── */}
+      <section className="border-t border-neutral-100 py-24 px-6 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-[11px] tracking-[0.25em] text-neutral-400 uppercase mb-16">
+            Live work
+          </p>
+          <div className="flex flex-col">
+            {PORTFOLIO.map((p, i) => (
+              <a
+                key={p.name}
+                href={p.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={[
+                  'group flex items-center justify-between py-7 border-t border-neutral-100',
+                  'hover:pl-2 transition-all duration-200',
+                  i === PORTFOLIO.length - 1 ? 'border-b' : '',
+                ].join(' ')}
+              >
+                <div>
+                  <p className="text-[#0a0a0a] text-xl md:text-2xl font-medium group-hover:text-neutral-500 transition-colors">
+                    {p.name}
+                  </p>
+                  <p className="text-neutral-400 text-xs mt-1">{p.tag}</p>
+                </div>
+                <span className="text-neutral-200 group-hover:text-neutral-600 transition-colors text-xl">
+                  ↗
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── SECTION 6: FINAL CTA ──────────────────────────────────────────── */}
+      <section className="bg-[#0a0a0a] py-32 px-6 text-center">
+        <p className="text-[11px] tracking-[0.25em] text-neutral-600 uppercase mb-8">
+          Ready?
+        </p>
+        <h2 className="text-white text-4xl md:text-6xl font-extrabold tracking-tight mb-12 leading-tight">
+          Let&apos;s fix your<br />online presence.
+        </h2>
+        <MetalButton
+          variant="primary"
+          onClick={() => { window.location.href = '/contact' }}
+        >
+          Talk to Webbes
+        </MetalButton>
+      </section>
 
     </div>
   )
