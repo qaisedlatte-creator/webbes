@@ -606,14 +606,14 @@ const PARTNERS: Array<
 ]
 
 const SERVICES_LIST = [
-  { icon: '◻', title: 'Websites', desc: 'Custom-built, fast, conversion-focused.' },
+  { icon: '◻', title: 'Website Development', desc: 'Custom-built, fast, conversion-focused.' },
   { icon: '◻', title: 'E-Commerce', desc: 'Shopify, WooCommerce, or fully custom.' },
   { icon: '◻', title: 'AI Automation', desc: 'Workflows that eliminate busywork.' },
-  { icon: '◻', title: 'Branding', desc: 'Identities worth remembering.' },
+  { icon: '◻', title: 'SEO & AEO', desc: 'Get found on Google and AI search engines.' },
 ]
 
 const FAQS = [
-  { q: 'What services does Webbes offer?', a: 'Website Development, AI Automation, E-Commerce stores, and Branding. We handle every project ourselves — no outsourcing.' },
+  { q: 'What services does Webbes offer?', a: 'Website Development, AI Automation, E-Commerce, and SEO & AEO. We handle every project ourselves — no outsourcing.' },
   { q: 'How long does a website project take?', a: 'A landing page: 3–5 days. A full website: 2–4 weeks. We give you a precise timeline in your first call.' },
   { q: 'Do you work with clients outside India?', a: 'Yes. We actively serve clients across India and the GCC (UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, Oman).' },
   { q: 'What makes Webbes different?', a: 'Every project is handled directly by Qais and Falah — no middlemen. AI-first approach, direct communication, fast delivery. You own everything we build.' },

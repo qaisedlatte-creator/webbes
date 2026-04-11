@@ -3,8 +3,8 @@ import Link from 'next/link'
 const SERVICES_LINKS = [
   { label: 'Website Development', href: '/services' },
   { label: 'AI Automation', href: '/services' },
-  { label: 'E-Commerce & Shopify', href: '/services' },
-  { label: 'Digital Marketing', href: '/services' },
+  { label: 'E-Commerce', href: '/services' },
+  { label: 'SEO & AEO', href: '/services' },
   { label: 'Web Design Kerala', href: '/web-design-kerala' },
 ]
 

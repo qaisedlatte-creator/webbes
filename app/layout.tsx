@@ -22,7 +22,7 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: 'Webbes — Web Design & AI Automation Agency in India | Kochi, Kerala & GCC',
   description:
-    'Webbes is a web design and AI automation agency based in Kochi, India. We build websites, Shopify stores, and AI automations for businesses across India and the GCC. Fast delivery. Direct communication.',
+    'Webbes is a digital agency based in Kochi, India. We build websites, set up e-commerce stores, automate businesses with AI, and get you found on Google and AI search engines.',
   authors: [{ name: 'Webbes' }],
   keywords: [
     'web design agency India',
@@ -40,14 +40,14 @@ export const metadata: Metadata = {
     url: 'https://www.webbes.in/',
     title: 'Webbes — Web Design & AI Automation Agency | India & GCC',
     description:
-      'Websites that bring customers. AI that saves hours. E-commerce that sells. Based in Kochi, India — serving India & the GCC.',
+      'Webbes builds websites, e-commerce stores, AI automations, and gets you found on Google and AI search engines. Based in Kochi, India — serving India & the GCC.',
     locale: 'en_IN',
     siteName: 'Webbes',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Webbes — Web Design & AI Automation Agency',
-    description: 'Websites that bring customers. AI that saves hours. E-commerce that sells.',
+    description: 'Websites, e-commerce, AI automation, and SEO. Based in Kochi, India.',
   },
 }
 
@@ -85,8 +85,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   'Website Development',
                   'AI Automation',
                   'E-Commerce',
-                  'SEO',
-                  'Growth Marketing',
+                  'SEO & AEO',
                 ],
               },
               {
@@ -95,7 +94,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 '@id': 'https://webbes.in/#localbusiness',
                 name: 'Webbes',
                 description:
-                  'Webbes is a digital agency based in Kochi, Kerala, India. We build websites, AI automations, e-commerce stores, and growth marketing systems for businesses across India and the GCC.',
+                  'Webbes is a digital agency based in Kochi, Kerala, India. We build websites, set up e-commerce stores, automate businesses with AI, and get you found on Google and AI search engines.',
                 url: 'https://webbes.in',
                 email: 'webbes.in@gmail.com',
                 image: 'https://webbes.in/favicon.png',
@@ -130,7 +129,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'AI Automation' } },
                     { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'E-Commerce Development' } },
                     { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'SEO & AEO' } },
-                    { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Growth Marketing' } },
                   ],
                 },
                 sameAs: [

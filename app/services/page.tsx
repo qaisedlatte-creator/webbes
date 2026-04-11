@@ -26,25 +26,9 @@ const SERVICES = [
     media: { type: 'img' as const, src: '/images/services/web-dev.jpg' },
   },
   {
-    id: 'growth',
-    label: 'Growth Marketing',
-    num: '02',
-    heading: 'Growth Marketing',
-    desc: 'We build and run marketing systems that bring in real customers — not just traffic. Paid ads, email flows, and conversion strategy that compounds over time.',
-    expertise: [
-      'Paid social & search ads',
-      'Email & SMS campaigns',
-      'Conversion rate optimization',
-      'Funnel strategy',
-      'Analytics & reporting',
-      'A/B testing',
-    ],
-    media: { type: 'img' as const, src: '/services-growth.jpg' },
-  },
-  {
     id: 'automation',
     label: 'Automation',
-    num: '03',
+    num: '02',
     heading: 'Automation',
     desc: 'We connect your tools and build workflows that cut repetitive work — so your team can focus on what actually moves the needle.',
     expertise: [
@@ -60,7 +44,7 @@ const SERVICES = [
   {
     id: 'seo',
     label: 'SEO & AEO',
-    num: '04',
+    num: '03',
     heading: 'SEO & AEO',
     desc: "We get your business found — on Google and on AI search engines like ChatGPT and Perplexity. Most agencies ignore AEO. We don't.",
     expertise: [
@@ -76,7 +60,7 @@ const SERVICES = [
   {
     id: 'ecommerce',
     label: 'E-Commerce',
-    num: '05',
+    num: '04',
     heading: 'E-Commerce',
     desc: 'From store setup to scaling — we build e-commerce experiences that actually sell. Shopify, WooCommerce, or fully custom.',
     expertise: [
@@ -165,7 +149,7 @@ export default function ServicesPage() {
           textAlign: 'center',
           margin: 0,
         }}>
-          Websites, automation, growth strategy, and SEO.<br />
+          Websites, e-commerce, AI automation, and SEO.<br />
           Most clients use a few of these together. We act as your engine.
         </p>
       </HeroCinematic>
