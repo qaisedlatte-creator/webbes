@@ -32,7 +32,7 @@ export default function ContactPage() {
 
   return (
     <>
-      <HeroCinematic text="Let's build something real." />
+      <HeroCinematic text="Let's build something real." speed={18} />
 
       <section style={{ background: '#ffffff', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)' }}>
         <div

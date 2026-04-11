@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react'
 
 interface Props {
   text: string
-  speed?: number          // ms per character
+  speed?: number          // ms per character — default 18
   children?: React.ReactNode  // fades in after typing completes
 }
 
-export default function HeroCinematic({ text, speed = 30, children }: Props) {
+export default function HeroCinematic({ text, speed = 18, children }: Props) {
   const [displayed, setDisplayed] = useState('')
   const [done, setDone] = useState(false)
   const [showChildren, setShowChildren] = useState(false)
@@ -25,7 +25,7 @@ export default function HeroCinematic({ text, speed = 30, children }: Props) {
       if (i >= text.length) {
         clearInterval(id)
         setDone(true)
-        setTimeout(() => setShowChildren(true), 600)
+        setTimeout(() => setShowChildren(true), 500)
       }
     }, speed)
 
@@ -61,6 +61,7 @@ export default function HeroCinematic({ text, speed = 30, children }: Props) {
         }}
       >
         {displayed}
+        {/* Blinking cursor — 0.6s interval, hides once sub-content shows */}
         <span
           aria-hidden="true"
           style={{
@@ -71,7 +72,7 @@ export default function HeroCinematic({ text, speed = 30, children }: Props) {
             marginLeft: 6,
             verticalAlign: 'middle',
             borderRadius: 1,
-            animation: done && showChildren ? 'none' : 'hero-blink 0.9s step-end infinite',
+            animation: done && showChildren ? 'none' : 'hero-blink 0.6s step-end infinite',
             opacity: done && showChildren ? 0 : 1,
             transition: 'opacity 0.5s ease',
           }}
@@ -81,9 +82,9 @@ export default function HeroCinematic({ text, speed = 30, children }: Props) {
       {children && (
         <div
           style={{
-            marginTop: 48,
+            marginTop: 40,
             opacity: showChildren ? 1 : 0,
-            transform: showChildren ? 'translateY(0)' : 'translateY(16px)',
+            transform: showChildren ? 'translateY(0)' : 'translateY(14px)',
             transition: 'opacity 0.7s ease, transform 0.7s ease',
             pointerEvents: showChildren ? 'auto' : 'none',
           }}

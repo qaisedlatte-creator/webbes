@@ -1,625 +1,674 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import HeroCinematic from '@/components/HeroCinematic'
+import { BeforeAfterSlider } from '@/components/ui/before-after-slider'
 
-// ── viewport config ──────────────────────────────────────────────────────────
 const VP = { once: true, margin: '-60px' } as const
 
-// ── data ─────────────────────────────────────────────────────────────────────
-const PORTFOLIO = [
-  { name: 'Pearl Imperial International', tag: 'B2B Corporate · UAE', url: 'https://pearlimperialintl.com' },
-  { name: 'Dept Store', tag: 'E-Commerce · India', url: 'https://deptstore.in' },
-  { name: 'Prism India', tag: 'Shopify · India', url: 'https://prismindia.co' },
-]
-
-const MISSION = [
-  {
-    title: 'Mission-Driven',
-    desc: "Building something we'd be genuinely proud of — a Kochi agency known for honest work and real outcomes.",
-  },
-  {
-    title: 'Rapid Delivery',
-    desc: 'Tight cycles, meticulous quality, and on-time delivery — every time.',
-  },
-  {
-    title: 'True Partnership',
-    desc: 'Your growth is our growth. Your success is our reputation.',
-  },
-  {
-    title: 'AI-First Approach',
-    desc: 'We embed AI and automation into everything we build — giving your business an unfair competitive edge.',
-  },
-]
-
-const SERVICES = [
-  {
-    n: '01',
-    title: 'Website Development',
-    desc: 'Fast, pixel-perfect websites — corporate sites, landing pages, and web apps built to convert visitors into customers.',
-    tags: ['React', 'Next.js', 'WordPress', 'Custom Code'],
-  },
-  {
-    n: '02',
-    title: 'AI Automation',
-    desc: 'Intelligent workflows, chatbots, lead scoring, and business process automation that eliminates busywork and amplifies output.',
-    tags: ['n8n', 'Make', 'OpenAI', 'Zapier'],
-  },
-  {
-    n: '03',
-    title: 'E-Commerce Stores',
-    desc: 'End-to-end online stores with product catalogs, payment gateways, and inventory management — built to sell.',
-    tags: ['Shopify', 'WooCommerce', 'Custom'],
-  },
-]
-
-const PROCESS = [
-  { n: '01', title: 'Discover', desc: 'Deep dive into your business, goals, target audience, and competitive landscape.' },
-  { n: '02', title: 'Design', desc: 'Wireframes, mockups, and prototypes — crafted to pixel-perfect standards before a single line of code.' },
-  { n: '03', title: 'Develop', desc: 'Clean, scalable code with smooth interactions and flawless performance on every device.' },
-  { n: '04', title: 'Deploy', desc: 'Launch, monitor, optimise, and scale — with dedicated ongoing support whenever you need it.' },
-]
-
-const FAQS = [
-  { q: 'What services does Webbes offer?', a: 'We specialise in Website Development (custom sites, Shopify, WordPress), AI Automation (workflows, chatbots, process automation), and E-Commerce (full online store setup with payments and inventory management).' },
-  { q: 'How long does a website project take?', a: 'A landing page: 3–5 days. A full website: 2–4 weeks. Complex e-commerce or AI automation setups: 4–8 weeks. We give you a precise timeline in your first call — no vague estimates.' },
-  { q: 'Do you work with clients outside India?', a: 'Absolutely. We actively serve clients across India and the GCC region (UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, Oman). Built for remote collaboration across time zones.' },
-  { q: 'What makes Webbes different?', a: 'Every project is handled directly by Qais and Falah — no middlemen, no account managers. AI-first approach, direct communication, fast delivery, and you own everything we build.' },
-  { q: 'Do you offer support after launch?', a: 'Yes. Post-launch support covers maintenance, performance monitoring, content updates, and ongoing optimisation to keep your site performing at its best.' },
-]
-
-// ── shared section label ──────────────────────────────────────────────────────
-function SectionLabel({ text, dark = false }: { text: string; dark?: boolean }) {
+// ─── Section label — wecascon style ─────────────────────────────────────────
+function Label({ text, dark = false }: { text: string; dark?: boolean }) {
+  const c = dark ? 'rgba(255,255,255,0.35)' : 'rgba(10,10,10,0.35)'
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -10 }}
+    <motion.p
+      initial={{ opacity: 0, x: -8 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={VP}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
+      transition={{ duration: 0.45, ease: 'easeOut' }}
       style={{
+        fontFamily: "'Syne', sans-serif",
+        fontSize: '0.65rem',
+        fontWeight: 700,
+        letterSpacing: '0.22em',
+        textTransform: 'uppercase',
+        color: c,
+        marginBottom: 28,
         display: 'flex',
         alignItems: 'center',
-        gap: 12,
-        marginBottom: 20,
+        gap: 10,
       }}
     >
-      <motion.span
-        initial={{ scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
-        viewport={VP}
-        transition={{ duration: 0.4, ease: 'easeOut' }}
-        style={{
-          width: 28,
-          height: 1,
-          background: dark ? 'rgba(255,255,255,0.4)' : '#0a0a0a',
-          display: 'inline-block',
-          flexShrink: 0,
-          transformOrigin: 'left',
-        }}
-      />
-      <span
-        style={{
-          fontSize: '0.68rem',
-          letterSpacing: '0.22em',
-          textTransform: 'uppercase',
-          fontWeight: 600,
-          color: dark ? 'rgba(255,255,255,0.4)' : 'rgba(10,10,10,0.45)',
-        }}
-      >
-        {text}
-      </span>
-    </motion.div>
+      <span style={{ display: 'inline-block', width: 20, height: 1, background: c, flexShrink: 0 }} />
+      {text}
+    </motion.p>
   )
 }
 
-// ── mission card ──────────────────────────────────────────────────────────────
-function MissionCard({ title, desc, index }: { title: string; desc: string; index: number }) {
-  const [hovered, setHovered] = useState(false)
-
+// ─── Section heading ─────────────────────────────────────────────────────────
+function Heading({
+  children,
+  dark = false,
+  size = 'lg',
+  delay = 0,
+}: {
+  children: React.ReactNode
+  dark?: boolean
+  size?: 'lg' | 'md'
+  delay?: number
+}) {
   return (
-    <motion.div
+    <motion.h2
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={VP}
-      transition={{ duration: 0.5, ease: 'easeOut', delay: index * 0.1 }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      transition={{ duration: 0.6, ease: 'easeOut', delay }}
       style={{
-        background: '#0a0a0a',
-        borderLeft: `2px solid ${hovered ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.12)'}`,
-        padding: '28px 32px',
-        transition: 'border-color 0.35s ease, transform 0.25s ease',
-        transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
+        fontFamily: "'Syne', sans-serif",
+        fontSize: size === 'lg' ? 'clamp(2rem, 4.5vw, 3.2rem)' : 'clamp(1.5rem, 3vw, 2.2rem)',
+        fontWeight: 700,
+        color: dark ? '#ffffff' : '#0a0a0a',
+        letterSpacing: '-1px',
+        lineHeight: 1.1,
+        margin: 0,
       }}
     >
-      <h4
-        style={{
-          fontFamily: "'Syne', sans-serif",
-          fontWeight: 700,
-          fontSize: '1.05rem',
-          color: '#ffffff',
-          marginBottom: 0,
-          lineHeight: 1.3,
-        }}
-      >
+      {children}
+    </motion.h2>
+  )
+}
+
+// ─── Mission card ─────────────────────────────────────────────────────────────
+function MissionCard({ title, desc, i }: { title: string; desc: string; i: number }) {
+  const [on, setOn] = useState(false)
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={VP}
+      transition={{ duration: 0.5, ease: 'easeOut', delay: i * 0.09 }}
+      onMouseEnter={() => setOn(true)}
+      onMouseLeave={() => setOn(false)}
+      style={{
+        background: '#0a0a0a',
+        borderLeft: `2px solid ${on ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.12)'}`,
+        padding: '28px 32px',
+        transition: 'border-color 0.3s, transform 0.25s',
+        transform: on ? 'translateY(-4px)' : 'translateY(0)',
+      }}
+    >
+      <h4 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: '1rem', color: '#fff', marginBottom: 0 }}>
         {title}
       </h4>
-
-      {/* Description — max-height reveal */}
       <div
         style={{
-          maxHeight: hovered ? '180px' : 0,
+          maxHeight: on ? '160px' : 0,
           overflow: 'hidden',
-          opacity: hovered ? 1 : 0,
-          marginTop: hovered ? 12 : 0,
-          transition: 'max-height 0.4s ease, opacity 0.35s ease, margin-top 0.35s ease',
+          opacity: on ? 1 : 0,
+          marginTop: on ? 10 : 0,
+          transition: 'max-height 0.38s ease, opacity 0.3s ease, margin-top 0.3s ease',
         }}
       >
-        <p style={{ fontSize: '0.875rem', lineHeight: 1.65, color: 'rgba(255,255,255,0.55)' }}>
-          {desc}
-        </p>
+        <p style={{ fontSize: '0.875rem', lineHeight: 1.65, color: 'rgba(255,255,255,0.5)' }}>{desc}</p>
       </div>
     </motion.div>
   )
 }
 
-// ── portfolio card ────────────────────────────────────────────────────────────
-function PortfolioCard({ name, tag, url, index }: { name: string; tag: string; url: string; index: number }) {
-  const [hovered, setHovered] = useState(false)
+// ─── Portfolio card ───────────────────────────────────────────────────────────
+function PortfolioCard({
+  name,
+  tags,
+  url,
+  img,
+  i,
+}: {
+  name: string
+  tags: string[]
+  url: string
+  img: string
+  i: number
+}) {
+  const [on, setOn] = useState(false)
+  const [imgErr, setImgErr] = useState(false)
 
+  return (
+    <motion.a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={VP}
+      transition={{ duration: 0.5, ease: 'easeOut', delay: i * 0.1 }}
+      onMouseEnter={() => setOn(true)}
+      onMouseLeave={() => setOn(false)}
+      style={{ display: 'block', textDecoration: 'none' }}
+    >
+      {/* Image block */}
+      <div
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          background: '#111',
+          aspectRatio: '4 / 3',
+          marginBottom: 16,
+        }}
+      >
+        {!imgErr && (
+          <img
+            src={img}
+            alt={name}
+            onError={() => setImgErr(true)}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+              transition: 'transform 0.5s ease',
+              transform: on ? 'scale(1.02)' : 'scale(1)',
+            }}
+          />
+        )}
+        {imgErr && (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontWeight: 800,
+                fontSize: 'clamp(1.2rem, 3vw, 2rem)',
+                color: 'rgba(255,255,255,0.15)',
+                letterSpacing: '-1px',
+                textAlign: 'center',
+                padding: '0 20px',
+              }}
+            >
+              {name}
+            </span>
+          </div>
+        )}
+        {/* Hover overlay */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'rgba(0,0,0,0.35)',
+            opacity: on ? 1 : 0,
+            transition: 'opacity 0.3s ease',
+          }}
+        />
+      </div>
+
+      {/* Meta */}
+      <p
+        style={{
+          fontFamily: "'Syne', sans-serif",
+          fontWeight: 700,
+          fontSize: '1rem',
+          color: '#0a0a0a',
+          marginBottom: 6,
+          transition: 'opacity 0.2s',
+          opacity: on ? 0.55 : 1,
+        }}
+      >
+        {name}
+      </p>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        {tags.map(t => (
+          <span
+            key={t}
+            style={{
+              fontSize: '0.68rem',
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: 'rgba(10,10,10,0.38)',
+              fontWeight: 600,
+            }}
+          >
+            {t}
+          </span>
+        ))}
+      </div>
+    </motion.a>
+  )
+}
+
+// ─── Founder card ─────────────────────────────────────────────────────────────
+function FounderCard({ name, role, line, i }: { name: string; role: string; line: string; i: number }) {
+  const [on, setOn] = useState(false)
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={VP}
-      transition={{ duration: 0.5, ease: 'easeOut', delay: index * 0.1 }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      transition={{ duration: 0.55, ease: 'easeOut', delay: i * 0.12 }}
+      onMouseEnter={() => setOn(true)}
+      onMouseLeave={() => setOn(false)}
       style={{
-        position: 'relative',
-        background: '#111111',
-        border: '1px solid rgba(255,255,255,0.07)',
-        padding: '48px 40px',
-        overflow: 'hidden',
-        transition: 'border-color 0.3s ease',
-        borderColor: hovered ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.07)',
+        background: '#f8f8f8',
+        border: `1px solid ${on ? 'rgba(0,0,0,0.16)' : 'rgba(0,0,0,0.07)'}`,
+        padding: '40px 36px',
+        transition: 'transform 0.35s ease, border-color 0.3s',
+        transform: on
+          ? `rotate(${i % 2 === 0 ? '1.3deg' : '-1.3deg'}) translateY(-5px)`
+          : 'none',
       }}
     >
-      {/* Background number */}
-      <span
-        aria-hidden="true"
+      <div
         style={{
-          position: 'absolute',
-          top: 16,
-          right: 28,
+          width: 48,
+          height: 48,
+          background: '#0a0a0a',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           fontFamily: "'Syne', sans-serif",
-          fontWeight: 800,
-          fontSize: '5rem',
-          color: 'rgba(255,255,255,0.03)',
-          lineHeight: 1,
-          userSelect: 'none',
+          fontWeight: 700,
+          fontSize: '1.1rem',
+          color: '#fff',
+          marginBottom: 20,
+          transition: 'transform 0.3s',
+          transform: on ? 'scale(1.1)' : 'scale(1)',
         }}
       >
-        0{index + 1}
-      </span>
-
-      {/* Tag */}
-      <span
-        style={{
-          display: 'inline-block',
-          fontSize: '0.68rem',
-          letterSpacing: '0.15em',
-          textTransform: 'uppercase',
-          color: 'rgba(255,255,255,0.3)',
-          fontWeight: 600,
-          marginBottom: 14,
-        }}
-      >
-        {tag}
-      </span>
-
-      {/* Project name */}
+        {name[0]}
+      </div>
       <h3
         style={{
           fontFamily: "'Syne', sans-serif",
           fontWeight: 700,
-          fontSize: 'clamp(1.1rem, 2.2vw, 1.6rem)',
-          color: '#ffffff',
-          lineHeight: 1.2,
+          fontSize: '1.5rem',
+          color: '#0a0a0a',
           letterSpacing: '-0.3px',
-          transition: 'color 0.3s ease',
+          marginBottom: 0,
         }}
       >
         {name}
       </h3>
-
-      {/* Hover overlay */}
       <div
         style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'rgba(0,0,0,0.88)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          opacity: hovered ? 1 : 0,
-          transition: 'opacity 0.3s ease',
-          pointerEvents: hovered ? 'auto' : 'none',
+          maxHeight: on ? '120px' : 0,
+          overflow: 'hidden',
+          opacity: on ? 1 : 0,
+          marginTop: on ? 10 : 0,
+          transition: 'max-height 0.35s ease, opacity 0.3s ease, margin-top 0.3s ease',
         }}
       >
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
+        <p
           style={{
-            color: '#ffffff',
-            fontFamily: "'Syne', sans-serif",
-            fontWeight: 700,
-            fontSize: '1rem',
-            border: '1px solid rgba(255,255,255,0.25)',
-            padding: '14px 32px',
-            letterSpacing: '0.02em',
-            transition: 'border-color 0.2s, background 0.2s',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = 'rgba(255,255,255,0.08)'
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = 'transparent'
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'
+            fontSize: '0.7rem',
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            color: 'rgba(10,10,10,0.4)',
+            fontWeight: 600,
+            marginBottom: 6,
           }}
         >
-          View Live →
-        </a>
+          {role}
+        </p>
+        <p style={{ fontSize: '0.875rem', color: 'rgba(10,10,10,0.55)', lineHeight: 1.6 }}>{line}</p>
       </div>
     </motion.div>
   )
 }
 
-// ── page ──────────────────────────────────────────────────────────────────────
+// ─── Auto carousel ────────────────────────────────────────────────────────────
+const SLIDES = [
+  {
+    name: 'Dept Store',
+    tag: 'E-Commerce · India',
+    url: 'https://deptstore.in',
+    img: '/dept-store.png',
+  },
+  {
+    name: 'Pearl Imperial International',
+    tag: 'B2B · Dubai',
+    url: 'https://pearlimperialintl.com',
+    img: '/pearl-imperial.png',
+  },
+]
+
+function Carousel() {
+  const [active, setActive] = useState(0)
+  const [imgErrs, setImgErrs] = useState<boolean[]>(SLIDES.map(() => false))
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const go = (idx: number) => {
+    setActive(((idx % SLIDES.length) + SLIDES.length) % SLIDES.length)
+  }
+
+  const reset = () => {
+    if (timerRef.current) clearInterval(timerRef.current)
+    timerRef.current = setInterval(() => setActive(a => (a + 1) % SLIDES.length), 4000)
+  }
+
+  useEffect(() => {
+    timerRef.current = setInterval(() => setActive(a => (a + 1) % SLIDES.length), 4000)
+    return () => { if (timerRef.current) clearInterval(timerRef.current) }
+  }, [])
+
+  const s = SLIDES[active]
+
+  return (
+    <div style={{ position: 'relative' }}>
+      {/* Slide */}
+      <div
+        style={{
+          position: 'relative',
+          background: '#111',
+          overflow: 'hidden',
+          aspectRatio: '16 / 7',
+        }}
+      >
+        {!imgErrs[active] && (
+          <img
+            key={active}
+            src={s.img}
+            alt={s.name}
+            onError={() => setImgErrs(prev => { const n = [...prev]; n[active] = true; return n })}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+              animation: 'fade-in 0.5s ease',
+            }}
+          />
+        )}
+        {imgErrs[active] && (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 'clamp(2rem, 6vw, 4rem)', color: 'rgba(255,255,255,0.08)', letterSpacing: '-2px' }}>
+              {s.name}
+            </span>
+          </div>
+        )}
+        {/* Dark overlay */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 55%)' }} />
+
+        {/* Bottom text */}
+        <div style={{ position: 'absolute', bottom: 28, left: 32, right: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 12 }}>
+          <div>
+            <p style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 'clamp(1.2rem, 2.5vw, 1.8rem)', color: '#fff', letterSpacing: '-0.3px', marginBottom: 4 }}>{s.name}</p>
+            <p style={{ fontSize: '0.72rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)', fontWeight: 600 }}>{s.tag}</p>
+          </div>
+          <a
+            href={s.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontFamily: "'Syne', sans-serif",
+              fontWeight: 700,
+              fontSize: '0.82rem',
+              color: '#fff',
+              border: '1px solid rgba(255,255,255,0.3)',
+              padding: '10px 22px',
+              letterSpacing: '0.04em',
+              transition: 'background 0.2s, border-color 0.2s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.6)' }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)' }}
+          >
+            View Project →
+          </a>
+        </div>
+
+        {/* Arrow controls */}
+        {(['←', '→'] as const).map((arrow, ai) => (
+          <button
+            key={arrow}
+            onClick={() => { go(active + (ai === 0 ? -1 : 1)); reset() }}
+            aria-label={ai === 0 ? 'Previous slide' : 'Next slide'}
+            style={{
+              position: 'absolute',
+              top: '50%',
+              [ai === 0 ? 'left' : 'right']: 20,
+              transform: 'translateY(-50%)',
+              background: 'rgba(0,0,0,0.4)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              color: '#fff',
+              width: 40,
+              height: 40,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '1rem',
+              transition: 'background 0.2s',
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,0,0,0.7)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(0,0,0,0.4)')}
+          >
+            {arrow}
+          </button>
+        ))}
+      </div>
+
+      {/* Dots */}
+      <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 16 }}>
+        {SLIDES.map((_, di) => (
+          <button
+            key={di}
+            onClick={() => { go(di); reset() }}
+            aria-label={`Slide ${di + 1}`}
+            style={{
+              width: active === di ? 24 : 8,
+              height: 8,
+              background: active === di ? '#0a0a0a' : 'rgba(0,0,0,0.2)',
+              border: 'none',
+              borderRadius: 4,
+              transition: 'width 0.3s ease, background 0.3s ease',
+              padding: 0,
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ─── Inline contact form ──────────────────────────────────────────────────────
+function ContactForm() {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [msg, setMsg] = useState('')
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault()
+    const body = `Name: ${name}%0D%0AEmail: ${email}%0D%0A%0D%0A${msg}`
+    window.location.href = `mailto:webbes.in@gmail.com?subject=Project Enquiry from ${encodeURIComponent(name)}&body=${body}`
+  }
+
+  const field: React.CSSProperties = {
+    width: '100%',
+    background: 'transparent',
+    border: 'none',
+    borderBottom: '1px solid rgba(255,255,255,0.15)',
+    padding: '12px 0',
+    fontSize: '0.95rem',
+    color: '#ffffff',
+    outline: 'none',
+    fontFamily: 'inherit',
+    transition: 'border-color 0.2s',
+  }
+
+  return (
+    <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
+      <input
+        type="text"
+        placeholder="Your name"
+        value={name}
+        onChange={e => setName(e.target.value)}
+        required
+        style={field}
+        onFocus={e => (e.currentTarget.style.borderBottomColor = 'rgba(255,255,255,0.6)')}
+        onBlur={e => (e.currentTarget.style.borderBottomColor = 'rgba(255,255,255,0.15)')}
+      />
+      <input
+        type="email"
+        placeholder="your@email.com"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        required
+        style={field}
+        onFocus={e => (e.currentTarget.style.borderBottomColor = 'rgba(255,255,255,0.6)')}
+        onBlur={e => (e.currentTarget.style.borderBottomColor = 'rgba(255,255,255,0.15)')}
+      />
+      <textarea
+        placeholder="Tell us about your project..."
+        value={msg}
+        onChange={e => setMsg(e.target.value)}
+        required
+        rows={4}
+        style={{ ...field, resize: 'vertical' }}
+        onFocus={e => (e.currentTarget.style.borderBottomColor = 'rgba(255,255,255,0.6)')}
+        onBlur={e => (e.currentTarget.style.borderBottomColor = 'rgba(255,255,255,0.15)')}
+      />
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+        <button
+          type="submit"
+          style={{
+            background: '#ffffff',
+            color: '#0a0a0a',
+            border: 'none',
+            padding: '13px 32px',
+            fontFamily: "'Syne', sans-serif",
+            fontWeight: 700,
+            fontSize: '0.88rem',
+            transition: 'opacity 0.2s',
+          }}
+          onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
+          onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+        >
+          Start a Project →
+        </button>
+        <a
+          href="https://wa.me/919149681874"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            border: '1.5px solid rgba(255,255,255,0.2)',
+            color: '#ffffff',
+            padding: '13px 28px',
+            fontFamily: "'Syne', sans-serif",
+            fontWeight: 600,
+            fontSize: '0.88rem',
+            background: 'transparent',
+            transition: 'border-color 0.2s',
+          }}
+          onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.6)')}
+          onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)')}
+        >
+          Chat on WhatsApp
+        </a>
+      </div>
+    </form>
+  )
+}
+
+// ─── PAGE ─────────────────────────────────────────────────────────────────────
+const PORTFOLIO = [
+  { name: 'Pearl Imperial International', tags: ['B2B', 'Dubai'], url: 'https://pearlimperialintl.com', img: '/pearl-imperial.png' },
+  { name: 'Dept Store', tags: ['E-Commerce', 'India'], url: 'https://deptstore.in', img: '/dept-store.png' },
+  { name: 'Prism India', tags: ['Shopify', 'India'], url: 'https://prismindia.co', img: '/prism-india.png' },
+]
+
+const MISSION = [
+  { title: 'Mission-Driven', desc: "Building something we'd be genuinely proud of — a Kochi agency known for honest work and real outcomes." },
+  { title: 'Rapid Delivery', desc: 'Tight cycles, meticulous quality, and on-time delivery — every time.' },
+  { title: 'True Partnership', desc: 'Your growth is our growth. Your success is our reputation.' },
+  { title: 'AI-First Approach', desc: "We embed AI and automation into everything we build — giving your business an unfair competitive edge." },
+]
+
+const FOUNDERS = [
+  { name: 'Qais', role: 'Co-Founder · Strategy & Development', line: 'Builds the systems. Thinks in outcomes.' },
+  { name: 'Falah', role: 'Co-Founder · Design & Client Work', line: 'Crafts the interfaces. Owns the detail.' },
+]
+
+const TICKER_ITEMS = [
+  'Pearl Imperial International',
+  'Dept Store',
+  'Prism India',
+  'Pearl Imperial International',
+  'Dept Store',
+  'Prism India',
+]
+
+const PARTNERS = [
+  { name: 'Shopify', src: '/images/partners/shopify.png' },
+  { name: 'Figma', src: '/images/partners/figma.png' },
+  { name: 'Higgsfield', src: '/images/partners/higgsfield.png' },
+  { name: 'GitHub', src: '/images/partners/github.png' },
+  { name: 'Vercel', src: '/images/partners/vercel.png' },
+]
+
+const SERVICES_LIST = [
+  { icon: '◻', title: 'Websites', desc: 'Custom-built, fast, conversion-focused.' },
+  { icon: '◻', title: 'E-Commerce', desc: 'Shopify, WooCommerce, or fully custom.' },
+  { icon: '◻', title: 'AI Automation', desc: 'Workflows that eliminate busywork.' },
+  { icon: '◻', title: 'Branding', desc: 'Identities worth remembering.' },
+]
+
+const FAQS = [
+  { q: 'What services does Webbes offer?', a: 'Website Development, AI Automation, E-Commerce stores, and Branding. We handle every project ourselves — no outsourcing.' },
+  { q: 'How long does a website project take?', a: 'A landing page: 3–5 days. A full website: 2–4 weeks. We give you a precise timeline in your first call.' },
+  { q: 'Do you work with clients outside India?', a: 'Yes. We actively serve clients across India and the GCC (UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, Oman).' },
+  { q: 'What makes Webbes different?', a: 'Every project is handled directly by Qais and Falah — no middlemen. AI-first approach, direct communication, fast delivery. You own everything we build.' },
+  { q: 'Do you offer support after launch?', a: 'Yes. Post-launch support covers maintenance, updates, performance monitoring, and ongoing optimisation.' },
+]
+
 export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
 
   return (
     <>
-      {/* ── HERO ─────────────────────────────────────────────────────────── */}
+      {/* ── SCROLL 1: HERO ────────────────────────────────────────────────── */}
       <HeroCinematic text="We are Webbes. The digital agency that's going to build your brand.">
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <span
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 7,
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.10)',
-              borderRadius: 999,
-              padding: '9px 18px',
-              fontSize: '0.75rem',
-              color: 'rgba(255,255,255,0.5)',
-              fontFamily: "'Syne', sans-serif",
-              letterSpacing: '0.03em',
-            }}
-          >
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-              <circle cx="12" cy="9" r="2.5" />
-            </svg>
-            Kochi, India
-          </span>
-          <a
-            href="mailto:webbes.in@gmail.com"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 7,
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.10)',
-              borderRadius: 999,
-              padding: '9px 18px',
-              fontSize: '0.75rem',
-              color: 'rgba(255,255,255,0.5)',
-              fontFamily: "'Syne', sans-serif",
-              letterSpacing: '0.03em',
-              textDecoration: 'none',
-              transition: 'color 0.2s, border-color 0.2s',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)' }}
-            onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.5)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.10)' }}
-          >
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <rect x="2" y="4" width="20" height="16" rx="2" />
-              <polyline points="2,4 12,13 22,4" />
-            </svg>
-            webbes.in@gmail.com
-          </a>
-        </div>
+        <p
+          style={{
+            fontFamily: "'Syne', sans-serif",
+            fontSize: '0.875rem',
+            color: 'rgba(255,255,255,0.38)',
+            letterSpacing: '0.08em',
+          }}
+        >
+          Web Design · AI Automation · E-Commerce · Kochi, India
+        </p>
       </HeroCinematic>
 
-      {/* ── BEFORE / AFTER ───────────────────────────────────────────────── */}
-      <section style={{ background: '#ffffff', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
+      {/* ── SCROLL 2: WHAT WE DO ──────────────────────────────────────────── */}
+      <section style={{ background: '#ffffff', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <SectionLabel text="Real Work · Kerala Real Estate" />
-
-          <motion.h2
-            initial={{ opacity: 0, y: 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={VP}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
-            style={{
-              fontFamily: "'Syne', sans-serif",
-              fontSize: 'clamp(2rem, 4.5vw, 3.2rem)',
-              fontWeight: 700,
-              color: '#0a0a0a',
-              letterSpacing: '-1px',
-              marginBottom: 12,
-              lineHeight: 1.1,
-            }}
-          >
-            This is what we fix.
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={VP}
-            transition={{ duration: 0.5, ease: 'easeOut', delay: 0.1 }}
-            style={{ fontSize: '0.95rem', color: 'rgba(10,10,10,0.55)', maxWidth: 500, lineHeight: 1.7, marginBottom: 48 }}
-          >
-            A Kozhikode real estate company running on a 2005-era portal — ad banners, zero mobile support,
-            no WhatsApp lead capture. We rebuilt it from scratch.
-          </motion.p>
-
-          {/* Static side-by-side */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={VP}
-            transition={{ duration: 0.6, ease: 'easeOut', delay: 0.15 }}
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: 16,
-            }}
-          >
-            {/* Before */}
-            <div style={{ position: 'relative', overflow: 'hidden' }}>
-              <img
-                src="/case-study-before.png"
-                alt="Before — old website design"
-                style={{ width: '100%', display: 'block', filter: 'grayscale(30%)' }}
-              />
-              <div style={{
-                position: 'absolute',
-                top: 14,
-                left: 14,
-                background: 'rgba(180,40,40,0.85)',
-                backdropFilter: 'blur(4px)',
-                borderRadius: 999,
-                padding: '6px 14px',
-                fontSize: '0.7rem',
-                fontWeight: 600,
-                color: '#fff',
-                letterSpacing: '0.04em',
-                textTransform: 'uppercase',
-              }}>
-                Before — What you probably have now
-              </div>
-            </div>
-
-            {/* After */}
-            <div style={{ position: 'relative', overflow: 'hidden' }}>
-              <img
-                src="/case-study-after.png"
-                alt="After — rebuilt by Webbes"
-                style={{ width: '100%', display: 'block' }}
-              />
-              <div style={{
-                position: 'absolute',
-                top: 14,
-                left: 14,
-                background: 'rgba(10,10,10,0.88)',
-                backdropFilter: 'blur(4px)',
-                borderRadius: 999,
-                padding: '6px 14px',
-                fontSize: '0.7rem',
-                fontWeight: 700,
-                color: '#fff',
-                letterSpacing: '0.04em',
-                textTransform: 'uppercase',
-                border: '1px solid rgba(255,255,255,0.15)',
-              }}>
-                After — What Webbes will build you
-              </div>
-            </div>
-          </motion.div>
-
-          <p style={{ marginTop: 16, fontSize: '0.78rem', color: 'rgba(10,10,10,0.3)', textAlign: 'center' }}>
-            Real project. Real transformation.
-          </p>
-        </div>
-      </section>
-
-      {/* ── PORTFOLIO ────────────────────────────────────────────────────── */}
-      <section style={{ background: '#0a0a0a', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <SectionLabel text="Live Work" dark />
-
-          <motion.h2
-            initial={{ opacity: 0, y: 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={VP}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
-            style={{
-              fontFamily: "'Syne', sans-serif",
-              fontSize: 'clamp(2rem, 4.5vw, 3.2rem)',
-              fontWeight: 700,
-              color: '#ffffff',
-              letterSpacing: '-1px',
-              marginBottom: 12,
-              lineHeight: 1.1,
-            }}
-          >
-            Real Work. Real Results.
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={VP}
-            transition={{ duration: 0.5, ease: 'easeOut', delay: 0.1 }}
-            style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.4)', marginBottom: 56 }}
-          >
-            Our work speaks for itself.
-          </motion.p>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 12 }}>
-            {PORTFOLIO.map((p, i) => (
-              <PortfolioCard key={p.name} {...p} index={i} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── MISSION CARDS ────────────────────────────────────────────────── */}
-      <section style={{ background: '#ffffff', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <SectionLabel text="Who We Are" />
-
-          <motion.div
-            initial={{ opacity: 0, y: 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={VP}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
-            style={{ marginBottom: 48 }}
-          >
-            <h2
-              style={{
-                fontFamily: "'Syne', sans-serif",
-                fontSize: 'clamp(2rem, 4.5vw, 3.2rem)',
-                fontWeight: 700,
-                color: '#0a0a0a',
-                letterSpacing: '-1px',
-                marginBottom: 16,
-                lineHeight: 1.1,
-              }}
-            >
-              Two founders from Kochi.<br />Every project, personally.
-            </h2>
-            <p style={{ fontSize: '0.95rem', color: 'rgba(10,10,10,0.55)', maxWidth: 560, lineHeight: 1.7 }}>
-              Webbes is built and run by Qais and Falah — two co-founders who started this because we got tired
-              of watching good businesses settle for overpriced, underwhelming work from agencies that never actually cared.
-              We handle every project ourselves. No outsourcing, no account managers.
-            </p>
-          </motion.div>
+          <Label text="What We Do" />
+          <Heading delay={0.05}>Everything your<br />business needs.</Heading>
 
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-              gap: 2,
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: '0',
+              marginTop: 56,
             }}
           >
-            {MISSION.map((m, i) => (
-              <MissionCard key={m.title} title={m.title} desc={m.desc} index={i} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── SERVICES ─────────────────────────────────────────────────────── */}
-      <section id="services" style={{ background: '#ffffff', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <SectionLabel text="What We Do" />
-
-          <motion.div
-            initial={{ opacity: 0, y: 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={VP}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
-            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 24, marginBottom: 56 }}
-          >
-            <h2
-              style={{
-                fontFamily: "'Syne', sans-serif",
-                fontSize: 'clamp(2rem, 4.5vw, 3.2rem)',
-                fontWeight: 700,
-                color: '#0a0a0a',
-                letterSpacing: '-1px',
-                lineHeight: 1.1,
-                margin: 0,
-              }}
-            >
-              Everything Your<br />Business Needs Online.
-            </h2>
-            <p style={{ fontSize: '0.9rem', color: 'rgba(10,10,10,0.5)', maxWidth: 340, lineHeight: 1.7, margin: 0 }}>
-              From intelligent automations to stunning storefronts — we cover every angle of your digital presence.
-            </p>
-          </motion.div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
-            {SERVICES.map((s, i) => (
+            {SERVICES_LIST.map((s, i) => (
               <motion.div
-                key={s.n}
-                initial={{ opacity: 0, y: 24 }}
+                key={s.title}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={VP}
-                transition={{ duration: 0.5, ease: 'easeOut', delay: i * 0.1 }}
-                whileHover={{ y: -4 }}
+                transition={{ duration: 0.45, ease: 'easeOut', delay: i * 0.09 }}
                 style={{
-                  background: '#f8f8f8',
-                  border: '1px solid rgba(0,0,0,0.07)',
-                  padding: '36px 32px',
-                  position: 'relative',
-                  transition: 'border-color 0.2s',
+                  borderTop: '1px solid rgba(0,0,0,0.09)',
+                  padding: '32px 0 32px 0',
+                  ...(i < SERVICES_LIST.length - 1 ? { borderRight: '1px solid rgba(0,0,0,0.09)' } : {}),
+                  paddingRight: i < SERVICES_LIST.length - 1 ? 32 : 0,
+                  paddingLeft: i > 0 ? 32 : 0,
                 }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(0,0,0,0.18)')}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(0,0,0,0.07)')}
               >
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: 20,
-                    right: 24,
-                    fontFamily: "'Syne', sans-serif",
-                    fontWeight: 800,
-                    fontSize: '0.75rem',
-                    color: 'rgba(10,10,10,0.15)',
-                  }}
-                >
-                  {s.n}
-                </span>
-                <h3
-                  style={{
-                    fontFamily: "'Syne', sans-serif",
-                    fontWeight: 700,
-                    fontSize: '1.1rem',
-                    color: '#0a0a0a',
-                    marginBottom: 12,
-                  }}
-                >
+                <h3 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: '1.1rem', color: '#0a0a0a', marginBottom: 8 }}>
                   {s.title}
                 </h3>
-                <p style={{ fontSize: '0.875rem', lineHeight: 1.65, color: 'rgba(10,10,10,0.55)', marginBottom: 20 }}>
-                  {s.desc}
-                </p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                  {s.tags.map(t => (
-                    <span
-                      key={t}
-                      style={{
-                        fontSize: '0.7rem',
-                        color: 'rgba(10,10,10,0.45)',
-                        border: '1px solid rgba(0,0,0,0.12)',
-                        padding: '3px 10px',
-                        fontWeight: 500,
-                      }}
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
+                <p style={{ fontSize: '0.875rem', color: 'rgba(10,10,10,0.5)', lineHeight: 1.6 }}>{s.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -628,8 +677,8 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={VP}
-            transition={{ duration: 0.5, ease: 'easeOut', delay: 0.3 }}
-            style={{ textAlign: 'center', marginTop: 40 }}
+            transition={{ duration: 0.4, ease: 'easeOut', delay: 0.35 }}
+            style={{ marginTop: 40 }}
           >
             <a
               href="/services"
@@ -637,85 +686,217 @@ export default function HomePage() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: 8,
-                border: '1.5px solid rgba(0,0,0,0.18)',
-                color: '#0a0a0a',
-                padding: '13px 28px',
                 fontFamily: "'Syne', sans-serif",
-                fontWeight: 600,
-                fontSize: '0.88rem',
-                background: 'transparent',
-                transition: 'background 0.2s, border-color 0.2s',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                color: '#0a0a0a',
+                borderBottom: '1px solid rgba(0,0,0,0.25)',
+                paddingBottom: 2,
+                transition: 'opacity 0.2s',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = '#0a0a0a'; e.currentTarget.style.color = '#fff' }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#0a0a0a' }}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '0.5')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
             >
-              View All Services →
+              All Services →
             </a>
           </motion.div>
         </div>
       </section>
 
-      {/* ── PROCESS ──────────────────────────────────────────────────────── */}
-      <section id="process" style={{ background: '#ffffff', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
+      {/* ── BEFORE / AFTER ───────────────────────────────────────────────── */}
+      <section style={{ background: '#ffffff', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)', borderTop: '1px solid rgba(0,0,0,0.07)' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <SectionLabel text="How We Work" />
+          <Label text="Real Work · Kerala Real Estate" />
+          <Heading delay={0.05}>This is what we fix.</Heading>
 
-          <motion.h2
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
+            transition={{ duration: 0.45, ease: 'easeOut', delay: 0.1 }}
+            style={{ fontSize: '0.9rem', color: 'rgba(10,10,10,0.45)', maxWidth: 480, lineHeight: 1.7, marginTop: 16, marginBottom: 48 }}
+          >
+            A Kozhikode real estate company running on a 2005-era portal. We rebuilt it from scratch.
+          </motion.p>
+
+          <motion.div
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={VP}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
+            transition={{ duration: 0.6, ease: 'easeOut', delay: 0.15 }}
+          >
+            <BeforeAfterSlider
+              beforeImage="/case-study-before.png"
+              afterImage="/case-study-after.png"
+              beforeLabel="BEFORE"
+              afterLabel="AFTER — What Webbes will build you"
+            />
+          </motion.div>
+
+          <p style={{ marginTop: 14, fontSize: '0.75rem', color: 'rgba(10,10,10,0.28)', textAlign: 'center' }}>
+            Real project. Real transformation.
+          </p>
+        </div>
+      </section>
+
+      {/* ── PORTFOLIO ────────────────────────────────────────────────────── */}
+      <section style={{ background: '#ffffff', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)', borderTop: '1px solid rgba(0,0,0,0.07)' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <Label text="Live Work" />
+          <Heading delay={0.05}>Real Work. Real Results.</Heading>
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
+            transition={{ duration: 0.45, ease: 'easeOut', delay: 0.1 }}
+            style={{ fontSize: '0.9rem', color: 'rgba(10,10,10,0.4)', marginTop: 12, marginBottom: 52 }}
+          >
+            Our work speaks for itself.
+          </motion.p>
+
+          {/* 2-col grid */}
+          <div
             style={{
-              fontFamily: "'Syne', sans-serif",
-              fontSize: 'clamp(2rem, 4.5vw, 3.2rem)',
-              fontWeight: 700,
-              color: '#0a0a0a',
-              letterSpacing: '-1px',
-              lineHeight: 1.1,
-              marginBottom: 56,
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: 32,
             }}
           >
-            Simple Process.<br />Serious Results.
-          </motion.h2>
+            {PORTFOLIO.map((p, i) => (
+              <PortfolioCard key={p.name} {...p} i={i} />
+            ))}
+          </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 40 }}>
-            {PROCESS.map((p, i) => (
-              <motion.div
-                key={p.n}
-                initial={{ opacity: 0, y: 24 }}
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
+            transition={{ duration: 0.4, ease: 'easeOut', delay: 0.3 }}
+            style={{ textAlign: 'center', marginTop: 48 }}
+          >
+            <a
+              href="/services"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                background: '#0a0a0a',
+                color: '#ffffff',
+                padding: '12px 28px',
+                borderRadius: 999,
+                fontFamily: "'Syne', sans-serif",
+                fontWeight: 700,
+                fontSize: '0.82rem',
+                letterSpacing: '0.04em',
+                transition: 'opacity 0.2s',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '0.75')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+            >
+              See All Work →
+            </a>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── CLIENT TICKER ────────────────────────────────────────────────── */}
+      <div
+        aria-hidden="true"
+        style={{
+          background: '#ffffff',
+          borderTop: '1px solid rgba(0,0,0,0.08)',
+          borderBottom: '1px solid rgba(0,0,0,0.08)',
+          overflow: 'hidden',
+          padding: '16px 0',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            width: 'max-content',
+            animation: 'ticker 18s linear infinite',
+            gap: 0,
+          }}
+        >
+          {[...TICKER_ITEMS, ...TICKER_ITEMS].map((name, i) => (
+            <span
+              key={i}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 20,
+                paddingRight: 20,
+                fontFamily: "'Syne', sans-serif",
+                fontWeight: 700,
+                fontSize: '0.7rem',
+                letterSpacing: '0.25em',
+                textTransform: 'uppercase',
+                color: 'rgba(10,10,10,0.45)',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {name}
+              <span style={{ color: 'rgba(10,10,10,0.2)' }}>◆</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── PARTNERS ─────────────────────────────────────────────────────── */}
+      <section style={{ background: '#ffffff', padding: 'clamp(56px,7vw,96px) clamp(20px,5vw,64px)', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <Label text="Our Partners" />
+          <div
+            style={{
+              display: 'flex',
+              gap: 'clamp(32px, 5vw, 72px)',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              marginTop: 20,
+            }}
+          >
+            {PARTNERS.map((p, i) => (
+              <motion.img
+                key={p.name}
+                src={p.src}
+                alt={p.name}
+                initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={VP}
-                transition={{ duration: 0.5, ease: 'easeOut', delay: i * 0.1 }}
-              >
-                <div
-                  style={{
-                    fontFamily: "'Syne', sans-serif",
-                    fontWeight: 800,
-                    fontSize: '0.7rem',
-                    letterSpacing: '0.1em',
-                    color: 'rgba(10,10,10,0.2)',
-                    marginBottom: 16,
-                  }}
-                >
-                  {p.n}
-                </div>
-                <div style={{ width: 32, height: 1, background: '#0a0a0a', marginBottom: 16 }} />
-                <h4
-                  style={{
-                    fontFamily: "'Syne', sans-serif",
-                    fontWeight: 700,
-                    fontSize: '1.05rem',
-                    color: '#0a0a0a',
-                    marginBottom: 10,
-                  }}
-                >
-                  {p.title}
-                </h4>
-                <p style={{ fontSize: '0.875rem', lineHeight: 1.65, color: 'rgba(10,10,10,0.5)' }}>
-                  {p.desc}
-                </p>
-              </motion.div>
+                transition={{ duration: 0.4, ease: 'easeOut', delay: i * 0.06 }}
+                style={{
+                  height: 28,
+                  width: 'auto',
+                  objectFit: 'contain',
+                  filter: 'grayscale(100%) opacity(0.6)',
+                  mixBlendMode: 'multiply',
+                  display: 'block',
+                  flexShrink: 0,
+                }}
+              />
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── MISSION CARDS ────────────────────────────────────────────────── */}
+      <section style={{ background: '#ffffff', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <Label text="Who We Are" />
+          <Heading delay={0.05}>Two founders from Kochi.<br />Every project, personally.</Heading>
+
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
+            transition={{ duration: 0.45, ease: 'easeOut', delay: 0.1 }}
+            style={{ fontSize: '0.9rem', color: 'rgba(10,10,10,0.45)', maxWidth: 480, lineHeight: 1.72, marginTop: 16, marginBottom: 52 }}
+          >
+            We handle every project ourselves. No outsourcing, no account managers, no telephone game.
+          </motion.p>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 2 }}>
+            {MISSION.map((m, i) => <MissionCard key={m.title} title={m.title} desc={m.desc} i={i} />)}
           </div>
         </div>
       </section>
@@ -723,34 +904,17 @@ export default function HomePage() {
       {/* ── FAQ ──────────────────────────────────────────────────────────── */}
       <section id="faq" style={{ background: '#ffffff', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <SectionLabel text="FAQ" />
+          <Label text="FAQ" />
+          <Heading delay={0.05}>Common questions.</Heading>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={VP}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
-            style={{
-              fontFamily: "'Syne', sans-serif",
-              fontSize: 'clamp(2rem, 4.5vw, 3.2rem)',
-              fontWeight: 700,
-              color: '#0a0a0a',
-              letterSpacing: '-1px',
-              lineHeight: 1.1,
-              marginBottom: 56,
-            }}
-          >
-            Common Questions.
-          </motion.h2>
-
-          <div style={{ maxWidth: 760, margin: '0 auto' }}>
+          <div style={{ maxWidth: 760, marginTop: 52 }}>
             {FAQS.map((f, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={VP}
-                transition={{ duration: 0.4, ease: 'easeOut', delay: i * 0.07 }}
+                transition={{ duration: 0.4, ease: 'easeOut', delay: i * 0.06 }}
                 style={{
                   borderTop: '1px solid rgba(0,0,0,0.09)',
                   ...(i === FAQS.length - 1 ? { borderBottom: '1px solid rgba(0,0,0,0.09)' } : {}),
@@ -763,7 +927,7 @@ export default function HomePage() {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    padding: '22px 0',
+                    padding: '20px 0',
                     background: 'none',
                     border: 'none',
                     textAlign: 'left',
@@ -776,30 +940,12 @@ export default function HomePage() {
                   }}
                 >
                   {f.q}
-                  <span
-                    style={{
-                      fontSize: '1.3rem',
-                      fontWeight: 300,
-                      color: 'rgba(10,10,10,0.4)',
-                      flexShrink: 0,
-                      transition: 'transform 0.25s ease',
-                      transform: openFaq === i ? 'rotate(45deg)' : 'none',
-                    }}
-                  >
+                  <span style={{ fontSize: '1.2rem', fontWeight: 300, color: 'rgba(10,10,10,0.35)', flexShrink: 0, transition: 'transform 0.25s', transform: openFaq === i ? 'rotate(45deg)' : 'none' }}>
                     +
                   </span>
                 </button>
-                <div
-                  style={{
-                    maxHeight: openFaq === i ? '400px' : 0,
-                    overflow: 'hidden',
-                    opacity: openFaq === i ? 1 : 0,
-                    transition: 'max-height 0.4s ease, opacity 0.3s ease',
-                  }}
-                >
-                  <p style={{ paddingBottom: 22, fontSize: '0.9rem', lineHeight: 1.72, color: 'rgba(10,10,10,0.55)' }}>
-                    {f.a}
-                  </p>
+                <div style={{ maxHeight: openFaq === i ? '400px' : 0, overflow: 'hidden', opacity: openFaq === i ? 1 : 0, transition: 'max-height 0.4s ease, opacity 0.3s ease' }}>
+                  <p style={{ paddingBottom: 20, fontSize: '0.9rem', lineHeight: 1.72, color: 'rgba(10,10,10,0.5)' }}>{f.a}</p>
                 </div>
               </motion.div>
             ))}
@@ -807,73 +953,83 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <section style={{ background: '#0a0a0a', padding: 'clamp(80px,11vw,140px) clamp(20px,5vw,64px)', textAlign: 'center' }}>
-        <motion.div
-          initial={{ opacity: 0, y: 36 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={VP}
-          transition={{ duration: 0.7, ease: 'easeOut' }}
-          style={{ maxWidth: 640, margin: '0 auto' }}
+      {/* ── CAROUSEL ─────────────────────────────────────────────────────── */}
+      <section style={{ background: '#0a0a0a', padding: 'clamp(56px,7vw,96px) clamp(20px,5vw,64px)' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <Label text="Featured Projects" dark />
+          <Heading dark delay={0.05}>Up close.</Heading>
+          <div style={{ marginTop: 40 }}>
+            <Carousel />
+          </div>
+        </div>
+      </section>
+
+      {/* ── SCROLL 3: CONTACT ─────────────────────────────────────────────── */}
+      <section id="contact" style={{ background: '#0a0a0a', padding: 'clamp(80px,11vw,140px) clamp(20px,5vw,64px)' }}>
+        <div
+          style={{
+            maxWidth: 1100,
+            margin: '0 auto',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: 80,
+            alignItems: 'start',
+          }}
         >
-          <h2
-            style={{
-              fontFamily: "'Syne', sans-serif",
-              fontSize: 'clamp(2.4rem, 5.5vw, 4rem)',
-              fontWeight: 700,
-              color: '#ffffff',
-              letterSpacing: '-1.5px',
-              lineHeight: 1.1,
-              marginBottom: 20,
-            }}
+          {/* Left */}
+          <motion.div
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
+            transition={{ duration: 0.7, ease: 'easeOut' }}
           >
-            Let&apos;s build something<br />that works.
-          </h2>
-          <p style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.45)', marginBottom: 36, lineHeight: 1.7 }}>
-            Tell us about your project and we&apos;ll get back within 24 hours.<br />No sales pitch — just straight talk.
-          </p>
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a
-              href="/contact"
+            <Label text="Get In Touch" dark />
+            <h2
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                background: '#ffffff',
-                color: '#0a0a0a',
-                padding: '14px 32px',
+                fontFamily: "'Syne', sans-serif",
+                fontSize: 'clamp(2.4rem, 5.5vw, 4rem)',
+                fontWeight: 700,
+                color: '#ffffff',
+                letterSpacing: '-1.5px',
+                lineHeight: 1.0,
+                marginBottom: 20,
+                marginTop: 0,
+              }}
+            >
+              Ready<br />to build?
+            </h2>
+            <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1.72, marginBottom: 28 }}>
+              Tell us about your project and we&apos;ll get back within 24 hours. No sales pitch — just straight talk.
+            </p>
+            <a
+              href="mailto:webbes.in@gmail.com"
+              style={{
                 fontFamily: "'Syne', sans-serif",
                 fontWeight: 700,
-                fontSize: '0.88rem',
-                transition: 'opacity 0.2s',
-              }}
-              onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
-              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-            >
-              Start a Project
-            </a>
-            <a
-              href="https://wa.me/919149681874"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                border: '1.5px solid rgba(255,255,255,0.2)',
+                fontSize: '1rem',
                 color: '#ffffff',
-                padding: '14px 32px',
-                fontFamily: "'Syne', sans-serif",
-                fontWeight: 600,
-                fontSize: '0.88rem',
-                background: 'transparent',
-                transition: 'border-color 0.2s',
+                letterSpacing: '-0.2px',
+                borderBottom: '1px solid rgba(255,255,255,0.25)',
+                paddingBottom: 2,
+                transition: 'border-color 0.2s, opacity 0.2s',
               }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.6)')}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)')}
+              onMouseEnter={e => { e.currentTarget.style.opacity = '0.6' }}
+              onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
             >
-              WhatsApp Us
+              webbes.in@gmail.com
             </a>
-          </div>
-        </motion.div>
+          </motion.div>
+
+          {/* Right — form */}
+          <motion.div
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
+            transition={{ duration: 0.7, ease: 'easeOut', delay: 0.12 }}
+          >
+            <ContactForm />
+          </motion.div>
+        </div>
       </section>
     </>
   )

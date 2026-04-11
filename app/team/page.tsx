@@ -118,7 +118,7 @@ function FounderCard({ name, role, line, index }: { name: string; role: string; 
 export default function TeamPage() {
   return (
     <>
-      <HeroCinematic text="The people building your brand." />
+      <HeroCinematic text="The people building your brand." speed={18} />
 
       {/* Founders */}
       <section style={{ background: '#ffffff', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
