@@ -8,15 +8,18 @@ const NAV_LINKS = ['Services', 'Blog', 'Team', 'Contact'] as const
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
+  const [pastHero, setPastHero] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40)
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40)
+      setPastHero(window.scrollY > window.innerHeight - 80)
+    }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Lock body scroll when mobile menu open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
@@ -28,13 +31,22 @@ export default function Nav() {
         role="navigation"
         aria-label="Main navigation"
         className={cn(
-          'fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 h-16',
-          'bg-[#FAF6F0]/95 backdrop-blur-md transition-all duration-300',
-          scrolled && 'shadow-[0_1px_0_rgba(26,18,9,0.08)]'
+          'fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 h-16 transition-all duration-500',
+          pastHero
+            ? 'bg-white/95 backdrop-blur-md'
+            : 'bg-transparent backdrop-blur-none',
+          pastHero && scrolled && 'shadow-[0_1px_0_rgba(0,0,0,0.07)]'
         )}
       >
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-bold text-[15px] tracking-tight text-[#1A1209]" aria-label="Webbes — Home">
+        <Link
+          href="/"
+          className={cn(
+            'flex items-center gap-2 font-bold text-[15px] tracking-tight transition-colors duration-500',
+            pastHero ? 'text-[#0a0a0a]' : 'text-white'
+          )}
+          aria-label="Webbes — Home"
+        >
           <svg className="w-[26px] h-[26px]" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <g stroke="currentColor" strokeWidth="16" fill="none">
               <rect x="24" y="24" width="152" height="152" rx="32" />
@@ -52,7 +64,12 @@ export default function Nav() {
             <li key={item}>
               <Link
                 href={`/${item.toLowerCase()}`}
-                className="text-[13px] text-[#1A1209]/50 hover:text-[#1A1209] transition-colors duration-150"
+                className={cn(
+                  'text-[13px] transition-colors duration-150',
+                  pastHero
+                    ? 'text-[#0a0a0a]/50 hover:text-[#0a0a0a]'
+                    : 'text-white/60 hover:text-white'
+                )}
               >
                 {item}
               </Link>
@@ -67,7 +84,10 @@ export default function Nav() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Webbes on Instagram"
-            className="text-[#1A1209]/30 hover:text-[#1A1209] transition-colors"
+            className={cn(
+              'transition-colors',
+              pastHero ? 'text-[#0a0a0a]/30 hover:text-[#0a0a0a]' : 'text-white/40 hover:text-white'
+            )}
           >
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               <rect x="2" y="2" width="20" height="20" rx="5" />
@@ -91,9 +111,9 @@ export default function Nav() {
           aria-expanded={mobileOpen}
           aria-controls="mobileMenu"
         >
-          <span className={cn('block h-[1.5px] w-5 bg-[#1A1209] transition-all duration-200 origin-center', mobileOpen && 'rotate-45 translate-y-[6.5px]')} />
-          <span className={cn('block h-[1.5px] w-5 bg-[#1A1209] transition-all duration-200', mobileOpen && 'opacity-0')} />
-          <span className={cn('block h-[1.5px] w-5 bg-[#1A1209] transition-all duration-200 origin-center', mobileOpen && '-rotate-45 -translate-y-[6.5px]')} />
+          <span className={cn('block h-[1.5px] w-5 transition-all duration-200 origin-center', pastHero ? 'bg-[#0a0a0a]' : 'bg-white', mobileOpen && 'rotate-45 translate-y-[6.5px]')} />
+          <span className={cn('block h-[1.5px] w-5 transition-all duration-200', pastHero ? 'bg-[#0a0a0a]' : 'bg-white', mobileOpen && 'opacity-0')} />
+          <span className={cn('block h-[1.5px] w-5 transition-all duration-200 origin-center', pastHero ? 'bg-[#0a0a0a]' : 'bg-white', mobileOpen && '-rotate-45 -translate-y-[6.5px]')} />
         </button>
       </nav>
 
@@ -104,7 +124,7 @@ export default function Nav() {
         aria-modal="true"
         aria-label="Navigation menu"
         className={cn(
-          'fixed inset-0 z-40 bg-[#FAF6F0] flex flex-col pt-24 px-8 gap-6 transition-opacity duration-200',
+          'fixed inset-0 z-40 bg-white flex flex-col pt-24 px-8 gap-6 transition-opacity duration-200',
           mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         )}
       >
@@ -112,7 +132,8 @@ export default function Nav() {
           <Link
             key={item}
             href={`/${item.toLowerCase()}`}
-            className="text-3xl font-semibold text-[#1A1209] tracking-tight hover:text-[#1A1209]/50 transition-colors"
+            className="text-3xl font-semibold text-[#0a0a0a] tracking-tight hover:text-[#0a0a0a]/40 transition-colors"
+            style={{ fontFamily: "'Syne', sans-serif" }}
             onClick={() => setMobileOpen(false)}
           >
             {item}

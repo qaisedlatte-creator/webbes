@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, DM_Sans } from 'next/font/google'
 import './globals.css'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import CustomCursor from '@/components/CustomCursor'
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -55,10 +56,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${plusJakarta.variable} ${dmSans.variable}`}>
       <head>
         <link rel="icon" type="image/png" href="/favicon.png" />
+        <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
         <meta name="geo.region" content="IN-KL" />
         <meta name="geo.placename" content="Kochi, Kerala, India" />
       </head>
-      <body className="bg-[#FAF9F6] text-[#0a0a0a]">
+      <body className="bg-white text-[#0a0a0a]">
+        <CustomCursor />
         <Nav />
         {children}
         <Footer />

@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 const SERVICES_LINKS = [
   { label: 'Website Development', href: '/services' },
-  { label: 'AI Automation', href: '/ai-automation' },
+  { label: 'AI Automation', href: '/services' },
   { label: 'E-Commerce & Shopify', href: '/services' },
   { label: 'Digital Marketing', href: '/services' },
   { label: 'Web Design Kerala', href: '/web-design-kerala' },
@@ -19,11 +19,15 @@ const COMPANY_LINKS = [
 
 export default function Footer() {
   return (
-    <footer className="border-t bg-[#F3EDE4]" style={{ borderColor:'rgba(26,18,9,0.10)' }}>
+    <footer style={{ background: '#0a0a0a', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
       <div className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-12">
         {/* Brand */}
         <div className="md:col-span-1">
-          <Link href="/" className="flex items-center gap-2 font-bold text-[15px] tracking-tight text-[#0a0a0a] mb-4" aria-label="Webbes — Home">
+          <Link
+            href="/"
+            className="flex items-center gap-2 font-bold text-[15px] tracking-tight text-white mb-4"
+            aria-label="Webbes — Home"
+          >
             <svg className="w-[26px] h-[26px]" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <g stroke="currentColor" strokeWidth="16" fill="none">
                 <rect x="24" y="24" width="152" height="152" rx="32" />
@@ -34,19 +38,19 @@ export default function Footer() {
             </svg>
             webbes
           </Link>
-          <p className="text-[#1A1209]/40 text-[13px] leading-relaxed">
+          <p className="text-white/35 text-[13px] leading-relaxed">
             Web design &amp; AI automation agency in Kochi, India. Serving businesses across India and the GCC.
           </p>
         </div>
 
         {/* Services */}
         <div>
-          <h5 className="text-[10px] tracking-[0.2em] text-[#1A1209]/40 uppercase mb-5 font-semibold">Services</h5>
+          <h5 className="text-[10px] tracking-[0.2em] text-white/30 uppercase mb-5 font-semibold">Services</h5>
           {SERVICES_LINKS.map((link) => (
             <Link
               key={link.label}
               href={link.href}
-              className="block text-[#1A1209]/50 text-[13px] mb-2.5 hover:text-[#1A1209] transition-colors duration-150"
+              className="block text-white/40 text-[13px] mb-2.5 hover:text-white transition-colors duration-150"
             >
               {link.label}
             </Link>
@@ -55,12 +59,12 @@ export default function Footer() {
 
         {/* Company */}
         <div>
-          <h5 className="text-[10px] tracking-[0.2em] text-[#1A1209]/40 uppercase mb-5 font-semibold">Company</h5>
+          <h5 className="text-[10px] tracking-[0.2em] text-white/30 uppercase mb-5 font-semibold">Company</h5>
           {COMPANY_LINKS.map((link) => (
             <Link
               key={link.label}
               href={link.href}
-              className="block text-[#1A1209]/50 text-[13px] mb-2.5 hover:text-[#1A1209] transition-colors duration-150"
+              className="block text-white/40 text-[13px] mb-2.5 hover:text-white transition-colors duration-150"
             >
               {link.label}
             </Link>
@@ -69,17 +73,28 @@ export default function Footer() {
 
         {/* Connect */}
         <div>
-          <h5 className="text-[10px] tracking-[0.2em] text-[#1A1209]/40 uppercase mb-5 font-semibold">Connect</h5>
-          <a href="https://instagram.com/webbes.in" target="_blank" rel="noopener noreferrer" className="block text-[#1A1209]/50 text-[13px] mb-2.5 hover:text-[#1A1209] transition-colors duration-150">Instagram</a>
-          <a href="mailto:webbes.in@gmail.com" className="block text-[#1A1209]/50 text-[13px] mb-2.5 hover:text-[#1A1209] transition-colors duration-150">Email Us</a>
-          <a href="https://wa.me/919149681874" target="_blank" rel="noopener noreferrer" className="block text-[#1A1209]/50 text-[13px] mb-2.5 hover:text-[#1A1209] transition-colors duration-150">WhatsApp</a>
+          <h5 className="text-[10px] tracking-[0.2em] text-white/30 uppercase mb-5 font-semibold">Connect</h5>
+          <a href="https://instagram.com/webbes.in" target="_blank" rel="noopener noreferrer"
+            className="block text-white/40 text-[13px] mb-2.5 hover:text-white transition-colors duration-150">
+            Instagram
+          </a>
+          <a href="mailto:webbes.in@gmail.com"
+            className="block text-white/40 text-[13px] mb-2.5 hover:text-white transition-colors duration-150">
+            webbes.in@gmail.com
+          </a>
+          <a href="https://wa.me/919149681874" target="_blank" rel="noopener noreferrer"
+            className="block text-white/40 text-[13px] mb-2.5 hover:text-white transition-colors duration-150">
+            WhatsApp
+          </a>
         </div>
       </div>
 
-      <div className="border-t" style={{ borderColor:'rgba(26,18,9,0.10)' }}>
+      <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-2">
-          <p className="text-[11px] text-[#1A1209]/40">&#169; 2026 Webbes. All rights reserved. | Web Design Agency, Kochi, India</p>
-          <p className="text-[11px] text-[#1A1209]/40">Crafted with care in India &#127470;&#127475;</p>
+          <p className="text-[11px] text-white/20">
+            &#169; 2026 Webbes. All rights reserved. | Web Design Agency, Kochi, India
+          </p>
+          <p className="text-[11px] text-white/20">Crafted with care in India</p>
         </div>
       </div>
     </footer>
