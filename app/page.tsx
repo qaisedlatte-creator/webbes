@@ -856,24 +856,28 @@ export default function HomePage() {
             }}
           >
             {PARTNERS.map((p, i) => (
-              <motion.img
+              <motion.div
                 key={p.name}
-                src={p.src}
-                alt={p.name}
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={VP}
                 transition={{ duration: 0.4, ease: 'easeOut', delay: i * 0.06 }}
-                style={{
-                  height: 28,
-                  width: 'auto',
-                  objectFit: 'contain',
-                  filter: 'grayscale(100%) opacity(0.6)',
-                  mixBlendMode: 'multiply',
-                  display: 'block',
-                  flexShrink: 0,
-                }}
-              />
+                style={{ flexShrink: 0, lineHeight: 0 }}
+              >
+                <img
+                  src={p.src}
+                  alt={p.name}
+                  style={{
+                    height: 28,
+                    width: 'auto',
+                    objectFit: 'contain',
+                    display: 'block',
+                    filter: 'grayscale(100%) opacity(0.6)',
+                    mixBlendMode: 'multiply' as const,
+                    background: 'transparent',
+                  }}
+                />
+              </motion.div>
             ))}
           </div>
         </div>
