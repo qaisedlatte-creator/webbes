@@ -594,12 +594,15 @@ const TICKER_ITEMS = [
   'Prism India',
 ]
 
-const PARTNERS = [
-  { name: 'Shopify', src: '/images/partners/shopify.png' },
-  { name: 'Figma', src: '/images/partners/figma.png' },
-  { name: 'Higgsfield', src: '/images/partners/higgsfield.png' },
-  { name: 'GitHub', src: '/images/partners/github.png' },
-  { name: 'Vercel', src: '/images/partners/vercel.png' },
+const PARTNERS: Array<
+  | { name: string; type: 'img'; src: string; h: number }
+  | { name: string; type: 'text' }
+> = [
+  { name: 'Shopify',     type: 'img',  src: '/images/partners/shopify.svg',  h: 28 },
+  { name: 'Figma',       type: 'img',  src: '/images/partners/figma.svg',    h: 36 },
+  { name: 'Higgsfield',  type: 'text' },
+  { name: 'GitHub',      type: 'img',  src: '/images/partners/github.svg',   h: 26 },
+  { name: 'Vercel',      type: 'img',  src: '/images/partners/vercel.svg',   h: 20 },
 ]
 
 const SERVICES_LIST = [
@@ -864,19 +867,30 @@ export default function HomePage() {
                 transition={{ duration: 0.4, ease: 'easeOut', delay: i * 0.06 }}
                 style={{ flexShrink: 0, lineHeight: 0 }}
               >
-                <img
-                  src={p.src}
-                  alt={p.name}
-                  style={{
-                    height: 28,
-                    width: 'auto',
-                    objectFit: 'contain',
+                {p.type === 'img' ? (
+                  <img
+                    src={p.src}
+                    alt={p.name}
+                    style={{
+                      height: p.h,
+                      width: 'auto',
+                      display: 'block',
+                    }}
+                  />
+                ) : (
+                  <span style={{
+                    fontFamily: "'Syne', sans-serif",
+                    fontWeight: 800,
+                    fontSize: '0.95rem',
+                    letterSpacing: '0.06em',
+                    textTransform: 'uppercase' as const,
+                    color: '#0a0a0a',
+                    lineHeight: 1,
                     display: 'block',
-                    filter: 'grayscale(100%) opacity(0.6)',
-                    mixBlendMode: 'multiply' as const,
-                    background: 'transparent',
-                  }}
-                />
+                  }}>
+                    {p.name}
+                  </span>
+                )}
               </motion.div>
             ))}
           </div>
