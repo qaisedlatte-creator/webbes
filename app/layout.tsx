@@ -58,6 +58,88 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([
+              {
+                '@context': 'https://schema.org',
+                '@type': 'Organization',
+                name: 'Webbes',
+                url: 'https://webbes.in',
+                logo: 'https://webbes.in/favicon.png',
+                email: 'webbes.in@gmail.com',
+                foundingLocation: {
+                  '@type': 'Place',
+                  address: {
+                    '@type': 'PostalAddress',
+                    addressLocality: 'Kochi',
+                    addressRegion: 'Kerala',
+                    addressCountry: 'IN',
+                  },
+                },
+                sameAs: [
+                  'https://instagram.com/webbes.in',
+                ],
+                knowsAbout: [
+                  'Website Development',
+                  'AI Automation',
+                  'E-Commerce',
+                  'SEO',
+                  'Growth Marketing',
+                ],
+              },
+              {
+                '@context': 'https://schema.org',
+                '@type': 'LocalBusiness',
+                '@id': 'https://webbes.in/#localbusiness',
+                name: 'Webbes',
+                description:
+                  'Webbes is a digital agency based in Kochi, Kerala, India. We build websites, AI automations, e-commerce stores, and growth marketing systems for businesses across India and the GCC.',
+                url: 'https://webbes.in',
+                email: 'webbes.in@gmail.com',
+                image: 'https://webbes.in/favicon.png',
+                priceRange: '$$',
+                currenciesAccepted: 'INR, AED, USD',
+                address: {
+                  '@type': 'PostalAddress',
+                  addressLocality: 'Kochi',
+                  addressRegion: 'Kerala',
+                  postalCode: '682001',
+                  addressCountry: 'IN',
+                },
+                geo: {
+                  '@type': 'GeoCoordinates',
+                  latitude: 9.9312,
+                  longitude: 76.2673,
+                },
+                areaServed: [
+                  { '@type': 'Country', name: 'India' },
+                  { '@type': 'Country', name: 'United Arab Emirates' },
+                  { '@type': 'Country', name: 'Saudi Arabia' },
+                  { '@type': 'Country', name: 'Qatar' },
+                  { '@type': 'Country', name: 'Kuwait' },
+                  { '@type': 'Country', name: 'Bahrain' },
+                  { '@type': 'Country', name: 'Oman' },
+                ],
+                hasOfferCatalog: {
+                  '@type': 'OfferCatalog',
+                  name: 'Digital Agency Services',
+                  itemListElement: [
+                    { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Website Development' } },
+                    { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'AI Automation' } },
+                    { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'E-Commerce Development' } },
+                    { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'SEO & AEO' } },
+                    { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Growth Marketing' } },
+                  ],
+                },
+                sameAs: [
+                  'https://instagram.com/webbes.in',
+                ],
+              },
+            ]),
+          }}
+        />
         <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
         <meta name="geo.region" content="IN-KL" />
         <meta name="geo.placename" content="Kochi, Kerala, India" />
