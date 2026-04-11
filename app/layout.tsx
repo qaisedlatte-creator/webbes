@@ -55,7 +55,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${plusJakarta.variable} ${dmSans.variable}`}>
       <head>
-        <link rel="icon" type="image/png" href="/favicon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
         <meta name="geo.region" content="IN-KL" />
         <meta name="geo.placename" content="Kochi, Kerala, India" />
