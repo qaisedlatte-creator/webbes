@@ -23,7 +23,7 @@ const SERVICES = [
       'Ongoing maintenance',
       'Landing pages & funnels',
     ],
-    media: { type: 'img' as const, src: '/services-web-dev.jpg' },
+    media: { type: 'img' as const, src: '/images/services/web-dev.jpg' },
   },
   {
     id: 'growth',
@@ -87,7 +87,7 @@ const SERVICES = [
       'Store speed & performance',
       'Platform migration',
     ],
-    media: { type: 'img' as const, src: '/services-web-dev.jpg' },
+    media: { type: 'img' as const, src: '/images/services/ecommerce.jpg' },
   },
 ]
 
