@@ -7,7 +7,7 @@ import { BeforeAfterSlider } from '@/components/ui/before-after-slider'
 
 const VP = { once: true, margin: '-60px' } as const
 
-// ─── Section label — wecascon style ─────────────────────────────────────────
+// ─── Section label ────────────────────────────────────────────────────────────
 function Label({ text, dark = false }: { text: string; dark?: boolean }) {
   const c = dark ? 'rgba(255,255,255,0.35)' : 'rgba(10,10,10,0.35)'
   return (
@@ -35,7 +35,7 @@ function Label({ text, dark = false }: { text: string; dark?: boolean }) {
   )
 }
 
-// ─── Section heading ─────────────────────────────────────────────────────────
+// ─── Section heading ──────────────────────────────────────────────────────────
 function Heading({
   children,
   dark = false,
@@ -83,6 +83,7 @@ function MissionCard({ title, desc, i }: { title: string; desc: string; i: numbe
         background: '#0a0a0a',
         borderLeft: `2px solid ${on ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.12)'}`,
         padding: '28px 32px',
+        borderRadius: 4,
         transition: 'border-color 0.3s, transform 0.25s',
         transform: on ? 'translateY(-4px)' : 'translateY(0)',
       }}
@@ -105,7 +106,31 @@ function MissionCard({ title, desc, i }: { title: string; desc: string; i: numbe
   )
 }
 
-// ─── Portfolio card ───────────────────────────────────────────────────────────
+// ─── Glass pill tag ────────────────────────────────────────────────────────────
+function GlassPill({ children, dark = true }: { children: React.ReactNode; dark?: boolean }) {
+  return (
+    <span
+      style={{
+        fontSize: '0.6rem',
+        letterSpacing: '0.12em',
+        textTransform: 'uppercase',
+        color: dark ? 'rgba(255,255,255,0.72)' : 'rgba(10,10,10,0.55)',
+        fontWeight: 600,
+        background: dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        border: `1px solid ${dark ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.1)'}`,
+        borderRadius: 100,
+        padding: '3px 10px',
+        whiteSpace: 'nowrap' as const,
+      }}
+    >
+      {children}
+    </span>
+  )
+}
+
+// ─── Portfolio card — editorial, glass hover ───────────────────────────────────
 function PortfolioCard({
   name,
   tags,
@@ -127,25 +152,25 @@ function PortfolioCard({
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={VP}
-      transition={{ duration: 0.5, ease: 'easeOut', delay: i * 0.1 }}
+      transition={{ duration: 0.55, ease: 'easeOut', delay: i * 0.08 }}
       onMouseEnter={() => setOn(true)}
       onMouseLeave={() => setOn(false)}
       style={{ display: 'block', textDecoration: 'none' }}
     >
-      {/* Image block */}
       <div
         style={{
           position: 'relative',
           overflow: 'hidden',
+          borderRadius: 24,
+          aspectRatio: '4/3',
           background: '#111',
-          aspectRatio: '4 / 3',
-          marginBottom: 16,
         }}
       >
-        {!imgErr && (
+        {/* Image */}
+        {!imgErr ? (
           <img
             src={img}
             alt={name}
@@ -155,309 +180,165 @@ function PortfolioCard({
               height: '100%',
               objectFit: 'cover',
               display: 'block',
-              transition: 'transform 0.5s ease',
-              transform: on ? 'scale(1.02)' : 'scale(1)',
+              transform: on ? 'scale(1.04)' : 'scale(1)',
+              transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
             }}
           />
-        )}
-        {imgErr && (
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <span
-              style={{
-                fontFamily: "'Syne', sans-serif",
-                fontWeight: 800,
-                fontSize: 'clamp(1.2rem, 3vw, 2rem)',
-                color: 'rgba(255,255,255,0.15)',
-                letterSpacing: '-1px',
-                textAlign: 'center',
-                padding: '0 20px',
-              }}
-            >
+        ) : (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 'clamp(1rem, 2.5vw, 1.6rem)', color: 'rgba(255,255,255,0.12)', letterSpacing: '-0.5px', textAlign: 'center', padding: '0 20px' }}>
               {name}
             </span>
           </div>
         )}
-        {/* Hover overlay */}
+
+        {/* Permanent subtle gradient at base */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 50%)', pointerEvents: 'none' }} />
+
+        {/* Glass nameplate — slides up on hover */}
         <div
           style={{
             position: 'absolute',
-            inset: 0,
-            background: 'rgba(0,0,0,0.35)',
-            opacity: on ? 1 : 0,
-            transition: 'opacity 0.3s ease',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            padding: '36px 20px 20px',
+            backdropFilter: on ? 'blur(14px)' : 'blur(0px)',
+            WebkitBackdropFilter: on ? 'blur(14px)' : 'blur(0px)',
+            background: on ? 'linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.28) 60%, transparent 100%)' : 'transparent',
+            transform: on ? 'translateY(0)' : 'translateY(6px)',
+            opacity: on ? 1 : 0.85,
+            transition: 'transform 0.28s ease-out, opacity 0.28s ease-out, backdrop-filter 0.28s ease-out, background 0.28s ease-out',
           }}
-        />
-      </div>
-
-      {/* Meta */}
-      <p
-        style={{
-          fontFamily: "'Syne', sans-serif",
-          fontWeight: 700,
-          fontSize: '1rem',
-          color: '#0a0a0a',
-          marginBottom: 6,
-          transition: 'opacity 0.2s',
-          opacity: on ? 0.55 : 1,
-        }}
-      >
-        {name}
-      </p>
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        {tags.map(t => (
-          <span
-            key={t}
+        >
+          {/* Tags */}
+          <div
             style={{
-              fontSize: '0.68rem',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'rgba(10,10,10,0.38)',
-              fontWeight: 600,
+              display: 'flex',
+              gap: 6,
+              flexWrap: 'wrap',
+              marginBottom: 10,
+              opacity: on ? 1 : 0,
+              transform: on ? 'none' : 'translateY(5px)',
+              transition: 'opacity 0.22s ease, transform 0.22s ease',
             }}
           >
-            {t}
-          </span>
-        ))}
+            {tags.map(t => <GlassPill key={t}>{t}</GlassPill>)}
+          </div>
+          {/* Client name */}
+          <p style={{
+            fontFamily: "'Syne', sans-serif",
+            fontWeight: 700,
+            fontSize: 'clamp(0.88rem, 1.4vw, 1.05rem)',
+            color: '#ffffff',
+            margin: 0,
+            letterSpacing: '-0.2px',
+          }}>
+            {name}
+          </p>
+        </div>
       </div>
     </motion.a>
   )
 }
 
-// ─── Founder card ─────────────────────────────────────────────────────────────
-function FounderCard({ name, role, line, i }: { name: string; role: string; line: string; i: number }) {
-  const [on, setOn] = useState(false)
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={VP}
-      transition={{ duration: 0.55, ease: 'easeOut', delay: i * 0.12 }}
-      onMouseEnter={() => setOn(true)}
-      onMouseLeave={() => setOn(false)}
-      style={{
-        background: '#f8f8f8',
-        border: `1px solid ${on ? 'rgba(0,0,0,0.16)' : 'rgba(0,0,0,0.07)'}`,
-        padding: '40px 36px',
-        transition: 'transform 0.35s ease, border-color 0.3s',
-        transform: on
-          ? `rotate(${i % 2 === 0 ? '1.3deg' : '-1.3deg'}) translateY(-5px)`
-          : 'none',
-      }}
-    >
-      <div
-        style={{
-          width: 48,
-          height: 48,
-          background: '#0a0a0a',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontFamily: "'Syne', sans-serif",
-          fontWeight: 700,
-          fontSize: '1.1rem',
-          color: '#fff',
-          marginBottom: 20,
-          transition: 'transform 0.3s',
-          transform: on ? 'scale(1.1)' : 'scale(1)',
-        }}
-      >
-        {name[0]}
-      </div>
-      <h3
-        style={{
-          fontFamily: "'Syne', sans-serif",
-          fontWeight: 700,
-          fontSize: '1.5rem',
-          color: '#0a0a0a',
-          letterSpacing: '-0.3px',
-          marginBottom: 0,
-        }}
-      >
-        {name}
-      </h3>
-      <div
-        style={{
-          maxHeight: on ? '120px' : 0,
-          overflow: 'hidden',
-          opacity: on ? 1 : 0,
-          marginTop: on ? 10 : 0,
-          transition: 'max-height 0.35s ease, opacity 0.3s ease, margin-top 0.3s ease',
-        }}
-      >
-        <p
-          style={{
-            fontSize: '0.7rem',
-            letterSpacing: '0.12em',
-            textTransform: 'uppercase',
-            color: 'rgba(10,10,10,0.4)',
-            fontWeight: 600,
-            marginBottom: 6,
-          }}
-        >
-          {role}
-        </p>
-        <p style={{ fontSize: '0.875rem', color: 'rgba(10,10,10,0.55)', lineHeight: 1.6 }}>{line}</p>
-      </div>
-    </motion.div>
-  )
-}
-
-// ─── Auto carousel ────────────────────────────────────────────────────────────
-const SLIDES = [
+// ─── Showcase marquee — top 3 clients, continuous scroll ──────────────────────
+const SHOWCASE = [
   {
-    name: 'Dept Store',
-    tag: 'E-Commerce · India',
-    url: 'https://deptstore.in',
-    img: '/dept-store.png',
+    name: 'Hotel Grand Blue Star',
+    desc: 'Coastal luxury redefined for Mangalore.',
+    url: 'https://hotelgrandbluestar.com',
+    img: '/grand-blue-star-og.jpg',
   },
   {
     name: 'Pearl Imperial International',
-    tag: 'B2B · Dubai',
+    desc: 'B2B commodity trading, built for the GCC.',
     url: 'https://pearlimperialintl.com',
-    img: '/pearl-imperial.png',
+    img: '/pearl-imperial-og.jpg',
+  },
+  {
+    name: 'Prism India',
+    desc: 'Precision-built gymwear for the Indian athlete.',
+    url: 'https://prismindia.co',
+    img: '/prism-india.png',
   },
 ]
 
-function Carousel() {
-  const [active, setActive] = useState(0)
-  const [imgErrs, setImgErrs] = useState<boolean[]>(SLIDES.map(() => false))
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-
-  const go = (idx: number) => {
-    setActive(((idx % SLIDES.length) + SLIDES.length) % SLIDES.length)
-  }
-
-  const reset = () => {
-    if (timerRef.current) clearInterval(timerRef.current)
-    timerRef.current = setInterval(() => setActive(a => (a + 1) % SLIDES.length), 4000)
-  }
-
-  useEffect(() => {
-    timerRef.current = setInterval(() => setActive(a => (a + 1) % SLIDES.length), 4000)
-    return () => { if (timerRef.current) clearInterval(timerRef.current) }
-  }, [])
-
-  const s = SLIDES[active]
+function ShowcaseMarquee() {
+  const items = [...SHOWCASE, ...SHOWCASE, ...SHOWCASE]
 
   return (
-    <div style={{ position: 'relative' }}>
-      {/* Slide */}
+    <div className="marquee-fade" style={{ overflow: 'hidden', margin: '0 calc(-1 * clamp(20px,5vw,64px))' }}>
       <div
         style={{
-          position: 'relative',
-          background: '#111',
-          overflow: 'hidden',
-          aspectRatio: '16 / 7',
+          display: 'flex',
+          gap: 20,
+          width: 'max-content',
+          animation: 'marquee-scroll 42s linear infinite',
+          padding: '4px 24px 20px',
         }}
       >
-        {!imgErrs[active] && (
-          <img
-            key={active}
-            src={s.img}
-            alt={s.name}
-            onError={() => setImgErrs(prev => { const n = [...prev]; n[active] = true; return n })}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              display: 'block',
-              animation: 'fade-in 0.5s ease',
-            }}
-          />
-        )}
-        {imgErrs[active] && (
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 'clamp(2rem, 6vw, 4rem)', color: 'rgba(255,255,255,0.08)', letterSpacing: '-2px' }}>
-              {s.name}
-            </span>
-          </div>
-        )}
-        {/* Dark overlay */}
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 55%)' }} />
-
-        {/* Bottom text */}
-        <div style={{ position: 'absolute', bottom: 28, left: 32, right: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 12 }}>
-          <div>
-            <p style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 'clamp(1.2rem, 2.5vw, 1.8rem)', color: '#fff', letterSpacing: '-0.3px', marginBottom: 4 }}>{s.name}</p>
-            <p style={{ fontSize: '0.72rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)', fontWeight: 600 }}>{s.tag}</p>
-          </div>
+        {items.map((s, i) => (
           <a
+            key={i}
             href={s.url}
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              fontFamily: "'Syne', sans-serif",
-              fontWeight: 700,
-              fontSize: '0.82rem',
-              color: '#fff',
-              border: '1px solid rgba(255,255,255,0.3)',
-              padding: '10px 22px',
-              letterSpacing: '0.04em',
-              transition: 'background 0.2s, border-color 0.2s',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.6)' }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)' }}
-          >
-            View Project →
-          </a>
-        </div>
-
-        {/* Arrow controls */}
-        {(['←', '→'] as const).map((arrow, ai) => (
-          <button
-            key={arrow}
-            onClick={() => { go(active + (ai === 0 ? -1 : 1)); reset() }}
-            aria-label={ai === 0 ? 'Previous slide' : 'Next slide'}
-            style={{
-              position: 'absolute',
-              top: '50%',
-              [ai === 0 ? 'left' : 'right']: 20,
-              transform: 'translateY(-50%)',
-              background: 'rgba(0,0,0,0.4)',
-              border: '1px solid rgba(255,255,255,0.15)',
-              color: '#fff',
-              width: 40,
-              height: 40,
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '1rem',
-              transition: 'background 0.2s',
+              width: 'clamp(460px, 38vw, 600px)',
+              height: 300,
+              borderRadius: 24,
+              overflow: 'hidden',
+              textDecoration: 'none',
+              flexShrink: 0,
+              border: '1px solid rgba(255,255,255,0.08)',
+              background: '#111',
             }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,0,0,0.7)')}
-            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(0,0,0,0.4)')}
           >
-            {arrow}
-          </button>
-        ))}
-      </div>
+            {/* Image panel */}
+            <div style={{ width: '56%', position: 'relative', overflow: 'hidden', flexShrink: 0 }}>
+              <img
+                src={s.img}
+                alt={s.name}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              />
+            </div>
 
-      {/* Dots */}
-      <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 16 }}>
-        {SLIDES.map((_, di) => (
-          <button
-            key={di}
-            onClick={() => { go(di); reset() }}
-            aria-label={`Slide ${di + 1}`}
-            style={{
-              width: active === di ? 24 : 8,
-              height: 8,
-              background: active === di ? '#0a0a0a' : 'rgba(0,0,0,0.2)',
-              border: 'none',
-              borderRadius: 4,
-              transition: 'width 0.3s ease, background 0.3s ease',
-              padding: 0,
-            }}
-          />
+            {/* Info panel */}
+            <div
+              style={{
+                flex: 1,
+                padding: '24px 22px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                background: 'rgba(255,255,255,0.045)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                borderLeft: '1px solid rgba(255,255,255,0.07)',
+              }}
+            >
+              {/* Star badge */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ color: '#F0C040', fontSize: '0.72rem', letterSpacing: 1 }}>★★★★★</span>
+                <span style={{ fontSize: '0.58rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)', fontWeight: 600 }}>Featured</span>
+              </div>
+
+              {/* Bottom content */}
+              <div>
+                <p style={{ fontSize: '0.62rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)', fontWeight: 600, marginBottom: 8 }}>
+                  Client Work
+                </p>
+                <p style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 'clamp(0.92rem, 1.5vw, 1.1rem)', color: '#ffffff', letterSpacing: '-0.3px', marginBottom: 6, lineHeight: 1.2 }}>
+                  {s.name}
+                </p>
+                <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1.55 }}>
+                  {s.desc}
+                </p>
+              </div>
+            </div>
+          </a>
         ))}
       </div>
     </div>
@@ -524,14 +405,18 @@ function ContactForm() {
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
         <button
           type="submit"
+          className="glass-btn"
           style={{
-            background: '#ffffff',
+            background: 'rgba(255,255,255,0.95)',
             color: '#0a0a0a',
-            border: 'none',
+            border: '1.5px solid rgba(255,255,255,0.8)',
             padding: '13px 32px',
             fontFamily: "'Syne', sans-serif",
             fontWeight: 700,
             fontSize: '0.88rem',
+            borderRadius: 100,
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
             transition: 'opacity 0.2s',
           }}
           onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
@@ -543,21 +428,25 @@ function ContactForm() {
           href="https://wa.me/919149681874"
           target="_blank"
           rel="noopener noreferrer"
+          className="glass-btn"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
             gap: 8,
-            border: '1.5px solid rgba(255,255,255,0.2)',
+            border: '1.5px solid rgba(255,255,255,0.14)',
             color: '#ffffff',
             padding: '13px 28px',
             fontFamily: "'Syne', sans-serif",
             fontWeight: 600,
             fontSize: '0.88rem',
-            background: 'transparent',
-            transition: 'border-color 0.2s',
+            background: 'rgba(255,255,255,0.06)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            borderRadius: 100,
+            transition: 'border-color 0.2s, background 0.2s',
           }}
-          onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.6)')}
-          onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)')}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.35)'; e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; e.currentTarget.style.background = 'rgba(255,255,255,0.06)' }}
         >
           Chat on WhatsApp
         </a>
@@ -566,11 +455,13 @@ function ContactForm() {
   )
 }
 
-// ─── PAGE ─────────────────────────────────────────────────────────────────────
+// ─── PAGE DATA ────────────────────────────────────────────────────────────────
 const PORTFOLIO = [
-  { name: 'Pearl Imperial International', tags: ['B2B', 'Dubai'], url: 'https://pearlimperialintl.com', img: '/pearl-imperial.png' },
-  { name: 'Dept Store', tags: ['E-Commerce', 'India'], url: 'https://deptstore.in', img: '/dept-store.png' },
-  { name: 'Prism India', tags: ['Shopify', 'India'], url: 'https://prismindia.co', img: '/prism-india.png' },
+  { name: 'Pearl Imperial International', tags: ['B2B', 'Branding', 'Web Design'], url: 'https://pearlimperialintl.com', img: '/pearl-imperial-og.jpg' },
+  { name: 'Hotel Grand Blue Star',       tags: ['Hospitality', 'Web Design'],       url: 'https://hotelgrandbluestar.com', img: '/grand-blue-star-og.jpg' },
+  { name: 'Hearthy India',               tags: ['E-commerce', 'Branding'],           url: 'https://hearthy.in',             img: '/hearthy-og.jpg' },
+  { name: 'Prism India',                 tags: ['E-commerce', 'Shopify', 'CRO'],     url: 'https://prismindia.co',          img: '/prism-india.png' },
+  { name: 'Al Hilal Print',             tags: ['Branding', 'Print'],                url: 'https://alhilalprint.com',       img: '/al-hilal-og.jpg' },
 ]
 
 const MISSION = [
@@ -580,29 +471,20 @@ const MISSION = [
   { title: 'AI-First Approach', desc: "We embed AI and automation into everything we build — giving your business an unfair competitive edge." },
 ]
 
-const FOUNDERS = [
-  { name: 'Qais', role: 'Co-Founder · Strategy & Development', line: 'Builds the systems. Thinks in outcomes.' },
-  { name: 'Falah', role: 'Co-Founder · Design & Client Work', line: 'Crafts the interfaces. Owns the detail.' },
-]
-
 const TICKER_ITEMS = [
-  'Pearl Imperial International',
-  'Dept Store',
-  'Prism India',
-  'Pearl Imperial International',
-  'Dept Store',
-  'Prism India',
+  'Pearl Imperial International', 'Hotel Grand Blue Star', 'Hearthy India', 'Prism India', 'Al Hilal Print',
+  'Pearl Imperial International', 'Hotel Grand Blue Star', 'Hearthy India', 'Prism India', 'Al Hilal Print',
 ]
 
 const PARTNERS: Array<
   | { name: string; type: 'img'; src: string; h: number }
   | { name: string; type: 'text' }
 > = [
-  { name: 'Shopify',     type: 'img',  src: '/images/partners/shopify.svg',  h: 28 },
-  { name: 'Figma',       type: 'img',  src: '/images/partners/figma.svg',    h: 36 },
-  { name: 'Higgsfield',  type: 'text' },
-  { name: 'GitHub',      type: 'img',  src: '/images/partners/github.svg',   h: 26 },
-  { name: 'Vercel',      type: 'img',  src: '/images/partners/vercel.svg',   h: 20 },
+  { name: 'Shopify',    type: 'img',  src: '/images/partners/shopify.svg',  h: 26 },
+  { name: 'Figma',      type: 'img',  src: '/images/partners/figma.svg',    h: 32 },
+  { name: 'Higgsfield', type: 'text' },
+  { name: 'GitHub',     type: 'img',  src: '/images/partners/github.svg',   h: 24 },
+  { name: 'Vercel',     type: 'img',  src: '/images/partners/vercel.svg',   h: 18 },
 ]
 
 const SERVICES_LIST = [
@@ -620,12 +502,13 @@ const FAQS = [
   { q: 'Do you offer support after launch?', a: 'Yes. Post-launch support covers maintenance, updates, performance monitoring, and ongoing optimisation.' },
 ]
 
+// ─── PAGE ─────────────────────────────────────────────────────────────────────
 export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
 
   return (
     <>
-      {/* ── SCROLL 1: HERO ────────────────────────────────────────────────── */}
+      {/* ── HERO ──────────────────────────────────────────────────────────── */}
       <HeroCinematic text="We are Webbes. The digital agency that's going to build your brand.">
         <p
           style={{
@@ -639,7 +522,7 @@ export default function HomePage() {
         </p>
       </HeroCinematic>
 
-      {/* ── SCROLL 2: WHAT WE DO ──────────────────────────────────────────── */}
+      {/* ── WHAT WE DO ────────────────────────────────────────────────────── */}
       <section style={{ background: '#ffffff', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <Label text="What We Do" />
@@ -649,7 +532,7 @@ export default function HomePage() {
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-              gap: '0',
+              gap: 0,
               marginTop: 56,
             }}
           >
@@ -662,7 +545,7 @@ export default function HomePage() {
                 transition={{ duration: 0.45, ease: 'easeOut', delay: i * 0.09 }}
                 style={{
                   borderTop: '1px solid rgba(0,0,0,0.09)',
-                  padding: '32px 0 32px 0',
+                  padding: '32px 0',
                   ...(i < SERVICES_LIST.length - 1 ? { borderRight: '1px solid rgba(0,0,0,0.09)' } : {}),
                   paddingRight: i < SERVICES_LIST.length - 1 ? 32 : 0,
                   paddingLeft: i > 0 ? 32 : 0,
@@ -706,7 +589,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── BEFORE / AFTER ───────────────────────────────────────────────── */}
+      {/* ── BEFORE / AFTER ────────────────────────────────────────────────── */}
       <section style={{ background: '#ffffff', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)', borderTop: '1px solid rgba(0,0,0,0.07)' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <Label text="Real Work · Kerala Real Estate" />
@@ -742,7 +625,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── PORTFOLIO ────────────────────────────────────────────────────── */}
+      {/* ── PORTFOLIO ─────────────────────────────────────────────────────── */}
       <section style={{ background: '#ffffff', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)', borderTop: '1px solid rgba(0,0,0,0.07)' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <Label text="Live Work" />
@@ -757,18 +640,40 @@ export default function HomePage() {
             Our work speaks for itself.
           </motion.p>
 
-          {/* 2-col grid */}
+          {/* 3-col editorial grid */}
           <div
+            className="portfolio-grid"
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: 32,
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: 20,
             }}
           >
-            {PORTFOLIO.map((p, i) => (
+            {/* First row: 3 cards */}
+            {PORTFOLIO.slice(0, 3).map((p, i) => (
               <PortfolioCard key={p.name} {...p} i={i} />
             ))}
+            {/* Second row: 2 cards, centered */}
+            <div
+              className="portfolio-row2"
+              style={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20, maxWidth: 'calc(66.666% + 10px)' }}
+            >
+              {PORTFOLIO.slice(3).map((p, i) => (
+                <PortfolioCard key={p.name} {...p} i={i + 3} />
+              ))}
+            </div>
           </div>
+
+          <style>{`
+            @media (max-width: 767px) {
+              .portfolio-grid { grid-template-columns: 1fr !important; }
+              .portfolio-row2 { grid-template-columns: 1fr !important; max-width: 100% !important; }
+            }
+            @media (max-width: 1023px) and (min-width: 768px) {
+              .portfolio-grid { grid-template-columns: repeat(2, 1fr) !important; }
+              .portfolio-row2 { grid-template-columns: repeat(2, 1fr) !important; max-width: 100% !important; }
+            }
+          `}</style>
 
           <motion.div
             initial={{ opacity: 0, y: 14 }}
@@ -779,18 +684,22 @@ export default function HomePage() {
           >
             <a
               href="/services"
+              className="glass-btn"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: 8,
-                background: '#0a0a0a',
+                background: 'rgba(10,10,10,0.92)',
                 color: '#ffffff',
                 padding: '12px 28px',
-                borderRadius: 999,
+                borderRadius: 100,
                 fontFamily: "'Syne', sans-serif",
                 fontWeight: 700,
                 fontSize: '0.82rem',
                 letterSpacing: '0.04em',
+                border: '1.5px solid rgba(10,10,10,0.7)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
                 transition: 'opacity 0.2s',
               }}
               onMouseEnter={e => (e.currentTarget.style.opacity = '0.75')}
@@ -802,7 +711,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── CLIENT TICKER ────────────────────────────────────────────────── */}
+      {/* ── CLIENT TICKER ─────────────────────────────────────────────────── */}
       <div
         aria-hidden="true"
         style={{
@@ -814,10 +723,11 @@ export default function HomePage() {
         }}
       >
         <div
+          className="ticker-fade"
           style={{
             display: 'flex',
             width: 'max-content',
-            animation: 'ticker 18s linear infinite',
+            animation: 'ticker 24s linear infinite',
             gap: 0,
           }}
         >
@@ -845,59 +755,100 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── PARTNERS ─────────────────────────────────────────────────────── */}
-      <section style={{ background: '#ffffff', padding: 'clamp(56px,7vw,96px) clamp(20px,5vw,64px)', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
+      {/* ── PARTNERS ──────────────────────────────────────────────────────── */}
+      <section style={{ background: '#fafaf9', padding: 'clamp(44px,5.5vw,72px) clamp(20px,5vw,64px)' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <Label text="Our Partners" />
-          <div
-            style={{
-              display: 'flex',
-              gap: 'clamp(32px, 5vw, 72px)',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              marginTop: 20,
-            }}
-          >
-            {PARTNERS.map((p, i) => (
-              <motion.div
-                key={p.name}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={VP}
-                transition={{ duration: 0.4, ease: 'easeOut', delay: i * 0.06 }}
-                style={{ flexShrink: 0, lineHeight: 0 }}
-              >
-                {p.type === 'img' ? (
-                  <img
-                    src={p.src}
-                    alt={p.name}
-                    style={{
-                      height: p.h,
-                      width: 'auto',
+          {/* Label + logos row */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(20px,3.5vw,52px)', flexWrap: 'wrap' }}>
+            {/* OUR PARTNERS label */}
+            <div style={{ flexShrink: 0 }}>
+              <p style={{
+                fontFamily: "'Syne', sans-serif",
+                fontSize: '0.58rem',
+                fontWeight: 700,
+                letterSpacing: '0.24em',
+                textTransform: 'uppercase',
+                color: 'rgba(10,10,10,0.32)',
+                margin: 0,
+                whiteSpace: 'nowrap',
+              }}>
+                Our Partners
+              </p>
+            </div>
+
+            {/* Vertical separator */}
+            <div style={{ width: 1, height: 36, background: 'rgba(0,0,0,0.1)', flexShrink: 0 }} />
+
+            {/* Logos */}
+            <div style={{ display: 'flex', gap: 'clamp(24px,3.5vw,52px)', alignItems: 'center', flexWrap: 'wrap', flex: 1 }}>
+              {PARTNERS.map((p, i) => (
+                <motion.div
+                  key={p.name}
+                  initial={{ opacity: 0, y: 8 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={VP}
+                  transition={{ duration: 0.35, ease: 'easeOut', delay: i * 0.06 }}
+                  style={{
+                    flexShrink: 0,
+                    filter: 'grayscale(100%) opacity(0.42)',
+                    transition: 'filter 0.28s ease',
+                  }}
+                  onMouseEnter={e => ((e.currentTarget as HTMLElement).style.filter = 'grayscale(0%) opacity(1)')}
+                  onMouseLeave={e => ((e.currentTarget as HTMLElement).style.filter = 'grayscale(100%) opacity(0.42)')}
+                >
+                  {p.type === 'img' ? (
+                    <img src={p.src} alt={p.name} style={{ height: p.h, width: 'auto', display: 'block' }} />
+                  ) : (
+                    <span style={{
+                      fontFamily: "'Syne', sans-serif",
+                      fontWeight: 800,
+                      fontSize: '0.82rem',
+                      letterSpacing: '0.06em',
+                      textTransform: 'uppercase' as const,
+                      color: '#0a0a0a',
+                      lineHeight: 1,
                       display: 'block',
-                    }}
-                  />
-                ) : (
-                  <span style={{
-                    fontFamily: "'Syne', sans-serif",
-                    fontWeight: 800,
-                    fontSize: '0.95rem',
-                    letterSpacing: '0.06em',
-                    textTransform: 'uppercase' as const,
-                    color: '#0a0a0a',
-                    lineHeight: 1,
-                    display: 'block',
-                  }}>
-                    {p.name}
-                  </span>
-                )}
-              </motion.div>
-            ))}
+                    }}>
+                      {p.name}
+                    </span>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Separator + CTA */}
+          <div style={{ marginTop: 28, paddingTop: 20, borderTop: '1px solid rgba(0,0,0,0.07)', display: 'flex', justifyContent: 'flex-end' }}>
+            <a
+              href="#contact"
+              className="glass-btn"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                fontFamily: "'Syne', sans-serif",
+                fontWeight: 700,
+                fontSize: '0.76rem',
+                color: '#0a0a0a',
+                letterSpacing: '0.04em',
+                padding: '8px 18px',
+                borderRadius: 100,
+                border: '1.5px solid rgba(0,0,0,0.1)',
+                background: 'rgba(0,0,0,0.03)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                transition: 'border-color 0.2s, background 0.2s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.22)'; e.currentTarget.style.background = 'rgba(0,0,0,0.06)' }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.1)'; e.currentTarget.style.background = 'rgba(0,0,0,0.03)' }}
+            >
+              Our clients →
+            </a>
           </div>
         </div>
       </section>
 
-      {/* ── MISSION CARDS ────────────────────────────────────────────────── */}
+      {/* ── MISSION CARDS ─────────────────────────────────────────────────── */}
       <section style={{ background: '#ffffff', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <Label text="Who We Are" />
@@ -919,7 +870,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── FAQ ──────────────────────────────────────────────────────────── */}
+      {/* ── FAQ ───────────────────────────────────────────────────────────── */}
       <section id="faq" style={{ background: '#ffffff', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <Label text="FAQ" />
@@ -971,18 +922,25 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── CAROUSEL ─────────────────────────────────────────────────────── */}
-      <section style={{ background: '#0a0a0a', padding: 'clamp(56px,7vw,96px) clamp(20px,5vw,64px)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+      {/* ── SHOWCASE CAROUSEL — top 3 clients ─────────────────────────────── */}
+      <section style={{ background: '#0a0a0a', padding: 'clamp(56px,7vw,96px) 0' }}>
+        <div style={{ padding: '0 clamp(20px,5vw,64px)', marginBottom: 40 }}>
           <Label text="Featured Projects" dark />
-          <Heading dark delay={0.05}>Up close.</Heading>
-          <div style={{ marginTop: 40 }}>
-            <Carousel />
-          </div>
+          <Heading dark delay={0.05}>Work that stands out.</Heading>
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
+            transition={{ duration: 0.45, ease: 'easeOut', delay: 0.1 }}
+            style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.35)', marginTop: 12, maxWidth: 400 }}
+          >
+            Our top-rated client websites — live, launched, and performing.
+          </motion.p>
         </div>
+        <ShowcaseMarquee />
       </section>
 
-      {/* ── SCROLL 3: CONTACT ─────────────────────────────────────────────── */}
+      {/* ── CONTACT ───────────────────────────────────────────────────────── */}
       <section id="contact" style={{ background: '#0a0a0a', padding: 'clamp(80px,11vw,140px) clamp(20px,5vw,64px)' }}>
         <div
           style={{

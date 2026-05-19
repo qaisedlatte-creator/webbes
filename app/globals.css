@@ -31,8 +31,62 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Syne', var(--font-plus-jakarta), sans-serif;
 }
 
+/* ── Glass design tokens ─────────────────────────────────────────────────── */
+:root {
+  --glass-bg:           rgba(255, 255, 255, 0.06);
+  --glass-bg-hover:     rgba(255, 255, 255, 0.12);
+  --glass-bg-light:     rgba(0, 0, 0, 0.04);
+  --glass-border:       rgba(255, 255, 255, 0.12);
+  --glass-border-light: rgba(0, 0, 0, 0.08);
+  --glass-border-strong:rgba(255, 255, 255, 0.22);
+  --glass-shadow:       0 8px 32px rgba(0, 0, 0, 0.14);
+  --glass-radius:       20px;
+  --glass-radius-pill:  100px;
+}
+
+/* ── Glass utility classes ───────────────────────────────────────────────── */
+@supports (backdrop-filter: blur(1px)) {
+  .glass-dark {
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+  }
+  .glass-light {
+    background: var(--glass-bg-light);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border-light);
+  }
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .glass-dark  { background: rgba(18, 18, 18, 0.82); }
+  .glass-light { background: rgba(245, 245, 245, 0.92); }
+}
+
+/* CTA button shimmer sweep on hover */
+.glass-btn {
+  position: relative;
+  overflow: hidden;
+}
+.glass-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.18) 50%, transparent 60%);
+  transform: translateX(-120%);
+  transition: transform 0.55s ease;
+  pointer-events: none;
+}
+.glass-btn:hover::after { transform: translateX(120%); }
+
 /* ── Keyframes ───────────────────────────────────────────────────────────── */
 @keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes marquee-scroll {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
@@ -64,6 +118,12 @@ a { color: inherit; text-decoration: none; }
 .ticker-fade {
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
   mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+}
+
+/* Showcase marquee fade edges */
+.marquee-fade {
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
 }
 
 /* ── Respect reduced motion ──────────────────────────────────────────────── */

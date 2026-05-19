@@ -33,10 +33,16 @@ export default function Nav() {
         className={cn(
           'fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 h-16 transition-all duration-500',
           pastHero
-            ? 'bg-white/95 backdrop-blur-md'
-            : 'bg-transparent backdrop-blur-none',
-          pastHero && scrolled && 'shadow-[0_1px_0_rgba(0,0,0,0.07)]'
+            ? 'shadow-[0_1px_0_rgba(0,0,0,0.06)]'
+            : '',
         )}
+        style={
+          pastHero
+            ? { background: 'rgba(255,255,255,0.88)', backdropFilter: 'blur(28px)', WebkitBackdropFilter: 'blur(28px)', borderBottom: '1px solid rgba(0,0,0,0.06)' }
+            : scrolled
+              ? { background: 'rgba(0,0,0,0.28)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', borderBottom: '1px solid rgba(255,255,255,0.09)' }
+              : { background: 'transparent' }
+        }
       >
         {/* Logo */}
         <Link
