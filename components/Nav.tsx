@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
-const NAV_LINKS = ['Services', 'Blog', 'Team', 'Contact'] as const
+const NAV_LINKS = ['Work', 'Services', 'Blog', 'Team', 'Contact'] as const
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)

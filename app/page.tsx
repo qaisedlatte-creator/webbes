@@ -540,45 +540,92 @@ export default function HomePage() {
       </HeroCinematic>
 
       {/* WHAT WE DO */}
-      <section style={{ background: '#ffffff', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)' }}>
+      <section style={{ background: '#ffffff', padding: 'clamp(80px,10vw,130px) clamp(20px,5vw,64px)', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <Label text="What We Do" />
-          <Heading delay={0.05}>Everything your<br />business needs.</Heading>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 0, marginTop: 52 }}>
-            {SERVICES_LIST.map((s, i) => (
-              <motion.div
-                key={s.title}
-                initial={{ opacity: 0, y: 20 }}
+          <div className="whatwedo-grid" style={{ display: 'grid', gridTemplateColumns: '5fr 7fr', gap: 'clamp(48px,7vw,100px)', alignItems: 'start' }}>
+
+            {/* Left: pitch + stats */}
+            <div>
+              <Label text="What We Do" />
+              <Heading delay={0.05}>Everything your<br />business needs.</Heading>
+              <motion.p
+                initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={VP}
-                transition={{ duration: 0.45, ease: 'easeOut', delay: i * 0.09 }}
-                style={{
-                  borderTop: '1px solid rgba(0,0,0,0.09)',
-                  padding: '32px 0',
-                  ...(i < SERVICES_LIST.length - 1 ? { borderRight: '1px solid rgba(0,0,0,0.09)' } : {}),
-                  paddingRight: i < SERVICES_LIST.length - 1 ? 32 : 0,
-                  paddingLeft: i > 0 ? 32 : 0,
-                }}
+                transition={{ duration: 0.45, ease: 'easeOut', delay: 0.12 }}
+                style={{ fontSize: '0.92rem', color: 'rgba(10,10,10,0.48)', lineHeight: 1.78, marginTop: 20, marginBottom: 36, maxWidth: 380 }}
               >
-                <h3 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: '1.05rem', color: '#0a0a0a', marginBottom: 8 }}>{s.title}</h3>
-                <p style={{ fontSize: '0.875rem', color: 'rgba(10,10,10,0.48)', lineHeight: 1.6 }}>{s.desc}</p>
+                From a five-page website to a full e-commerce operation — we design, build, and automate everything your business needs to grow online. Kochi-based, working across India and the GCC.
+              </motion.p>
+
+              {/* Stats row */}
+              <motion.div
+                initial={{ opacity: 0, y: 14 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={VP}
+                transition={{ duration: 0.45, ease: 'easeOut', delay: 0.18 }}
+                style={{ display: 'flex', gap: 'clamp(20px,3vw,40px)', borderTop: '1px solid rgba(0,0,0,0.08)', paddingTop: 28, marginBottom: 36 }}
+              >
+                {[
+                  { n: '5+', label: 'Live brands' },
+                  { n: '3', label: 'Countries' },
+                  { n: '100%', label: 'Owner-built' },
+                ].map(stat => (
+                  <div key={stat.label}>
+                    <p style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 'clamp(1.6rem, 2.8vw, 2.2rem)', color: '#0a0a0a', letterSpacing: '-1px', lineHeight: 1, marginBottom: 5 }}>
+                      {stat.n}
+                    </p>
+                    <p style={{ fontSize: '0.65rem', color: 'rgba(10,10,10,0.36)', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600 }}>
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
               </motion.div>
-            ))}
+
+              <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={VP} transition={{ duration: 0.35, ease: 'easeOut', delay: 0.24 }}>
+                <a
+                  href="/services"
+                  className="glass-btn"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: '0.8rem', color: '#0a0a0a', padding: '10px 22px', borderRadius: 100, border: '1.5px solid rgba(0,0,0,0.12)', background: 'rgba(0,0,0,0.03)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', transition: 'border-color 0.2s, background 0.2s' }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.24)'; e.currentTarget.style.background = 'rgba(0,0,0,0.06)' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.12)'; e.currentTarget.style.background = 'rgba(0,0,0,0.03)' }}
+                >
+                  All Services →
+                </a>
+              </motion.div>
+            </div>
+
+            {/* Right: numbered services list */}
+            <div>
+              {SERVICES_LIST.map((s, i) => (
+                <motion.div
+                  key={s.title}
+                  initial={{ opacity: 0, x: 16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={VP}
+                  transition={{ duration: 0.45, ease: 'easeOut', delay: i * 0.08 }}
+                  style={{ display: 'flex', gap: 24, alignItems: 'flex-start', padding: '26px 0', borderTop: '1px solid rgba(0,0,0,0.08)', ...(i === SERVICES_LIST.length - 1 ? { borderBottom: '1px solid rgba(0,0,0,0.08)' } : {}) }}
+                >
+                  <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: '0.6rem', color: 'rgba(10,10,10,0.2)', letterSpacing: '0.06em', marginTop: 3, flexShrink: 0, width: 20 }}>
+                    0{i + 1}
+                  </span>
+                  <div>
+                    <h3 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: '1.05rem', color: '#0a0a0a', marginBottom: 6 }}>{s.title}</h3>
+                    <p style={{ fontSize: '0.875rem', color: 'rgba(10,10,10,0.44)', lineHeight: 1.65 }}>{s.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
           </div>
-          <motion.div initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={VP} transition={{ duration: 0.4, ease: 'easeOut', delay: 0.32 }} style={{ marginTop: 36 }}>
-            <a href="/services" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: '0.82rem', color: '#0a0a0a', borderBottom: '1px solid rgba(0,0,0,0.22)', paddingBottom: 2, transition: 'opacity 0.2s' }}
-              onMouseEnter={e => (e.currentTarget.style.opacity = '0.5')} onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
-              All Services →
-            </a>
-          </motion.div>
         </div>
       </section>
 
-      {/* PORTFOLIO — case studies */}
+      {/* PORTFOLIO — 2 featured case studies */}
       <section style={{ background: '#0a0a0a', padding: 'clamp(72px,9vw,120px) clamp(20px,5vw,64px)' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <Label text="Our Work" dark />
-          <Heading dark delay={0.05}>Five brands.<br />Five transformations.</Heading>
+          <Heading dark delay={0.05}>Brand transformations<br />that actually shipped.</Heading>
           <motion.p
             initial={{ opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -589,21 +636,39 @@ export default function HomePage() {
             Real projects, real clients, real results — here&apos;s what we built and what changed.
           </motion.p>
 
-          {/* Case study rows */}
+          {/* 2 featured case study rows */}
           <div style={{ marginTop: 'clamp(48px, 6vw, 80px)' }}>
-            {CASE_STUDIES.map((cs, i) => <CaseStudyRow key={cs.n} cs={cs} i={i} />)}
+            {CASE_STUDIES.slice(0, 2).map((cs, i) => <CaseStudyRow key={cs.n} cs={cs} i={i} />)}
           </div>
+
+          {/* See all work CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
+            transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 }}
+            style={{ marginTop: 'clamp(48px, 6vw, 72px)', paddingTop: 'clamp(32px, 4vw, 48px)', borderTop: '1px solid rgba(255,255,255,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20 }}
+          >
+            <div>
+              <p style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 'clamp(1rem, 1.8vw, 1.3rem)', color: '#ffffff', letterSpacing: '-0.3px', marginBottom: 4 }}>
+                +3 more brands
+              </p>
+              <p style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.3)', margin: 0 }}>
+                Hearthy India, Prism India, Al Hilal Print
+              </p>
+            </div>
+            <a
+              href="/work"
+              className="glass-btn"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 10, fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: '0.82rem', color: '#ffffff', background: 'rgba(255,255,255,0.09)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: 100, padding: '12px 26px', textDecoration: 'none', transition: 'background 0.22s, border-color 0.22s', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.15)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.32)' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.09)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)' }}
+            >
+              See All Work →
+            </a>
+          </motion.div>
         </div>
       </section>
-
-      {/* Responsive case study grid */}
-      <style>{`
-        @media (max-width: 767px) {
-          .cs-row { grid-template-columns: 1fr !important; gap: 28px !important; }
-          .cs-img { order: 1 !important; }
-          .cs-content { order: 2 !important; }
-        }
-      `}</style>
 
       {/* CLIENT TICKER */}
       <div aria-hidden="true" style={{ background: '#0a0a0a', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)', overflow: 'hidden', padding: '14px 0' }}>

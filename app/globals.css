@@ -128,6 +128,14 @@ a { color: inherit; text-decoration: none; }
   mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
 }
 
+/* ── Responsive layout helpers ───────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .whatwedo-grid { grid-template-columns: 1fr !important; }
+  .cs-row { grid-template-columns: 1fr !important; gap: 28px !important; }
+  .cs-img { order: 1 !important; }
+  .cs-content { order: 2 !important; }
+}
+
 /* ── Respect reduced motion ──────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
