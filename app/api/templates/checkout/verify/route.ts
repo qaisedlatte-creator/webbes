@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import crypto from 'crypto'
 import { markInvitePaid } from '@/lib/templates/invites'
+import { getCashfreeOrderStatus, isCashfreeConfigured } from '@/lib/templates/cashfree'
 
 export async function POST(req: NextRequest) {
-  const secret = process.env.RAZORPAY_KEY_SECRET
-  if (!secret) return NextResponse.json({ error: 'Payments are not configured yet' }, { status: 503 })
+  if (!isCashfreeConfigured()) {
+    return NextResponse.json({ error: 'Payments are not configured yet' }, { status: 503 })
+  }
 
   let body: unknown
   try {
@@ -13,22 +14,24 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
-  const { id, orderId, paymentId, signature } = body as {
-    id?: string
-    orderId?: string
-    paymentId?: string
-    signature?: string
-  }
-  if (!id || !orderId || !paymentId || !signature) {
+  const { id, orderId } = body as { id?: string; orderId?: string }
+  if (!id || !orderId) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
   }
 
-  const expected = crypto.createHmac('sha256', secret).update(`${orderId}|${paymentId}`).digest('hex')
-  const a = Buffer.from(signature)
-  const b = Buffer.from(expected)
-  const valid = a.length === b.length && crypto.timingSafeEqual(a, b)
+  // Cashfree's modal checkout doesn't hand back a client-side signature the
+  // way Razorpay does — the correct pattern is asking Cashfree directly.
+  let status: string
+  try {
+    status = await getCashfreeOrderStatus(orderId)
+  } catch (err) {
+    console.error('[templates/checkout/verify] order status fetch failed', orderId, err)
+    return NextResponse.json({ error: 'Could not confirm payment' }, { status: 502 })
+  }
 
-  if (!valid) return NextResponse.json({ error: 'Signature mismatch' }, { status: 401 })
+  if (status !== 'PAID') {
+    return NextResponse.json({ error: `Payment not completed (status: ${status})` }, { status: 402 })
+  }
 
   try {
     await markInvitePaid(id)

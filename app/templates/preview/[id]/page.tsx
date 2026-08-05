@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getInvite } from '@/lib/templates/invites'
-import { getTotalPricePaise } from '@/lib/templates/razorpay'
+import { getTotalPricePaise } from '@/lib/templates/cashfree'
 import PreviewClient from './PreviewClient'
 
 export const metadata: Metadata = { robots: { index: false, follow: false } }
