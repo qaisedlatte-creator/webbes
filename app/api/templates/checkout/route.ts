@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getInvite } from '@/lib/templates/invites'
-import { getRazorpayClient, getInvitePricePaise } from '@/lib/templates/razorpay'
+import { getRazorpayClient, getTotalPricePaise } from '@/lib/templates/razorpay'
 
 export async function POST(req: NextRequest) {
   let body: unknown
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Payments are not configured yet' }, { status: 503 })
   }
 
-  const amount = getInvitePricePaise()
+  const amount = getTotalPricePaise({ rsvpEnabled: invite.rsvpEnabled, songEnabled: invite.songEnabled })
 
   try {
     const order = await razorpay.orders.create({

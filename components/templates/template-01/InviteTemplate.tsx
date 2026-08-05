@@ -12,6 +12,7 @@ import MusicToggle from './MusicToggle'
 import PetalOverlay from './PetalOverlay'
 import Watermark from './Watermark'
 import ScrollParallax from './ScrollParallax'
+import RSVP from './RSVP'
 import type { ColorPreset, InviteData, Religion } from '@/lib/templates/types'
 import { getPreset, RELIGION_TERMINOLOGY, RELIGION_MUSIC, RELIGION_DEFAULT_BACKGROUND } from '@/lib/templates/religion-themes'
 import { formatDateLong, formatDateDotted } from '@/lib/templates/date'
@@ -27,13 +28,17 @@ interface Props {
   themeOverride?: ColorPreset
   /** Poster variants force their fixed asset as the background, ignoring the uploaded photo. */
   forcedBackground?: string
+  /** Shows the RSVP form — only meaningful together with inviteId. */
+  rsvpEnabled?: boolean
+  /** Real saved invite id, needed for the RSVP form to actually submit. */
+  inviteId?: string
 }
 
 function initials(name: string) {
   return name.trim().charAt(0).toUpperCase() || '?'
 }
 
-export default function InviteTemplate({ religion, data, watermark = false, skipReveal = false, themeOverride, forcedBackground }: Props) {
+export default function InviteTemplate({ religion, data, watermark = false, skipReveal = false, themeOverride, forcedBackground, rsvpEnabled = false, inviteId }: Props) {
   const [isLoaded, setIsLoaded] = useState(skipReveal)
   const onComplete = useCallback(() => setIsLoaded(true), [])
 
@@ -68,6 +73,11 @@ export default function InviteTemplate({ religion, data, watermark = false, skip
   const terminology = RELIGION_TERMINOLOGY[religion]
   const music = RELIGION_MUSIC[religion]
   const monogram = `${initials(data.brideName)} & ${initials(data.groomName)}`
+  const eventLabel = data.eventLabel || terminology.eventLabel
+  const heroSubtitle = data.heroSubtitle || terminology.heroSubtitle
+  const closingLine = data.closingLine || terminology.closingLine
+  const footerBlessing = data.footerBlessing || terminology.footerBlessing
+  const audioSrc = data.audioUrl || music.src
   const backgroundImage = forcedBackground ?? data.photoUrl ?? RELIGION_DEFAULT_BACKGROUND[religion]
   // Stock assets (fixed poster backgrounds, or the default when no photo is
   // uploaded yet) have their own baked-in text/faces that must be masked
@@ -88,7 +98,7 @@ export default function InviteTemplate({ religion, data, watermark = false, skip
         />
       )}
 
-      <MusicToggle src={music.src} theme={theme} />
+      <MusicToggle src={audioSrc} theme={theme} />
 
       {isLoaded && (
         <>
@@ -126,7 +136,7 @@ export default function InviteTemplate({ religion, data, watermark = false, skip
           {/* Explicit stacking context above the fixed background — position:fixed
               elements otherwise escape ancestor paint order in unpredictable ways. */}
           <div style={{ position: 'relative', zIndex: 1 }}>
-            <PetalOverlay theme={theme} confined={skipReveal} />
+            {data.showPetals && <PetalOverlay theme={theme} confined={skipReveal} />}
 
             <motion.div
               initial={skipReveal ? false : { opacity: 0, filter: 'blur(10px)' }}
@@ -138,23 +148,25 @@ export default function InviteTemplate({ religion, data, watermark = false, skip
                   <Hero
                     brideName={data.brideName || 'Bride'}
                     groomName={data.groomName || 'Groom'}
-                    eventLabel={terminology.eventLabel}
-                    subtitle={terminology.heroSubtitle}
+                    eventLabel={eventLabel}
+                    subtitle={heroSubtitle}
                     dateLong={formatDateLong(data.date)}
                     theme={theme}
                   />
                 </ScrollParallax>
-                <WeddingDetails date={data.date} time={data.time || '4:00 PM'} eventLabel={terminology.eventLabel} closingLine={terminology.closingLine} theme={theme} />
+                <WeddingDetails date={data.date} time={data.time || '4:00 PM'} eventLabel={eventLabel} closingLine={closingLine} theme={theme} />
                 <Countdown date={data.date} time={data.time || '4:00 PM'} theme={theme} />
                 <Location
                   venue={data.venue || 'Venue to be announced'}
                   venueCity={data.venueCity || ''}
                   date={data.date}
-                  eventLabel={terminology.eventLabel}
+                  eventLabel={eventLabel}
+                  mapsUrl={data.mapsUrl}
                   theme={theme}
                   scrollStyle={religion === 'christian' ? 'slide' : 'scale'}
                 />
-                <Footer brideName={data.brideName || 'Bride'} groomName={data.groomName || 'Groom'} date={data.date} footerBlessing={terminology.footerBlessing} religion={religion} theme={theme} />
+                {rsvpEnabled && inviteId && <RSVP inviteId={inviteId} theme={theme} />}
+                <Footer brideName={data.brideName || 'Bride'} groomName={data.groomName || 'Groom'} date={data.date} footerBlessing={footerBlessing} religion={religion} theme={theme} />
               </main>
             </motion.div>
           </div>

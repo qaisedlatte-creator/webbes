@@ -19,7 +19,17 @@ export default async function BuildPage({
   if (sp.id) {
     const invite = await getInvite(sp.id)
     if (invite) {
-      return <Editor templateId={invite.templateId} initialId={invite.id} initialReligion={invite.religion} initialData={invite.data} initialWhatsapp={invite.whatsapp} />
+      return (
+        <Editor
+          templateId={invite.templateId}
+          initialId={invite.id}
+          initialReligion={invite.religion}
+          initialData={invite.data}
+          initialWhatsapp={invite.whatsapp}
+          initialRsvpEnabled={invite.rsvpEnabled}
+          initialSongEnabled={invite.songEnabled}
+        />
+      )
     }
   }
 
@@ -33,6 +43,8 @@ export default async function BuildPage({
         initialReligion={variant.religion}
         initialData={{ ...DEFAULT_INVITE_DATA, colorPresetId: variant.kind === 'envelope' ? variant.colorPresetId : '' }}
         initialWhatsapp={null}
+        initialRsvpEnabled={false}
+        initialSongEnabled={false}
       />
     )
   }
@@ -47,6 +59,8 @@ export default async function BuildPage({
       initialReligion={religion}
       initialData={{ ...DEFAULT_INVITE_DATA, colorPresetId: '' }}
       initialWhatsapp={null}
+      initialRsvpEnabled={false}
+      initialSongEnabled={false}
     />
   )
 }

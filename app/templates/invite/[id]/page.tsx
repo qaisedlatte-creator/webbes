@@ -19,5 +19,17 @@ export default async function InvitePage({ params }: { params: Promise<{ id: str
   if (!invite) notFound()
   if (invite.status !== 'paid') redirect(`/templates/preview/${id}`)
 
-  return <TemplateRenderer templateId={invite.templateId} religion={invite.religion} data={invite.data} watermark={false} />
+  return (
+    <>
+      {invite.rsvpEnabled && invite.rsvpDashboardToken && (
+        <div className="fixed top-3 left-1/2 -translate-x-1/2 z-[300] bg-white/95 text-black/70 text-[11px] px-4 py-2 rounded-full shadow-lg">
+          Your RSVP dashboard:{' '}
+          <a href={`/templates/dashboard/${invite.rsvpDashboardToken}`} className="font-semibold underline" style={{ color: '#2563EB' }}>
+            view responses
+          </a>
+        </div>
+      )}
+      <TemplateRenderer templateId={invite.templateId} religion={invite.religion} data={invite.data} watermark={false} rsvpEnabled={invite.rsvpEnabled} inviteId={invite.id} />
+    </>
+  )
 }

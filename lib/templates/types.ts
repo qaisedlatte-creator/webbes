@@ -52,6 +52,26 @@ export interface InviteData {
   venueCity: string;
   colorPresetId: string;
   photoUrl: string | null;
+  /** Paid add-on (+₹59) — customer's own uploaded track, replaces the default religion music. */
+  audioUrl: string | null;
+  /** Pasted Google Maps link — takes priority over the auto-generated venue+city search. */
+  mapsUrl: string;
+  /** Decorative falling-petal animation, on by default. */
+  showPetals: boolean;
+  /** Overridable copy — falls back to the religion's default when blank. */
+  eventLabel: string;
+  heroSubtitle: string;
+  closingLine: string;
+  footerBlessing: string;
+}
+
+export interface RsvpResponseRecord {
+  id: string;
+  guestName: string;
+  attending: boolean;
+  guestCount: number;
+  message: string | null;
+  createdAt: string;
 }
 
 export interface InviteRecord {
@@ -63,4 +83,9 @@ export interface InviteRecord {
   status: 'draft' | 'paid';
   createdAt: string;
   paidAt: string | null;
+  rsvpEnabled: boolean;
+  songEnabled: boolean;
+  rsvpDashboardToken: string | null;
+  previewShareToken: string | null;
+  previewShareViewedAt: string | null;
 }

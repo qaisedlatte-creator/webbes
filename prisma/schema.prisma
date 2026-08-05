@@ -10,13 +10,39 @@ model Invite {
   id         String    @id @default(cuid())
   templateId String    @default("template-01")
   religion   String // "islamic" | "christian" | "hindu"
-  data       Json // { groomName, brideName, date, time, venue, venueCity, colorPresetId, photoUrl }
+  data       Json // { groomName, brideName, date, time, venue, venueCity, colorPresetId, photoUrl, audioUrl, mapsUrl, showPetals, eventLabel, heroSubtitle, closingLine, footerBlessing }
   whatsapp   String?
   status     String    @default("draft") // draft | paid
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   paidAt     DateTime?
 
+  // Paid add-ons, chosen in the editor before checkout
+  rsvpEnabled Boolean @default(false)
+  songEnabled Boolean @default(false)
+
+  // Private link the customer uses to see who RSVP'd
+  rsvpDashboardToken String? @unique
+
+  // Single-use shareable preview link
+  previewShareToken    String?   @unique
+  previewShareViewedAt DateTime?
+
+  rsvps RsvpResponse[]
+
   @@index([status])
   @@index([whatsapp])
+}
+
+model RsvpResponse {
+  id         String   @id @default(cuid())
+  inviteId   String
+  invite     Invite   @relation(fields: [inviteId], references: [id], onDelete: Cascade)
+  guestName  String
+  attending  Boolean
+  guestCount Int      @default(1)
+  message    String?
+  createdAt  DateTime @default(now())
+
+  @@index([inviteId])
 }

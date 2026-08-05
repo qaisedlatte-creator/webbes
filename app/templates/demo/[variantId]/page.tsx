@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getVariant, TEMPLATE_VARIANTS } from '@/lib/templates/posterVariants'
 import TemplateRenderer from '@/components/templates/TemplateRenderer'
+import { DEFAULT_INVITE_DATA } from '@/lib/templates/invites'
 import type { InviteData } from '@/lib/templates/types'
 
 export function generateStaticParams() {
@@ -20,6 +21,7 @@ export default async function DemoPage({ params }: { params: Promise<{ variantId
   if (!variant) notFound()
 
   const data: InviteData = {
+    ...DEFAULT_INVITE_DATA,
     brideName: variant.demo.brideName,
     groomName: variant.demo.groomName,
     date: variant.demo.date,
@@ -27,7 +29,6 @@ export default async function DemoPage({ params }: { params: Promise<{ variantId
     venue: variant.demo.venue,
     venueCity: variant.demo.venueCity,
     colorPresetId: variant.kind === 'envelope' ? variant.colorPresetId : '',
-    photoUrl: null,
   }
 
   return <TemplateRenderer templateId={variant.id} religion={variant.religion} data={data} watermark={false} />

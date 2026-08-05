@@ -11,9 +11,11 @@ interface Props {
   data: InviteData
   watermark?: boolean
   skipReveal?: boolean
+  rsvpEnabled?: boolean
+  inviteId?: string
 }
 
-export default function TemplateRenderer({ templateId, religion, data, watermark = false, skipReveal = false }: Props) {
+export default function TemplateRenderer({ templateId, religion, data, watermark = false, skipReveal = false, rsvpEnabled = false, inviteId }: Props) {
   const variant = getVariant(templateId)
 
   // Fixed-background poster variants: same multi-section envelope experience
@@ -28,6 +30,8 @@ export default function TemplateRenderer({ templateId, religion, data, watermark
         skipReveal={skipReveal}
         themeOverride={theme}
         forcedBackground={variant.backgroundImage}
+        rsvpEnabled={rsvpEnabled}
+        inviteId={inviteId}
       />
     )
   }
@@ -44,9 +48,11 @@ export default function TemplateRenderer({ templateId, religion, data, watermark
         skipReveal={skipReveal}
         themeOverride={theme}
         forcedBackground={data.photoUrl ?? undefined}
+        rsvpEnabled={rsvpEnabled}
+        inviteId={inviteId}
       />
     )
   }
 
-  return <InviteTemplate religion={religion} data={data} watermark={watermark} skipReveal={skipReveal} />
+  return <InviteTemplate religion={religion} data={data} watermark={watermark} skipReveal={skipReveal} rsvpEnabled={rsvpEnabled} inviteId={inviteId} />
 }

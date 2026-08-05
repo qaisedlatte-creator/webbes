@@ -15,10 +15,12 @@ interface Props {
   theme: ColorPreset
   /** Christian gets a slide-up-and-blur reveal instead of the scale-in the others use. */
   scrollStyle?: 'scale' | 'slide'
+  /** Pasted Google Maps link — used as-is instead of the auto-generated search query. */
+  mapsUrl?: string
 }
 
-export default function Location({ venue, venueCity, date, eventLabel, theme, scrollStyle = 'scale' }: Props) {
-  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${venue}, ${venueCity}`)}`
+export default function Location({ venue, venueCity, date, eventLabel, theme, scrollStyle = 'scale', mapsUrl: customMapsUrl }: Props) {
+  const mapsUrl = customMapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${venue}, ${venueCity}`)}`
 
   return (
     <section id="location" className="relative py-10 md:py-16 overflow-hidden">

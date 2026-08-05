@@ -18,14 +18,35 @@ interface Props {
   religion: Religion
   data: InviteData
   pricePaise: number
+  rsvpEnabled: boolean
+  songEnabled: boolean
 }
 
-export default function PreviewClient({ id, templateId, religion, data, pricePaise }: Props) {
+export default function PreviewClient({ id, templateId, religion, data, pricePaise, rsvpEnabled, songEnabled }: Props) {
   const router = useRouter()
   const [paying, setPaying] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [shareLink, setShareLink] = useState<string | null>(null)
+  const [sharing, setSharing] = useState(false)
 
   const priceLabel = `₹${(pricePaise / 100).toLocaleString('en-IN')}`
+
+  const handleShare = async () => {
+    setSharing(true)
+    try {
+      const res = await fetch('/api/templates/share', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      })
+      const json = await res.json()
+      if (res.ok && json.token) setShareLink(`${window.location.origin}/templates/share/${json.token}`)
+    } catch {
+      // silent — share link is a nice-to-have, not critical
+    } finally {
+      setSharing(false)
+    }
+  }
 
   const handlePay = async () => {
     setError(null)
@@ -80,7 +101,32 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
     <div className="relative">
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
 
-      <TemplateRenderer templateId={templateId} religion={religion} data={data} watermark />
+      <TemplateRenderer templateId={templateId} religion={religion} data={data} watermark rsvpEnabled={rsvpEnabled} inviteId={id} />
+
+      <div
+        className="fixed top-4 right-4 z-[300]"
+      >
+        {shareLink ? (
+          <div className="flex items-center gap-2 bg-white/95 rounded-full pl-3 pr-1 py-1 shadow-lg max-w-[280px]">
+            <span className="text-[11px] text-black/60 truncate">{shareLink}</span>
+            <button
+              onClick={() => navigator.clipboard.writeText(shareLink)}
+              className="text-[11px] font-semibold px-2.5 py-1.5 rounded-full text-white shrink-0"
+              style={{ background: '#2563EB' }}
+            >
+              Copy
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={handleShare}
+            disabled={sharing}
+            className="text-[11px] font-semibold bg-white/90 text-black/70 px-3 py-2 rounded-full shadow-lg disabled:opacity-50"
+          >
+            {sharing ? 'Creating…' : 'Share preview (one-time view)'}
+          </button>
+        )}
+      </div>
 
       <div
         className="fixed bottom-0 left-0 right-0 z-[300] flex flex-col items-center gap-2 px-4 py-4"
@@ -95,7 +141,10 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
         >
           {paying ? 'Opening checkout…' : `Pay ${priceLabel} to unlock your invitation`}
         </button>
-        <p className="text-[11px] text-white/50">Removes the watermark and unlocks your photo &amp; final link</p>
+        <p className="text-[11px] text-white/50">
+          Removes the watermark and unlocks your photo{songEnabled ? ', song,' : ''} &amp; final link
+          {rsvpEnabled ? ' — RSVP included' : ''}
+        </p>
       </div>
     </div>
   )
