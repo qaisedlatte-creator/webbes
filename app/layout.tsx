@@ -4,6 +4,7 @@ import './globals.css'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import CustomCursor from '@/components/CustomCursor'
+import ChromeGate from '@/components/ChromeGate'
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -143,10 +144,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="geo.placename" content="Kochi, Kerala, India" />
       </head>
       <body className="bg-white text-[#0a0a0a]">
-        <CustomCursor />
-        <Nav />
+        <ChromeGate>
+          <CustomCursor />
+          <Nav />
+        </ChromeGate>
         {children}
-        <Footer />
+        <ChromeGate>
+          <Footer />
+        </ChromeGate>
       </body>
     </html>
   )

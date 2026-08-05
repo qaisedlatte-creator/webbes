@@ -12,7 +12,21 @@
       "Bash(git log:*)",
       "Bash(git diff:*)",
       "Bash(ls /c/Users/qaise/webbes/*.html /c/Users/qaise/webbes/vercel.json)",
-      "Bash(npx next:*)"
+      "Bash(npx next:*)",
+      "Bash(npm run:*)",
+      "Bash(netstat -ano)",
+      "Bash(findstr \":3000 \")",
+      "Bash(tasklist:*)",
+      "Bash(cmd:*)",
+      "Bash(powershell:*)",
+      "Bash(npx tsc:*)",
+      "Bash(cp \"C:/Users/qaise/Downloads/images.png\" \"C:/Users/qaise/webbes/public/images/partners/vercel.png\")",
+      "Bash(cp \"C:/Users/qaise/Downloads/images \\(1\\).png\" \"C:/Users/qaise/webbes/public/images/partners/github.png\")",
+      "Bash(cp \"C:/Users/qaise/Pictures/Screenshots/Screenshot 2026-04-12 003925.png\" \"C:/Users/qaise/webbes/public/images/partners/shopify.png\")",
+      "Bash(cp \"C:/Users/qaise/Pictures/Screenshots/Screenshot 2026-04-12 003954.png\" \"C:/Users/qaise/webbes/public/images/partners/figma.png\")",
+      "Bash(cp \"C:/Users/qaise/Pictures/Screenshots/Screenshot 2026-04-12 004021.png\" \"C:/Users/qaise/webbes/public/images/partners/higgsfield.png\")",
+      "Bash(node -e ':*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3002/services)"
     ]
   }
 }

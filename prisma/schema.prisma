@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Invite {
+  id         String    @id @default(cuid())
+  templateId String    @default("template-01")
+  religion   String // "islamic" | "christian" | "hindu"
+  data       Json // { groomName, brideName, date, time, venue, venueCity, colorPresetId, photoUrl }
+  whatsapp   String?
+  status     String    @default("draft") // draft | paid
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  paidAt     DateTime?
+
+  @@index([status])
+  @@index([whatsapp])
+}
