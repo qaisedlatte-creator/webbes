@@ -104,7 +104,13 @@ export default function InviteTemplate({ religion, data, watermark = false, skip
               alt=""
               aria-hidden="true"
               className="invite-bg-img"
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%' }}
+              style={
+                usingStockAsset
+                  ? // Full poster compositions (arch, corners, text) need to show
+                    // in full like the original site, not cropped edge-to-edge.
+                    { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'top center' }
+                  : { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%' }
+              }
             />
             <div
               style={{
