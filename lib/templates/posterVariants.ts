@@ -39,17 +39,18 @@ export const TEMPLATE_VARIANTS: TemplateVariant[] = [
     kind: 'envelope',
     religion: 'islamic',
     label: 'Sinan & Rifa style',
-    colorPresetId: 'emerald-gold',
+    colorPresetId: 'sky-gold',
     thumbnail: '/gallery/demo-fairooz-wedding.jpg',
     demo: { brideName: 'Rifa', groomName: 'Sinan', date: '2026-11-22', time: '5:00 PM – 8:00 PM', venue: 'Crescent Banquet Hall', venueCity: 'Kozhikode, Kerala' },
   },
   {
     id: 'muslim-red',
-    kind: 'envelope',
+    kind: 'poster',
     religion: 'islamic',
     label: 'Rihana & Suhail style',
-    colorPresetId: 'crimson-gold',
-    thumbnail: '/gallery/demo-wedding-invitation-two.jpg',
+    backgroundImage: '/backgrounds/muslim-rihana-suhail.jpg',
+    thumbnail: '/backgrounds/muslim-rihana-suhail.jpg',
+    accent: { ink: '#3D0A0A', accent: '#8B1A1A', gold: '#C9A84C', cardBg: '#FFF6EA' },
     demo: { brideName: 'Rihana', groomName: 'Suhail', date: '2026-12-12', time: '4:00 PM – 7:00 PM', venue: 'Al Fajr Convention Centre', venueCity: 'Kondotty, Kerala' },
   },
   {
@@ -66,11 +67,12 @@ export const TEMPLATE_VARIANTS: TemplateVariant[] = [
   // ── Hindu ───────────────────────────────────────────────────────────
   {
     id: 'hindu-ganesh',
-    kind: 'envelope',
+    kind: 'poster',
     religion: 'hindu',
     label: 'Vardhan & Gayathri style',
-    colorPresetId: 'maroon-gold',
-    thumbnail: '/gallery/wedding-vardhan-gayathri.jpg',
+    backgroundImage: '/backgrounds/hindu-vardhan-gayathri.jpg',
+    thumbnail: '/backgrounds/hindu-vardhan-gayathri.jpg',
+    accent: { ink: '#3A1408', accent: '#7A2413', gold: '#B8860B', cardBg: '#F7F0DE' },
     demo: { brideName: 'Gayathri Devi', groomName: 'Vardhan', date: '2026-09-05', time: '11:00 AM (Muhurtham)', venue: 'Sri Kalyana Mandapam', venueCity: 'Chennai, Tamil Nadu' },
   },
   {
@@ -97,11 +99,12 @@ export const TEMPLATE_VARIANTS: TemplateVariant[] = [
   // ── Christian ───────────────────────────────────────────────────────
   {
     id: 'christian-envelope',
-    kind: 'envelope',
+    kind: 'poster',
     religion: 'christian',
     label: 'Arjun & Meghana style',
-    colorPresetId: 'ivory-gold',
-    thumbnail: '/gallery/wedding-arjun-meghana.jpg',
+    backgroundImage: '/backgrounds/christian-arjun-meghana.jpg',
+    thumbnail: '/backgrounds/christian-arjun-meghana.jpg',
+    accent: { ink: '#3A0D15', accent: '#7B1F2B', gold: '#B8860B', cardBg: '#F3E8D6' },
     demo: { brideName: 'Meghana', groomName: 'Arjun', date: '2026-05-23', time: '4:00 PM', venue: 'St. Thomas Church', venueCity: 'Bengaluru, Karnataka' },
   },
   {

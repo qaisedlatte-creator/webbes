@@ -56,6 +56,22 @@ export const RELIGION_PRESETS: Record<Religion, ColorPreset[]> = {
       petalPrimary: '#8AA669',
       petalSecondary: '#5C7A45',
     },
+    {
+      id: 'sky-gold',
+      name: 'Sky & Gold',
+      ink: '#16283A',
+      accent: '#1E3A52',
+      accentDeep: '#16283A',
+      accentDarkest: '#0E1B28',
+      gold: '#C9A961',
+      goldBright: '#DDC084',
+      label: '#A9863F',
+      cardBg: '#F7F4EE',
+      bodyBg: '#F1F7FB',
+      pageBgStops: ['#F1F7FB', '#E3EDF6', '#D2E2EF', '#BCD4E6'],
+      petalPrimary: '#1E3A52',
+      petalSecondary: '#C9A961',
+    },
   ],
   christian: [
     {
