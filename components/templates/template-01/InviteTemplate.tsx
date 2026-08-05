@@ -72,7 +72,11 @@ export default function InviteTemplate({ religion, data, watermark = false, skip
   const theme = themeOverride ?? getPreset(religion, data.colorPresetId)
   const terminology = RELIGION_TERMINOLOGY[religion]
   const music = RELIGION_MUSIC[religion]
-  const monogram = `${initials(data.brideName)} & ${initials(data.groomName)}`
+  // "brideName"/"groomName" below are purely positional (first/second) —
+  // nameOrder swaps which real name lands in which slot.
+  const [firstName, secondName] =
+    data.nameOrder === 'groomFirst' ? [data.groomName || 'Groom', data.brideName || 'Bride'] : [data.brideName || 'Bride', data.groomName || 'Groom']
+  const monogram = `${initials(firstName)} & ${initials(secondName)}`
   const eventLabel = data.eventLabel || terminology.eventLabel
   const heroSubtitle = data.heroSubtitle || terminology.heroSubtitle
   const closingLine = data.closingLine || terminology.closingLine
@@ -88,8 +92,8 @@ export default function InviteTemplate({ religion, data, watermark = false, skip
     <div style={{ fontFamily: 'var(--invite-label)', backgroundColor: theme.bodyBg, color: theme.ink, minHeight: '100%', position: 'relative' }}>
       {!skipReveal && (
         <LoadingScreen
-          brideName={data.brideName || 'Bride'}
-          groomName={data.groomName || 'Groom'}
+          brideName={firstName}
+          groomName={secondName}
           monogram={monogram}
           invitationLabel={terminology.invitationLabel}
           dateDotted={formatDateDotted(data.date)}
@@ -146,27 +150,33 @@ export default function InviteTemplate({ religion, data, watermark = false, skip
               <main>
                 <ScrollParallax enabled={religion === 'christian'}>
                   <Hero
-                    brideName={data.brideName || 'Bride'}
-                    groomName={data.groomName || 'Groom'}
+                    brideName={firstName}
+                    groomName={secondName}
                     eventLabel={eventLabel}
                     subtitle={heroSubtitle}
                     dateLong={formatDateLong(data.date)}
                     theme={theme}
                   />
                 </ScrollParallax>
-                <WeddingDetails date={data.date} time={data.time || '4:00 PM'} eventLabel={eventLabel} closingLine={closingLine} theme={theme} />
-                <Countdown date={data.date} time={data.time || '4:00 PM'} theme={theme} />
-                <Location
-                  venue={data.venue || 'Venue to be announced'}
-                  venueCity={data.venueCity || ''}
-                  date={data.date}
-                  eventLabel={eventLabel}
-                  mapsUrl={data.mapsUrl}
-                  theme={theme}
-                  scrollStyle={religion === 'christian' ? 'slide' : 'scale'}
-                />
-                {rsvpEnabled && inviteId && <RSVP inviteId={inviteId} theme={theme} />}
-                <Footer brideName={data.brideName || 'Bride'} groomName={data.groomName || 'Groom'} date={data.date} footerBlessing={footerBlessing} religion={religion} theme={theme} />
+                {data.showWeddingDetails && (
+                  <WeddingDetails date={data.date} time={data.time || '4:00 PM'} eventLabel={eventLabel} closingLine={closingLine} theme={theme} />
+                )}
+                {data.showCountdown && <Countdown date={data.date} time={data.time || '4:00 PM'} theme={theme} />}
+                {data.showLocation && (
+                  <Location
+                    venue={data.venue || 'Venue to be announced'}
+                    venueCity={data.venueCity || ''}
+                    date={data.date}
+                    eventLabel={eventLabel}
+                    mapsUrl={data.mapsUrl}
+                    theme={theme}
+                    scrollStyle={religion === 'christian' ? 'slide' : 'scale'}
+                  />
+                )}
+                {rsvpEnabled && inviteId && <RSVP inviteId={inviteId} theme={theme} style={data.rsvpStyle} />}
+                {data.showFooter && (
+                  <Footer brideName={firstName} groomName={secondName} date={data.date} footerBlessing={footerBlessing} religion={religion} theme={theme} />
+                )}
               </main>
             </motion.div>
           </div>

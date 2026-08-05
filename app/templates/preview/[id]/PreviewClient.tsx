@@ -145,6 +145,17 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
           Removes the watermark and unlocks your photo{songEnabled ? ', song,' : ''} &amp; final link
           {rsvpEnabled ? ' — RSVP included' : ''}
         </p>
+        <p className="text-[11px] text-white/35">
+          By purchasing you agree to our{' '}
+          <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/60">
+            Terms
+          </a>{' '}
+          and{' '}
+          <a href="/refund-policy" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/60">
+            Refund Policy
+          </a>
+          .
+        </p>
       </div>
     </div>
   )

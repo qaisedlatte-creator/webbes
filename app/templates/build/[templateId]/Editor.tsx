@@ -200,6 +200,19 @@ export default function Editor({
                   onChange={(e) => update({ groomName: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-lg border border-black/10 text-sm focus:outline-none focus:border-[#2563EB]"
                 />
+                <div className="grid grid-cols-2 gap-2">
+                  {(['brideFirst', 'groomFirst'] as const).map((v) => (
+                    <button
+                      key={v}
+                      onClick={() => update({ nameOrder: v })}
+                      className={`py-2 rounded-lg text-xs font-medium border transition-colors ${
+                        data.nameOrder === v ? 'border-[#2563EB] bg-[#2563EB]/5 text-[#2563EB]' : 'border-black/10 text-black/60 hover:border-black/20'
+                      }`}
+                    >
+                      {v === 'brideFirst' ? "Bride's name first" : "Groom's name first"}
+                    </button>
+                  ))}
+                </div>
               </div>
             </section>
 
@@ -344,6 +357,27 @@ export default function Editor({
               </label>
             </section>
 
+            {/* Sections — Hero is always shown; everything else can be removed */}
+            <section>
+              <h2 className="text-sm font-semibold text-black/80 mb-1">Sections</h2>
+              <p className="text-xs text-black/40 mb-3">Turn off anything you don't need on your invite.</p>
+              <div className="space-y-2">
+                {(
+                  [
+                    ['showWeddingDetails', 'Date & time reveal card'],
+                    ['showCountdown', 'Countdown'],
+                    ['showLocation', 'Venue & map'],
+                    ['showFooter', 'Closing blessing footer'],
+                  ] as const
+                ).map(([key, label]) => (
+                  <label key={key} className="flex items-center justify-between px-3.5 py-3 rounded-lg border border-black/10">
+                    <span className="text-sm text-black/70">{label}</span>
+                    <input type="checkbox" checked={data[key]} onChange={(e) => update({ [key]: e.target.checked })} className="w-4 h-4" />
+                  </label>
+                ))}
+              </div>
+            </section>
+
             {/* Music add-on */}
             <section>
               <div className="flex items-center justify-between mb-1">
@@ -385,10 +419,28 @@ export default function Editor({
                 <span className="text-xs font-semibold" style={{ color: '#2563EB' }}>+{formatINR(RSVP_ADDON_PRICE_INR)}</span>
               </div>
               <p className="text-xs text-black/40 mb-3">Guests can RSVP right on the invite. You get a private dashboard link to see who's coming.</p>
-              <label className="flex items-center justify-between px-3.5 py-3 rounded-lg border border-black/10">
+              <label className="flex items-center justify-between px-3.5 py-3 rounded-lg border border-black/10 mb-3">
                 <span className="text-sm text-black/70">Enable RSVP</span>
                 <input type="checkbox" checked={rsvpEnabled} onChange={(e) => setRsvpEnabled(e.target.checked)} className="w-4 h-4" />
               </label>
+              {rsvpEnabled && (
+                <div>
+                  <label className="text-xs text-black/45 mb-1.5 block">RSVP card style</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(['frosted', 'outline', 'solid'] as const).map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => update({ rsvpStyle: s })}
+                        className={`py-2 rounded-lg text-xs font-medium border capitalize transition-colors ${
+                          data.rsvpStyle === s ? 'border-[#2563EB] bg-[#2563EB]/5 text-[#2563EB]' : 'border-black/10 text-black/60 hover:border-black/20'
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </section>
           </div>
 
@@ -411,6 +463,17 @@ export default function Editor({
             >
               See your invitation →
             </button>
+            <p className="text-[11px] text-black/35 text-center mt-3">
+              By purchasing you agree to our{' '}
+              <Link href="/terms" target="_blank" className="underline hover:text-black/60">
+                Terms
+              </Link>{' '}
+              and{' '}
+              <Link href="/refund-policy" target="_blank" className="underline hover:text-black/60">
+                Refund Policy
+              </Link>
+              .
+            </p>
           </div>
         </div>
 
@@ -418,7 +481,7 @@ export default function Editor({
         <div className={`flex-1 lg:h-full lg:overflow-y-auto bg-[#e9e6de] items-start justify-center py-8 px-4 ${showPreview ? 'flex' : 'hidden lg:flex'}`}>
           <div className="w-full max-w-[420px] rounded-2xl overflow-hidden shadow-2xl border border-black/10" style={{ height: 'min(80vh, 780px)' }}>
             <div className="w-full h-full overflow-y-auto">
-              <TemplateRenderer templateId={templateId} religion={religion} data={data} skipReveal watermark={false} />
+              <TemplateRenderer templateId={templateId} religion={religion} data={data} skipReveal watermark={false} rsvpEnabled={rsvpEnabled} inviteId={id ?? undefined} />
             </div>
           </div>
         </div>

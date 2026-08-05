@@ -63,6 +63,15 @@ export interface InviteData {
   heroSubtitle: string;
   closingLine: string;
   footerBlessing: string;
+  /** Which name appears first everywhere the couple's names are shown together. */
+  nameOrder: 'brideFirst' | 'groomFirst';
+  /** Section visibility — Hero and RSVP (separately gated) are always on. */
+  showCountdown: boolean;
+  showWeddingDetails: boolean;
+  showLocation: boolean;
+  showFooter: boolean;
+  /** Background treatment for the RSVP card. */
+  rsvpStyle: 'frosted' | 'outline' | 'solid';
 }
 
 export interface RsvpResponseRecord {

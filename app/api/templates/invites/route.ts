@@ -6,6 +6,7 @@ const VALID_RELIGIONS: Religion[] = ['islamic', 'christian', 'hindu']
 const DATA_FIELDS: (keyof InviteData)[] = [
   'groomName', 'brideName', 'date', 'time', 'venue', 'venueCity', 'colorPresetId', 'photoUrl',
   'audioUrl', 'mapsUrl', 'showPetals', 'eventLabel', 'heroSubtitle', 'closingLine', 'footerBlessing',
+  'nameOrder', 'showCountdown', 'showWeddingDetails', 'showLocation', 'showFooter', 'rsvpStyle',
 ]
 
 export async function POST(req: NextRequest) {

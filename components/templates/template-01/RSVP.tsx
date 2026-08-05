@@ -9,14 +9,26 @@ import { withAlpha } from '@/lib/templates/color'
 interface Props {
   inviteId: string
   theme: ColorPreset
+  /** Background treatment for the card. */
+  style?: 'frosted' | 'outline' | 'solid'
 }
 
-export default function RSVP({ inviteId, theme }: Props) {
+export default function RSVP({ inviteId, theme, style = 'frosted' }: Props) {
   const [guestName, setGuestName] = useState('')
   const [attending, setAttending] = useState<'yes' | 'no' | null>(null)
   const [guestCount, setGuestCount] = useState(1)
   const [message, setMessage] = useState('')
   const [state, setState] = useState<'idle' | 'saving' | 'done' | 'error'>('idle')
+
+  const cardStyle: React.CSSProperties =
+    style === 'solid'
+      ? { background: theme.accent, border: 'none', boxShadow: `0 8px 40px ${withAlpha(theme.accentDarkest, 0.25)}` }
+      : style === 'outline'
+        ? { background: 'transparent', border: `1.5px solid ${theme.gold}`, boxShadow: 'none' }
+        : { background: withAlpha(theme.cardBg, 0.92), border: `1px solid ${withAlpha(theme.gold, 0.22)}`, boxShadow: `0 8px 40px ${withAlpha(theme.accentDarkest, 0.12)}` }
+
+  const textInk = style === 'solid' ? theme.cardBg : theme.ink
+  const labelColor = style === 'solid' ? withAlpha(theme.cardBg, 0.75) : theme.label
 
   const submit = async () => {
     if (!guestName.trim() || attending === null) return
@@ -39,21 +51,21 @@ export default function RSVP({ inviteId, theme }: Props) {
       <div className="relative z-10 max-w-lg mx-auto px-6 md:px-12">
         <motion.div
           className="p-8 md:p-10 rounded-[18px]"
-          style={{ background: withAlpha(theme.cardBg, 0.92), border: `1px solid ${withAlpha(theme.gold, 0.22)}`, boxShadow: `0 8px 40px ${withAlpha(theme.accentDarkest, 0.12)}` }}
+          style={cardStyle}
           variants={stagger}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-60px' }}
         >
-          <motion.p variants={fadeUp} className="tracking-[0.32em] text-xs uppercase text-center mb-2" style={{ fontFamily: 'var(--invite-label)', color: theme.label, fontWeight: 300 }}>
+          <motion.p variants={fadeUp} className="tracking-[0.32em] text-xs uppercase text-center mb-2" style={{ fontFamily: 'var(--invite-label)', color: labelColor, fontWeight: 300 }}>
             RSVP
           </motion.p>
-          <motion.h3 variants={fadeUp} className="text-center mb-6" style={{ fontFamily: 'var(--invite-heading)', fontSize: '1.5rem', color: theme.ink }}>
+          <motion.h3 variants={fadeUp} className="text-center mb-6" style={{ fontFamily: 'var(--invite-heading)', fontSize: '1.5rem', color: textInk }}>
             Will you join us?
           </motion.h3>
 
           {state === 'done' ? (
-            <motion.p variants={fadeUp} className="text-center italic" style={{ fontFamily: 'var(--invite-serif)', color: theme.accent }}>
+            <motion.p variants={fadeUp} className="text-center italic" style={{ fontFamily: 'var(--invite-serif)', color: style === 'solid' ? theme.goldBright : theme.accent }}>
               Thank you, {guestName}! Your RSVP has been recorded.
             </motion.p>
           ) : (
@@ -64,7 +76,7 @@ export default function RSVP({ inviteId, theme }: Props) {
                 value={guestName}
                 onChange={(e) => setGuestName(e.target.value)}
                 className="w-full px-4 py-2.5 rounded-lg text-sm"
-                style={{ border: `1px solid ${withAlpha(theme.gold, 0.35)}`, background: 'transparent', color: theme.ink }}
+                style={{ border: `1px solid ${withAlpha(style === 'solid' ? theme.cardBg : theme.gold, 0.35)}`, background: 'transparent', color: textInk }}
               />
 
               <div className="flex gap-2">
@@ -75,8 +87,8 @@ export default function RSVP({ inviteId, theme }: Props) {
                     className="flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors"
                     style={
                       attending === v
-                        ? { background: theme.accent, color: theme.cardBg }
-                        : { background: 'transparent', color: theme.ink, border: `1px solid ${withAlpha(theme.gold, 0.35)}` }
+                        ? { background: style === 'solid' ? theme.cardBg : theme.accent, color: style === 'solid' ? theme.accent : theme.cardBg }
+                        : { background: 'transparent', color: textInk, border: `1px solid ${withAlpha(style === 'solid' ? theme.cardBg : theme.gold, 0.35)}` }
                     }
                   >
                     {v === 'yes' ? 'Joyfully accept' : "Can't make it"}
@@ -86,7 +98,7 @@ export default function RSVP({ inviteId, theme }: Props) {
 
               {attending === 'yes' && (
                 <div className="flex items-center justify-between">
-                  <label className="text-sm" style={{ color: withAlpha(theme.ink, 0.7) }}>Number of guests</label>
+                  <label className="text-sm" style={{ color: withAlpha(textInk, 0.7) }}>Number of guests</label>
                   <input
                     type="number"
                     min={1}
@@ -94,7 +106,7 @@ export default function RSVP({ inviteId, theme }: Props) {
                     value={guestCount}
                     onChange={(e) => setGuestCount(Math.max(1, Math.min(10, Number(e.target.value) || 1)))}
                     className="w-16 px-2 py-1.5 rounded-lg text-sm text-center"
-                    style={{ border: `1px solid ${withAlpha(theme.gold, 0.35)}`, background: 'transparent', color: theme.ink }}
+                    style={{ border: `1px solid ${withAlpha(style === 'solid' ? theme.cardBg : theme.gold, 0.35)}`, background: 'transparent', color: textInk }}
                   />
                 </div>
               )}
@@ -105,16 +117,16 @@ export default function RSVP({ inviteId, theme }: Props) {
                 onChange={(e) => setMessage(e.target.value)}
                 rows={2}
                 className="w-full px-4 py-2.5 rounded-lg text-sm resize-none"
-                style={{ border: `1px solid ${withAlpha(theme.gold, 0.35)}`, background: 'transparent', color: theme.ink }}
+                style={{ border: `1px solid ${withAlpha(style === 'solid' ? theme.cardBg : theme.gold, 0.35)}`, background: 'transparent', color: textInk }}
               />
 
-              {state === 'error' && <p className="text-xs text-center" style={{ color: theme.accent }}>Something went wrong — try again.</p>}
+              {state === 'error' && <p className="text-xs text-center" style={{ color: style === 'solid' ? theme.cardBg : theme.accent }}>Something went wrong — try again.</p>}
 
               <button
                 onClick={submit}
                 disabled={state === 'saving' || !guestName.trim() || attending === null}
                 className="w-full py-3 rounded-full text-sm font-semibold transition-transform hover:scale-[1.02] disabled:opacity-40"
-                style={{ background: theme.accent, color: theme.cardBg }}
+                style={style === 'solid' ? { background: theme.cardBg, color: theme.accent } : { background: theme.accent, color: theme.cardBg }}
               >
                 {state === 'saving' ? 'Sending…' : 'Send RSVP'}
               </button>

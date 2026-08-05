@@ -17,10 +17,15 @@ const COMPANY_LINKS = [
   { label: 'Contact', href: '/contact' },
 ]
 
+const LEGAL_LINKS = [
+  { label: 'Terms of Use', href: '/terms' },
+  { label: 'Refund & Cancellation Policy', href: '/refund-policy' },
+]
+
 export default function Footer() {
   return (
     <footer style={{ background: '#0a0a0a', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-      <div className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-12">
+      <div className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-5 gap-12">
         {/* Brand */}
         <div className="md:col-span-1">
           <Link
@@ -86,6 +91,20 @@ export default function Footer() {
             className="block text-white/40 text-[13px] mb-2.5 hover:text-white transition-colors duration-150">
             WhatsApp
           </a>
+        </div>
+
+        {/* Legal */}
+        <div>
+          <h5 className="text-[10px] tracking-[0.2em] text-white/30 uppercase mb-5 font-semibold">Legal</h5>
+          {LEGAL_LINKS.map((link) => (
+            <Link
+              key={link.label}
+              href={link.href}
+              className="block text-white/40 text-[13px] mb-2.5 hover:text-white transition-colors duration-150"
+            >
+              {link.label}
+            </Link>
+          ))}
         </div>
       </div>
 

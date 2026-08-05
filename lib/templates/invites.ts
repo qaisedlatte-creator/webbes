@@ -19,6 +19,12 @@ export const DEFAULT_INVITE_DATA: InviteData = {
   heroSubtitle: '',
   closingLine: '',
   footerBlessing: '',
+  nameOrder: 'brideFirst',
+  showCountdown: true,
+  showWeddingDetails: true,
+  showLocation: true,
+  showFooter: true,
+  rsvpStyle: 'frosted',
 }
 
 interface InviteRow {
