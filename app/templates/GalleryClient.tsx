@@ -1,8 +1,10 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { RELIGIONS, RELIGION_PRESETS } from '@/lib/templates/religion-themes'
+import { getPreset } from '@/lib/templates/religion-themes'
+import { GALLERY_ENTRIES } from '@/lib/templates/gallery'
 
 const VP = { once: true, margin: '-60px' } as const
 
@@ -95,35 +97,40 @@ export default function GalleryClient() {
           transition={{ duration: 0.6, ease: 'easeOut' }}
           style={{ fontFamily: "'Syne', sans-serif", fontSize: 'clamp(1.7rem, 3.5vw, 2.4rem)', fontWeight: 700, color: '#0a0a0a', letterSpacing: '-0.5px', marginBottom: 40 }}
         >
-          Islamic, Christian, or Hindu — each with its own palette, music, and terminology.
+          Five real invites we've built — Islamic, Christian, and Hindu — pick the one closest to your style.
         </motion.h2>
 
-        <div className="grid gap-6 sm:grid-cols-3">
-          {RELIGIONS.map((r, i) => {
-            const preset = RELIGION_PRESETS[r.id][0]
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {GALLERY_ENTRIES.map((entry, i) => {
+            const preset = getPreset(entry.religion, entry.presetId)
             return (
               <motion.div
-                key={r.id}
+                key={entry.id}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={VP}
-                transition={{ duration: 0.5, ease: 'easeOut', delay: i * 0.08 }}
+                transition={{ duration: 0.5, ease: 'easeOut', delay: i * 0.06 }}
               >
                 <Link
-                  href={`/templates/build/template-01?religion=${r.id}`}
+                  href={`/templates/build/template-01?religion=${entry.religion}&preset=${entry.presetId}`}
                   className="group block rounded-2xl overflow-hidden border border-black/8 transition-all hover:-translate-y-1 hover:shadow-xl"
                   style={{ background: '#fff' }}
                 >
-                  <div
-                    className="h-36 flex items-center justify-center relative overflow-hidden"
-                    style={{ background: `linear-gradient(135deg, ${preset.accent}, ${preset.accentDeep})` }}
-                  >
-                    <span style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: '2.2rem', color: preset.goldBright }}>A &amp; B</span>
+                  <div className="relative h-44 overflow-hidden">
+                    <Image
+                      src={entry.thumbnail}
+                      alt={`${entry.names} invitation — ${preset.name} style`}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
                   </div>
                   <div className="p-5 text-left">
-                    <p className="text-[11px] uppercase tracking-[0.2em] mb-1 font-semibold" style={{ color: preset.label }}>{r.label}</p>
-                    <p style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.1rem', fontWeight: 700, color: '#0a0a0a' }}>Template One</p>
-                    <p className="mt-1 text-[13px] text-black/45">{preset.name} default</p>
+                    <p className="text-[11px] uppercase tracking-[0.2em] mb-1 font-semibold" style={{ color: preset.label }}>
+                      {entry.religion} · {preset.name}
+                    </p>
+                    <p style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.1rem', fontWeight: 700, color: '#0a0a0a' }}>{entry.names}</p>
+                    <p className="mt-1 text-[13px] text-black/45">{entry.tagline}</p>
                   </div>
                 </Link>
               </motion.div>

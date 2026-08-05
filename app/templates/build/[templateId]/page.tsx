@@ -1,6 +1,6 @@
 import { getInvite } from '@/lib/templates/invites'
 import { DEFAULT_INVITE_DATA } from '@/lib/templates/invites'
-import { DEFAULT_PRESET_ID } from '@/lib/templates/religion-themes'
+import { DEFAULT_PRESET_ID, RELIGION_PRESETS } from '@/lib/templates/religion-themes'
 import type { Religion } from '@/lib/templates/types'
 import Editor from './Editor'
 
@@ -11,7 +11,7 @@ export default async function BuildPage({
   searchParams,
 }: {
   params: Promise<{ templateId: string }>
-  searchParams: Promise<{ id?: string; religion?: string }>
+  searchParams: Promise<{ id?: string; religion?: string; preset?: string }>
 }) {
   const { templateId } = await params
   const sp = await searchParams
@@ -24,13 +24,14 @@ export default async function BuildPage({
   }
 
   const religion: Religion = VALID_RELIGIONS.includes(sp.religion as Religion) ? (sp.religion as Religion) : 'islamic'
+  const presetId = RELIGION_PRESETS[religion].some((p) => p.id === sp.preset) ? sp.preset! : DEFAULT_PRESET_ID[religion]
 
   return (
     <Editor
       templateId={templateId}
       initialId={null}
       initialReligion={religion}
-      initialData={{ ...DEFAULT_INVITE_DATA, colorPresetId: DEFAULT_PRESET_ID[religion] }}
+      initialData={{ ...DEFAULT_INVITE_DATA, colorPresetId: presetId }}
       initialWhatsapp={null}
     />
   )
