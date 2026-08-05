@@ -1,6 +1,6 @@
 import { getInvite } from '@/lib/templates/invites'
 import { DEFAULT_INVITE_DATA } from '@/lib/templates/invites'
-import { DEFAULT_PRESET_ID, RELIGION_PRESETS } from '@/lib/templates/religion-themes'
+import { getVariant } from '@/lib/templates/posterVariants'
 import type { Religion } from '@/lib/templates/types'
 import Editor from './Editor'
 
@@ -11,7 +11,7 @@ export default async function BuildPage({
   searchParams,
 }: {
   params: Promise<{ templateId: string }>
-  searchParams: Promise<{ id?: string; religion?: string; preset?: string }>
+  searchParams: Promise<{ id?: string; religion?: string }>
 }) {
   const { templateId } = await params
   const sp = await searchParams
@@ -23,15 +23,29 @@ export default async function BuildPage({
     }
   }
 
+  const variant = getVariant(templateId)
+
+  if (variant) {
+    return (
+      <Editor
+        templateId={templateId}
+        initialId={null}
+        initialReligion={variant.religion}
+        initialData={{ ...DEFAULT_INVITE_DATA, colorPresetId: variant.kind === 'envelope' ? variant.colorPresetId : '' }}
+        initialWhatsapp={null}
+      />
+    )
+  }
+
+  // Custom flow — religion picked on the category page, background comes from their own upload.
   const religion: Religion = VALID_RELIGIONS.includes(sp.religion as Religion) ? (sp.religion as Religion) : 'islamic'
-  const presetId = RELIGION_PRESETS[religion].some((p) => p.id === sp.preset) ? sp.preset! : DEFAULT_PRESET_ID[religion]
 
   return (
     <Editor
-      templateId={templateId}
+      templateId="custom"
       initialId={null}
       initialReligion={religion}
-      initialData={{ ...DEFAULT_INVITE_DATA, colorPresetId: presetId }}
+      initialData={{ ...DEFAULT_INVITE_DATA, colorPresetId: '' }}
       initialWhatsapp={null}
     />
   )

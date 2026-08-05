@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getInvite } from '@/lib/templates/invites'
-import InviteTemplate from '@/components/templates/template-01/InviteTemplate'
+import TemplateRenderer from '@/components/templates/TemplateRenderer'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
@@ -19,5 +19,5 @@ export default async function InvitePage({ params }: { params: Promise<{ id: str
   if (!invite) notFound()
   if (invite.status !== 'paid') redirect(`/templates/preview/${id}`)
 
-  return <InviteTemplate religion={invite.religion} data={invite.data} watermark={false} />
+  return <TemplateRenderer templateId={invite.templateId} religion={invite.religion} data={invite.data} watermark={false} />
 }

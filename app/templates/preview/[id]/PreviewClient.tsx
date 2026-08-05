@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Script from 'next/script'
-import InviteTemplate from '@/components/templates/template-01/InviteTemplate'
+import TemplateRenderer from '@/components/templates/TemplateRenderer'
 import type { InviteData, Religion } from '@/lib/templates/types'
 
 declare global {
@@ -14,12 +14,13 @@ declare global {
 
 interface Props {
   id: string
+  templateId: string
   religion: Religion
   data: InviteData
   pricePaise: number
 }
 
-export default function PreviewClient({ id, religion, data, pricePaise }: Props) {
+export default function PreviewClient({ id, templateId, religion, data, pricePaise }: Props) {
   const router = useRouter()
   const [paying, setPaying] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -79,7 +80,7 @@ export default function PreviewClient({ id, religion, data, pricePaise }: Props)
     <div className="relative">
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
 
-      <InviteTemplate religion={religion} data={data} watermark />
+      <TemplateRenderer templateId={templateId} religion={religion} data={data} watermark />
 
       <div
         className="fixed bottom-0 left-0 right-0 z-[300] flex flex-col items-center gap-2 px-4 py-4"

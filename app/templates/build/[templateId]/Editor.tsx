@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import InviteTemplate from '@/components/templates/template-01/InviteTemplate'
-import { RELIGIONS, RELIGION_PRESETS, DEFAULT_PRESET_ID } from '@/lib/templates/religion-themes'
+import TemplateRenderer from '@/components/templates/TemplateRenderer'
+import { RELIGION_PRESETS, RELIGIONS } from '@/lib/templates/religion-themes'
+import { getVariant } from '@/lib/templates/posterVariants'
 import type { InviteData, Religion } from '@/lib/templates/types'
 
 interface Props {
@@ -20,7 +21,7 @@ type SaveState = 'idle' | 'saving' | 'saved' | 'error'
 export default function Editor({ templateId, initialId, initialReligion, initialData, initialWhatsapp }: Props) {
   const router = useRouter()
   const [id, setId] = useState(initialId)
-  const [religion, setReligion] = useState<Religion>(initialReligion)
+  const [religion] = useState<Religion>(initialReligion)
   const [data, setData] = useState<InviteData>(initialData)
   const [whatsapp, setWhatsapp] = useState(initialWhatsapp ?? '')
   const [saveState, setSaveState] = useState<SaveState>('idle')
@@ -29,6 +30,10 @@ export default function Editor({ templateId, initialId, initialReligion, initial
   idRef.current = id
   const mounted = useRef(false)
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const variant = getVariant(templateId)
+  const kind = variant?.kind ?? (templateId === 'custom' ? 'custom' : 'envelope')
+  const religionLabel = RELIGIONS.find((r) => r.id === religion)?.label ?? religion
 
   const save = useCallback(async () => {
     setSaveState('saving')
@@ -65,11 +70,6 @@ export default function Editor({ templateId, initialId, initialReligion, initial
 
   const update = (patch: Partial<InviteData>) => setData((d) => ({ ...d, ...patch }))
 
-  const handleReligionChange = (r: Religion) => {
-    setReligion(r)
-    update({ colorPresetId: DEFAULT_PRESET_ID[r] })
-  }
-
   const handlePhotoUpload = async (file: File) => {
     setUploading(true)
     try {
@@ -88,13 +88,44 @@ export default function Editor({ templateId, initialId, initialReligion, initial
 
   const presets = RELIGION_PRESETS[religion]
 
+  const PhotoSection = (
+    <section>
+      <h2 className="text-sm font-semibold text-black/80 mb-1">Photo</h2>
+      {kind === 'custom' && !data.photoUrl && (
+        <p className="text-xs text-black/40 mb-3">Upload your own background photo to build this invite on top of.</p>
+      )}
+      {data.photoUrl ? (
+        <div className="relative rounded-lg overflow-hidden border border-black/10">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={data.photoUrl} alt="" className="w-full h-40 object-cover" />
+          <button onClick={() => update({ photoUrl: null })} className="absolute top-2 right-2 text-xs bg-black/60 text-white px-2 py-1 rounded">
+            Remove
+          </button>
+        </div>
+      ) : (
+        <label className="flex items-center justify-center h-24 rounded-lg border border-dashed border-black/20 text-sm text-black/40 cursor-pointer hover:border-black/40">
+          {uploading ? 'Uploading…' : 'Click to upload a photo'}
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0]
+              if (f) handlePhotoUpload(f)
+            }}
+          />
+        </label>
+      )}
+    </section>
+  )
+
   return (
     <div className="min-h-screen" style={{ background: '#F7F5F0' }}>
       <div className="flex flex-col lg:flex-row lg:h-screen">
         {/* Form column */}
         <div className="w-full lg:w-[440px] lg:h-full lg:overflow-y-auto border-b lg:border-b-0 lg:border-r border-black/10 bg-white">
           <div className="px-6 py-6 border-b border-black/5 flex items-center justify-between">
-            <Link href="/templates" className="text-sm text-black/50 hover:text-black">← Back</Link>
+            <Link href={`/templates/category/${religion}`} className="text-sm text-black/50 hover:text-black">← Back</Link>
             <span className="text-xs text-black/40">
               {saveState === 'saving' && 'Saving…'}
               {saveState === 'saved' && 'Saved'}
@@ -102,26 +133,17 @@ export default function Editor({ templateId, initialId, initialReligion, initial
             </span>
           </div>
 
-          <div className="px-6 py-6 space-y-8">
-            {/* 1. Religion */}
-            <section>
-              <h2 className="text-sm font-semibold text-black/80 mb-3">Style</h2>
-              <div className="grid grid-cols-3 gap-2">
-                {RELIGIONS.map((r) => (
-                  <button
-                    key={r.id}
-                    onClick={() => handleReligionChange(r.id)}
-                    className={`py-2.5 rounded-lg text-sm font-medium border transition-colors ${
-                      religion === r.id ? 'border-[#2563EB] bg-[#2563EB]/5 text-[#2563EB]' : 'border-black/10 text-black/60 hover:border-black/20'
-                    }`}
-                  >
-                    {r.label}
-                  </button>
-                ))}
-              </div>
-            </section>
+          <div className="px-6 pt-5">
+            <p className="text-[11px] uppercase tracking-[0.15em] font-semibold" style={{ color: '#2563EB' }}>
+              {religionLabel} · {variant?.label ?? 'Custom'}
+            </p>
+          </div>
 
-            {/* 2. Names */}
+          <div className="px-6 py-6 space-y-8">
+            {/* Custom flow: photo comes first, before anything else */}
+            {kind === 'custom' && PhotoSection}
+
+            {/* Names */}
             <section>
               <h2 className="text-sm font-semibold text-black/80 mb-3">Names</h2>
               <div className="space-y-3">
@@ -142,7 +164,7 @@ export default function Editor({ templateId, initialId, initialReligion, initial
               </div>
             </section>
 
-            {/* 3. WhatsApp — captured early, before photo/color */}
+            {/* WhatsApp — captured early, before photo/color */}
             <section>
               <h2 className="text-sm font-semibold text-black/80 mb-1">WhatsApp number</h2>
               <p className="text-xs text-black/40 mb-3">So we can send you the final link once it's ready.</p>
@@ -155,7 +177,7 @@ export default function Editor({ templateId, initialId, initialReligion, initial
               />
             </section>
 
-            {/* 4. Date & venue */}
+            {/* Date & venue */}
             <section>
               <h2 className="text-sm font-semibold text-black/80 mb-3">Date &amp; venue</h2>
               <div className="space-y-3">
@@ -189,54 +211,29 @@ export default function Editor({ templateId, initialId, initialReligion, initial
               </div>
             </section>
 
-            {/* 5. Color theme */}
-            <section>
-              <h2 className="text-sm font-semibold text-black/80 mb-3">Color theme</h2>
-              <div className="grid grid-cols-2 gap-2">
-                {presets.map((p) => (
-                  <button
-                    key={p.id}
-                    onClick={() => update({ colorPresetId: p.id })}
-                    className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border text-left transition-colors ${
-                      data.colorPresetId === p.id ? 'border-[#2563EB]' : 'border-black/10 hover:border-black/20'
-                    }`}
-                  >
-                    <span className="w-6 h-6 rounded-full shrink-0" style={{ background: `linear-gradient(135deg, ${p.accent}, ${p.gold})` }} />
-                    <span className="text-xs font-medium text-black/70">{p.name}</span>
-                  </button>
-                ))}
-              </div>
-            </section>
-
-            {/* 6. Photo */}
-            <section>
-              <h2 className="text-sm font-semibold text-black/80 mb-3">Photo</h2>
-              {data.photoUrl ? (
-                <div className="relative rounded-lg overflow-hidden border border-black/10">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={data.photoUrl} alt="" className="w-full h-40 object-cover" />
-                  <button
-                    onClick={() => update({ photoUrl: null })}
-                    className="absolute top-2 right-2 text-xs bg-black/60 text-white px-2 py-1 rounded"
-                  >
-                    Remove
-                  </button>
+            {/* Color theme — only the flexible envelope template has this */}
+            {kind === 'envelope' && (
+              <section>
+                <h2 className="text-sm font-semibold text-black/80 mb-3">Color theme</h2>
+                <div className="grid grid-cols-2 gap-2">
+                  {presets.map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => update({ colorPresetId: p.id })}
+                      className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border text-left transition-colors ${
+                        data.colorPresetId === p.id ? 'border-[#2563EB]' : 'border-black/10 hover:border-black/20'
+                      }`}
+                    >
+                      <span className="w-6 h-6 rounded-full shrink-0" style={{ background: `linear-gradient(135deg, ${p.accent}, ${p.gold})` }} />
+                      <span className="text-xs font-medium text-black/70">{p.name}</span>
+                    </button>
+                  ))}
                 </div>
-              ) : (
-                <label className="flex items-center justify-center h-24 rounded-lg border border-dashed border-black/20 text-sm text-black/40 cursor-pointer hover:border-black/40">
-                  {uploading ? 'Uploading…' : 'Click to upload a photo'}
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    className="hidden"
-                    onChange={(e) => {
-                      const f = e.target.files?.[0]
-                      if (f) handlePhotoUpload(f)
-                    }}
-                  />
-                </label>
-              )}
-            </section>
+              </section>
+            )}
+
+            {/* Envelope template also allows an optional ambient background photo */}
+            {kind === 'envelope' && PhotoSection}
           </div>
 
           <div className="px-6 py-6 border-t border-black/5">
@@ -258,7 +255,7 @@ export default function Editor({ templateId, initialId, initialReligion, initial
         <div className="flex-1 lg:h-full lg:overflow-y-auto bg-[#e9e6de] flex items-start justify-center py-8 px-4">
           <div className="w-full max-w-[420px] rounded-2xl overflow-hidden shadow-2xl border border-black/10" style={{ height: 'min(80vh, 780px)' }}>
             <div className="w-full h-full overflow-y-auto">
-              <InviteTemplate religion={religion} data={data} skipReveal watermark={false} />
+              <TemplateRenderer templateId={templateId} religion={religion} data={data} skipReveal watermark={false} />
             </div>
           </div>
         </div>
