@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { stagger, fadeUp, scaleIn } from '@/lib/templates/animations'
+import { stagger, fadeUp, scaleIn, slideUp } from '@/lib/templates/animations'
 import { MapPin, ExternalLink, Navigation2 } from 'lucide-react'
 import type { ColorPreset } from '@/lib/templates/types'
 import { withAlpha } from '@/lib/templates/color'
@@ -13,9 +13,11 @@ interface Props {
   date: string
   eventLabel: string
   theme: ColorPreset
+  /** Christian gets a slide-up-and-blur reveal instead of the scale-in the others use. */
+  scrollStyle?: 'scale' | 'slide'
 }
 
-export default function Location({ venue, venueCity, date, eventLabel, theme }: Props) {
+export default function Location({ venue, venueCity, date, eventLabel, theme, scrollStyle = 'scale' }: Props) {
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${venue}, ${venueCity}`)}`
 
   return (
@@ -23,7 +25,7 @@ export default function Location({ venue, venueCity, date, eventLabel, theme }: 
       <div className="relative z-10 max-w-2xl mx-auto px-6 md:px-12">
         <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }}>
           <motion.div
-            variants={scaleIn}
+            variants={scrollStyle === 'slide' ? slideUp : scaleIn}
             className="overflow-hidden rounded-[18px]"
             style={{ background: withAlpha(theme.cardBg, 0.88), border: `1px solid ${withAlpha(theme.gold, 0.22)}`, boxShadow: `0 8px 40px ${withAlpha(theme.accentDarkest, 0.12)}` }}
           >

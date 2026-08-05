@@ -23,9 +23,12 @@ body {
   overflow-x: hidden;
 }
 
-/* Hide default cursor on pointer devices — custom cursor handles it */
+/* Hide default cursor on pointer devices — only while CustomCursor is mounted
+   (it toggles this class itself), so routes without it keep a visible cursor. */
 @media (hover: hover) and (pointer: fine) {
-  *, *::before, *::after { cursor: none !important; }
+  body.has-custom-cursor *,
+  body.has-custom-cursor *::before,
+  body.has-custom-cursor *::after { cursor: none !important; }
 }
 
 /* ── Heading font override → Syne ────────────────────────────────────────── */

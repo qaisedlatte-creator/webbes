@@ -12,6 +12,8 @@ export default function CustomCursor() {
     const el = ref.current
     if (!el) return
 
+    document.body.classList.add('has-custom-cursor')
+
     let tx = -40, ty = -40
     let x = -40, y = -40
     let raf: number
@@ -39,6 +41,7 @@ export default function CustomCursor() {
     return () => {
       window.removeEventListener('mousemove', onMove)
       cancelAnimationFrame(raf)
+      document.body.classList.remove('has-custom-cursor')
     }
   }, [])
 

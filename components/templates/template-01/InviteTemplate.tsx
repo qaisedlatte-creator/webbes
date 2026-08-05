@@ -11,6 +11,7 @@ import Footer from './Footer'
 import MusicToggle from './MusicToggle'
 import PetalOverlay from './PetalOverlay'
 import Watermark from './Watermark'
+import ScrollParallax from './ScrollParallax'
 import type { InviteData, Religion } from '@/lib/templates/types'
 import { getPreset, RELIGION_TERMINOLOGY, RELIGION_MUSIC } from '@/lib/templates/religion-themes'
 import { formatDateLong, formatDateDotted } from '@/lib/templates/date'
@@ -109,17 +110,26 @@ export default function InviteTemplate({ religion, data, watermark = false, skip
             transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
           >
             <main>
-              <Hero
-                brideName={data.brideName || 'Bride'}
-                groomName={data.groomName || 'Groom'}
-                eventLabel={terminology.eventLabel}
-                subtitle={terminology.heroSubtitle}
-                dateLong={formatDateLong(data.date)}
-                theme={theme}
-              />
+              <ScrollParallax enabled={religion === 'christian'}>
+                <Hero
+                  brideName={data.brideName || 'Bride'}
+                  groomName={data.groomName || 'Groom'}
+                  eventLabel={terminology.eventLabel}
+                  subtitle={terminology.heroSubtitle}
+                  dateLong={formatDateLong(data.date)}
+                  theme={theme}
+                />
+              </ScrollParallax>
               <WeddingDetails date={data.date} time={data.time || '4:00 PM'} eventLabel={terminology.eventLabel} closingLine={terminology.closingLine} theme={theme} />
               <Countdown date={data.date} time={data.time || '4:00 PM'} theme={theme} />
-              <Location venue={data.venue || 'Venue to be announced'} venueCity={data.venueCity || ''} date={data.date} eventLabel={terminology.eventLabel} theme={theme} />
+              <Location
+                venue={data.venue || 'Venue to be announced'}
+                venueCity={data.venueCity || ''}
+                date={data.date}
+                eventLabel={terminology.eventLabel}
+                theme={theme}
+                scrollStyle={religion === 'christian' ? 'slide' : 'scale'}
+              />
               <Footer brideName={data.brideName || 'Bride'} groomName={data.groomName || 'Groom'} date={data.date} footerBlessing={terminology.footerBlessing} religion={religion} theme={theme} />
             </main>
           </motion.div>

@@ -34,6 +34,17 @@ export const heroContainer: Variants = {
   },
 };
 
+/** Christian-only: Location card slides in from the side instead of scaling up. */
+export const slideUp: Variants = {
+  hidden: { opacity: 0, y: 70, filter: 'blur(6px)' },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
 export const heroItem: Variants = {
   hidden: { opacity: 0, y: 38, filter: 'blur(6px)' },
   visible: {
