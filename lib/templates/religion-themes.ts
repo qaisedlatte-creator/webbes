@@ -196,6 +196,13 @@ export const RELIGION_MUSIC: Record<Religion, { src: string; label: string }> = 
   hindu: { src: '/music/hindu-shehnai.mp3', label: 'Shehnai' },
 };
 
+/** Shown behind the envelope template whenever the customer hasn't uploaded their own photo yet. */
+export const RELIGION_DEFAULT_BACKGROUND: Record<Religion, string> = {
+  islamic: '/backgrounds/muslim-usman-aisha.jpg',
+  hindu: '/backgrounds/hindu-peacock-arch.jpg',
+  christian: '/backgrounds/christian-church.jpg',
+};
+
 export function getPreset(religion: Religion, presetId: string): ColorPreset {
   const list = RELIGION_PRESETS[religion];
   return list.find((p) => p.id === presetId) ?? list[0];

@@ -47,7 +47,7 @@ function buildPetals(cfg: PetalConfig) {
 const DESKTOP_PETALS = buildPetals(DESKTOP)
 const MOBILE_PETALS = buildPetals(MOBILE)
 
-export default function PetalOverlay({ theme }: { theme: ColorPreset }) {
+export default function PetalOverlay({ theme, confined = false }: { theme: ColorPreset; confined?: boolean }) {
   const [reducedMotion, setReducedMotion] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
@@ -71,7 +71,7 @@ export default function PetalOverlay({ theme }: { theme: ColorPreset }) {
   const petals = reducedMotion ? allPetals.slice(0, 5) : allPetals
 
   return (
-    <div className="petal-overlay-wrap" style={{ position: 'fixed', inset: 0, zIndex: 8, pointerEvents: 'none', overflow: 'hidden' }}>
+    <div className="petal-overlay-wrap" style={{ position: confined ? 'absolute' : 'fixed', inset: 0, zIndex: 8, pointerEvents: 'none', overflow: 'hidden' }}>
       {petals.map((p) => {
         const w = p.size
         const h = p.size * 1.55

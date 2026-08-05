@@ -1,8 +1,8 @@
 'use client'
 
 import InviteTemplate from './template-01/InviteTemplate'
-import PosterTemplate from './poster-01/PosterTemplate'
-import { getVariant } from '@/lib/templates/posterVariants'
+import { getVariant, accentToColorPreset } from '@/lib/templates/posterVariants'
+import { getPreset, DEFAULT_PRESET_ID } from '@/lib/templates/religion-themes'
 import type { InviteData, Religion } from '@/lib/templates/types'
 
 interface Props {
@@ -16,18 +16,34 @@ interface Props {
 export default function TemplateRenderer({ templateId, religion, data, watermark = false, skipReveal = false }: Props) {
   const variant = getVariant(templateId)
 
+  // Fixed-background poster variants: same multi-section envelope experience
+  // as the flexible template, just with a locked background photo + palette.
   if (variant?.kind === 'poster') {
-    return <PosterTemplate religion={religion} data={data} backgroundImage={variant.backgroundImage} accent={variant.accent} watermark={watermark} />
-  }
-
-  if (templateId === 'custom' && data.photoUrl) {
+    const theme = accentToColorPreset(variant.accent, variant.id, variant.label)
     return (
-      <PosterTemplate
+      <InviteTemplate
         religion={religion}
         data={data}
-        backgroundImage={data.photoUrl}
-        accent={{ ink: '#2a2420', accent: '#8B1A1A', gold: '#C9A84C', cardBg: '#FFF8EC' }}
         watermark={watermark}
+        skipReveal={skipReveal}
+        themeOverride={theme}
+        forcedBackground={variant.backgroundImage}
+      />
+    )
+  }
+
+  // Custom: the customer's own uploaded photo is the background; palette
+  // falls back to that religion's default envelope preset.
+  if (templateId === 'custom') {
+    const theme = getPreset(religion, DEFAULT_PRESET_ID[religion])
+    return (
+      <InviteTemplate
+        religion={religion}
+        data={data}
+        watermark={watermark}
+        skipReveal={skipReveal}
+        themeOverride={theme}
+        forcedBackground={data.photoUrl ?? undefined}
       />
     )
   }

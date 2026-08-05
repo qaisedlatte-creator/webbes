@@ -1,4 +1,5 @@
-import type { Religion } from './types';
+import type { ColorPreset, Religion } from './types';
+import { mix } from './color';
 
 export interface PosterAccent {
   ink: string;
@@ -124,6 +125,31 @@ export const TEMPLATE_VARIANTS: TemplateVariant[] = [
     demo: { brideName: 'Sophia', groomName: 'Daniel', date: '2026-06-07', time: '6:00 PM', venue: 'The Ivy Garden Hall', venueCity: 'Bangalore, Karnataka' },
   },
 ];
+
+/** Expands a poster variant's 4-color accent into the full ColorPreset InviteTemplate expects. */
+export function accentToColorPreset(accent: PosterAccent, id: string, name: string): ColorPreset {
+  return {
+    id,
+    name,
+    ink: accent.ink,
+    accent: accent.accent,
+    accentDeep: mix(accent.accent, accent.ink, 0.35),
+    accentDarkest: mix(accent.accent, accent.ink, 0.7),
+    gold: accent.gold,
+    goldBright: mix(accent.gold, '#ffffff', 0.35),
+    label: mix(accent.gold, accent.ink, 0.25),
+    cardBg: accent.cardBg,
+    bodyBg: mix(accent.cardBg, accent.gold, 0.06),
+    pageBgStops: [
+      mix(accent.cardBg, accent.gold, 0.18),
+      mix(accent.cardBg, '#ffffff', 0.4),
+      mix(accent.cardBg, accent.gold, 0.1),
+      mix(accent.cardBg, accent.ink, 0.08),
+    ],
+    petalPrimary: accent.accent,
+    petalSecondary: accent.ink,
+  };
+}
 
 export function getVariantsByReligion(religion: Religion): TemplateVariant[] {
   return TEMPLATE_VARIANTS.filter((v) => v.religion === religion);
