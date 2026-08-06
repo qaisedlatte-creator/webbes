@@ -20,6 +20,7 @@ const COMPANY_LINKS = [
 const LEGAL_LINKS = [
   { label: 'Terms of Use', href: '/terms' },
   { label: 'Refund & Cancellation Policy', href: '/refund-policy' },
+  { label: 'Privacy Policy', href: '/privacy-policy' },
 ]
 
 export default function Footer() {
