@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { BASE_PRICE_INR, LIST_PRICE_INR, formatINR } from '@/lib/templates/pricing'
 
 const VP = { once: true, margin: '-60px' } as const
 
@@ -66,6 +67,14 @@ export default function GalleryClient() {
           >
             Pick your category, choose a style, customize it live, and share a link your guests will love.
           </p>
+          <p
+            className="mt-5 inline-flex items-center gap-2 rounded-full px-4 py-1.5"
+            style={{ background: 'rgba(255,255,255,0.08)', fontFamily: 'var(--font-dm-sans), sans-serif', fontSize: '0.9rem', color: '#fff' }}
+          >
+            Starting at <strong>{formatINR(BASE_PRICE_INR)}</strong>
+            <span style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'line-through' }}>{formatINR(LIST_PRICE_INR)}</span>
+            <span style={{ color: 'rgba(255,255,255,0.5)' }}>per invitation</span>
+          </p>
         </motion.div>
       </section>
 
@@ -127,6 +136,10 @@ export default function GalleryClient() {
                   <div className="absolute bottom-0 left-0 right-0 p-5 text-left">
                     <p style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.4rem', fontWeight: 700, color: '#fff' }}>{cat.label}</p>
                     <p className="text-[13px] text-white/70 mt-0.5">{cat.count} styles + custom</p>
+                    <p className="text-[13px] font-semibold mt-1.5" style={{ color: '#fff' }}>
+                      Starting at {formatINR(BASE_PRICE_INR)}{' '}
+                      <span className="font-normal text-white/50 line-through">{formatINR(LIST_PRICE_INR)}</span>
+                    </p>
                   </div>
                 </div>
               </Link>

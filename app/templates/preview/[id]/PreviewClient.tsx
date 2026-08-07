@@ -122,6 +122,13 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
 
       <TemplateRenderer templateId={templateId} religion={religion} data={data} watermark rsvpEnabled={rsvpEnabled} inviteId={id} />
 
+      <a
+        href="/"
+        className="fixed top-4 left-4 z-[300] text-xs font-bold tracking-tight bg-white/90 text-black/70 px-3 py-2 rounded-full shadow-lg hover:text-black"
+      >
+        webbes
+      </a>
+
       <div
         className="fixed top-4 right-4 z-[300]"
       >
@@ -168,12 +175,26 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
           By purchasing you agree to our{' '}
           <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/60">
             Terms
-          </a>{' '}
-          and{' '}
+          </a>
+          ,{' '}
           <a href="/refund-policy" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/60">
             Refund Policy
+          </a>{' '}
+          and{' '}
+          <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/60">
+            Privacy Policy
           </a>
           .
+        </p>
+        <p className="text-[11px] text-white/30">
+          Webbes ·{' '}
+          <a href="mailto:webbes.in@gmail.com" className="underline hover:text-white/50">
+            webbes.in@gmail.com
+          </a>{' '}
+          ·{' '}
+          <a href="https://wa.me/919149681874" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/50">
+            WhatsApp
+          </a>
         </p>
       </div>
     </div>

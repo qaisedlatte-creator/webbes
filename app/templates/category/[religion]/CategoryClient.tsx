@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { Upload } from 'lucide-react'
 import type { TemplateVariant } from '@/lib/templates/posterVariants'
 import type { Religion } from '@/lib/templates/types'
+import { BASE_PRICE_INR, LIST_PRICE_INR, formatINR } from '@/lib/templates/pricing'
 
 const VP = { once: true, margin: '-60px' } as const
 
@@ -19,6 +20,10 @@ export default function CategoryClient({ religion, label, variants }: { religion
         </h1>
         <p className="mt-3 mx-auto max-w-md text-[15px]" style={{ fontFamily: 'var(--font-dm-sans), sans-serif', color: 'rgba(10,10,10,0.55)' }}>
           Pick a style, or upload your own photo and build on that instead.
+        </p>
+        <p className="mt-4 text-sm font-semibold" style={{ color: '#0a0a0a' }}>
+          Starting at {formatINR(BASE_PRICE_INR)}{' '}
+          <span className="font-normal text-black/35 line-through">{formatINR(LIST_PRICE_INR)}</span>
         </p>
       </section>
 
@@ -39,6 +44,7 @@ export default function CategoryClient({ religion, label, variants }: { religion
                     {v.kind === 'poster' ? 'Fixed background' : 'Customizable colors'}
                   </p>
                   <p style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.1rem', fontWeight: 700, color: '#0a0a0a' }}>{v.label}</p>
+                  <p className="text-[13px] font-semibold mt-1" style={{ color: '#2563EB' }}>{formatINR(BASE_PRICE_INR)}</p>
                 </div>
               </Link>
             </motion.div>
@@ -54,6 +60,7 @@ export default function CategoryClient({ religion, label, variants }: { religion
               <Upload size={22} className="text-black/30 mb-3" />
               <p style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.05rem', fontWeight: 700, color: '#0a0a0a' }}>Custom</p>
               <p className="text-[13px] text-black/45 mt-1 px-6 text-center">Upload your own photo as the background</p>
+              <p className="text-[13px] font-semibold mt-2" style={{ color: '#2563EB' }}>{formatINR(BASE_PRICE_INR)}</p>
             </Link>
           </motion.div>
         </div>

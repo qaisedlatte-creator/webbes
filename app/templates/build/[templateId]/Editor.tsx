@@ -154,7 +154,10 @@ export default function Editor({
         {/* Form column */}
         <div className="w-full lg:w-[440px] lg:h-full lg:overflow-y-auto border-b lg:border-b-0 lg:border-r border-black/10 bg-white">
           <div className="px-6 py-6 border-b border-black/5 flex items-center justify-between sticky top-0 bg-white z-10">
-            <Link href={`/templates/category/${religion}`} className="text-sm text-black/50 hover:text-black">← Back</Link>
+            <div className="flex items-center gap-4">
+              <Link href={`/templates/category/${religion}`} className="text-sm text-black/50 hover:text-black">← Back</Link>
+              <Link href="/" className="text-xs font-bold tracking-tight text-black/60 hover:text-black hidden sm:inline">webbes</Link>
+            </div>
             <div className="flex items-center gap-3">
               <span className="text-xs text-black/40">
                 {saveState === 'saving' && 'Saving…'}
@@ -467,12 +470,26 @@ export default function Editor({
               By purchasing you agree to our{' '}
               <Link href="/terms" target="_blank" className="underline hover:text-black/60">
                 Terms
-              </Link>{' '}
-              and{' '}
+              </Link>
+              ,{' '}
               <Link href="/refund-policy" target="_blank" className="underline hover:text-black/60">
                 Refund Policy
+              </Link>{' '}
+              and{' '}
+              <Link href="/privacy-policy" target="_blank" className="underline hover:text-black/60">
+                Privacy Policy
               </Link>
               .
+            </p>
+            <p className="text-[11px] text-black/30 text-center mt-2">
+              Webbes ·{' '}
+              <a href="mailto:webbes.in@gmail.com" className="underline hover:text-black/50">
+                webbes.in@gmail.com
+              </a>{' '}
+              ·{' '}
+              <a href="https://wa.me/919149681874" target="_blank" rel="noopener noreferrer" className="underline hover:text-black/50">
+                WhatsApp
+              </a>
             </p>
           </div>
         </div>
