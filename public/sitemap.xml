@@ -37,6 +37,27 @@
     <priority>0.7</priority>
   </url>
 
+  <url>
+    <loc>https://www.webbes.in/templates</loc>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Policies -->
+  <url>
+    <loc>https://www.webbes.in/terms</loc>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://www.webbes.in/refund-policy</loc>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://www.webbes.in/privacy-policy</loc>
+    <priority>0.5</priority>
+  </url>
+
   <!-- Blog Posts -->
   <url>
     <loc>https://www.webbes.in/blog/website-cost-kerala-2026</loc>
