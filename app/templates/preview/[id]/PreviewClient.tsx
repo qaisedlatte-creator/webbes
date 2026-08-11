@@ -1,18 +1,9 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Script from 'next/script'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import TemplateRenderer from '@/components/templates/TemplateRenderer'
 import type { InviteData, Religion } from '@/lib/templates/types'
-
-declare global {
-  interface Window {
-    Cashfree: (opts: { mode: 'sandbox' | 'production' }) => {
-      checkout: (opts: { paymentSessionId: string; redirectTarget: '_modal' }) => Promise<{ error?: unknown; redirect?: boolean }>
-    }
-  }
-}
 
 interface Props {
   id: string
@@ -25,47 +16,21 @@ interface Props {
 }
 
 export default function PreviewClient({ id, templateId, religion, data, pricePaise, rsvpEnabled, songEnabled }: Props) {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const [paying, setPaying] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [shareLink, setShareLink] = useState<string | null>(null)
   const [sharing, setSharing] = useState(false)
-  const [sdkReady, setSdkReady] = useState(false)
-  const verifiedOnce = useRef(false)
 
   const priceLabel = `₹${(pricePaise / 100).toLocaleString('en-IN')}`
 
-  const verifyAndUnlock = async (orderId: string) => {
-    try {
-      const verifyRes = await fetch('/api/templates/checkout/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, orderId }),
-      })
-      if (!verifyRes.ok) {
-        const json = await verifyRes.json().catch(() => ({}))
-        throw new Error(json.error || 'Verification failed')
-      }
-      router.push(`/templates/invite/${id}`)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Payment received but confirmation failed — refresh this page in a minute.')
-      setPaying(false)
-    }
-  }
-
-  // Some payment methods (netbanking, UPI intent) can bounce the browser back
-  // via order_meta.return_url instead of resolving inside the modal — catch
-  // that case on mount.
+  // PayU redirects here after a failed/cancelled payment (success goes straight
+  // to /templates/invite/[id] from the callback route, never back through here).
   useEffect(() => {
-    const cfOrderId = searchParams.get('cf_order_id')
-    if (cfOrderId && !verifiedOnce.current) {
-      verifiedOnce.current = true
-      setPaying(true)
-      verifyAndUnlock(cfOrderId)
+    if (searchParams.get('payu_error')) {
+      setError('Payment did not go through — nothing was charged. Please try again.')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [searchParams])
 
   const handleShare = async () => {
     setSharing(true)
@@ -84,6 +49,10 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
     }
   }
 
+  // PayU's hosted checkout is a full-page redirect, not a JS modal — we build
+  // a real <form> and submit it so the browser POSTs straight to PayU. There's
+  // nothing to verify client-side; PayU POSTs the result back to our own
+  // callback route, which is what actually unlocks the invitation.
   const handlePay = async () => {
     setError(null)
     setPaying(true)
@@ -96,20 +65,18 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
       const order = await orderRes.json()
       if (!orderRes.ok) throw new Error(order.error || 'Could not start checkout')
 
-      if (!sdkReady || !window.Cashfree) throw new Error('Payments are still loading — try again in a second')
-
-      const cashfree = window.Cashfree({ mode: order.mode === 'production' ? 'production' : 'sandbox' })
-      const result = await cashfree.checkout({ paymentSessionId: order.paymentSessionId, redirectTarget: '_modal' })
-
-      if (result?.redirect) {
-        // Cashfree is navigating the page itself (payment method needed a
-        // full redirect) — return_url will bring them back with cf_order_id.
-        return
+      const form = document.createElement('form')
+      form.method = 'POST'
+      form.action = order.action
+      for (const [name, value] of Object.entries(order.fields as Record<string, string>)) {
+        const input = document.createElement('input')
+        input.type = 'hidden'
+        input.name = name
+        input.value = value
+        form.appendChild(input)
       }
-
-      // Modal closed. Whether it looked like success or the user backed out,
-      // ask Cashfree directly rather than trusting the client-side result.
-      await verifyAndUnlock(order.orderId)
+      document.body.appendChild(form)
+      form.submit()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
       setPaying(false)
@@ -118,8 +85,6 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
 
   return (
     <div className="relative">
-      <Script src="https://sdk.cashfree.com/js/v3/cashfree.js" strategy="afterInteractive" onReady={() => setSdkReady(true)} />
-
       <TemplateRenderer templateId={templateId} religion={religion} data={data} watermark rsvpEnabled={rsvpEnabled} inviteId={id} />
 
       <a
@@ -165,7 +130,7 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
           className="w-full max-w-sm py-3.5 rounded-full text-sm font-semibold text-white transition-transform hover:scale-[1.02] disabled:opacity-50"
           style={{ background: 'linear-gradient(135deg, #8B1A1A, #5C0E0E)' }}
         >
-          {paying ? 'Opening checkout…' : `Pay ${priceLabel} to unlock your invitation`}
+          {paying ? 'Redirecting to payment…' : `Pay ${priceLabel} to unlock your invitation`}
         </button>
         <p className="text-[11px] text-white/50">
           Removes the watermark and unlocks your photo{songEnabled ? ', song,' : ''} &amp; final link
