@@ -91,10 +91,12 @@ export interface InviteRecord {
   whatsapp: string | null;
   status: 'draft' | 'paid';
   createdAt: string;
+  updatedAt: string;
   paidAt: string | null;
   rsvpEnabled: boolean;
   songEnabled: boolean;
   rsvpDashboardToken: string | null;
   previewShareToken: string | null;
   previewShareViewedAt: string | null;
+  reminderSentAt: string | null;
 }

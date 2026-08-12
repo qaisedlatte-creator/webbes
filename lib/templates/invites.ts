@@ -35,12 +35,14 @@ interface InviteRow {
   whatsapp: string | null
   status: string
   createdAt: Date
+  updatedAt: Date
   paidAt: Date | null
   rsvpEnabled: boolean
   songEnabled: boolean
   rsvpDashboardToken: string | null
   previewShareToken: string | null
   previewShareViewedAt: Date | null
+  reminderSentAt: Date | null
 }
 
 function toRecord(row: InviteRow): InviteRecord {
@@ -52,12 +54,14 @@ function toRecord(row: InviteRow): InviteRecord {
     whatsapp: row.whatsapp,
     status: row.status as 'draft' | 'paid',
     createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
     paidAt: row.paidAt ? row.paidAt.toISOString() : null,
     rsvpEnabled: row.rsvpEnabled,
     songEnabled: row.songEnabled,
     rsvpDashboardToken: row.rsvpDashboardToken,
     previewShareToken: row.previewShareToken,
     previewShareViewedAt: row.previewShareViewedAt ? row.previewShareViewedAt.toISOString() : null,
+    reminderSentAt: row.reminderSentAt ? row.reminderSentAt.toISOString() : null,
   }
 }
 
@@ -147,6 +151,33 @@ export async function submitRsvp(inviteId: string, input: { guestName: string; a
       message: input.message || null,
     },
   })
+}
+
+/** Drafts a customer started (WhatsApp captured) but never paid for — the abandoned-cart admin list. */
+export async function getAbandonedDrafts(): Promise<InviteRecord[]> {
+  const rows = await prisma.invite.findMany({
+    where: { status: 'draft', whatsapp: { not: null } },
+    orderBy: { updatedAt: 'desc' },
+  })
+  return rows.filter((r) => r.whatsapp && r.whatsapp.trim().length > 0).map(toRecord)
+}
+
+/** Abandoned drafts old enough to remind, and not reminded yet — used by the cron endpoint. */
+export async function getDraftsDueForReminder(minAgeHours: number): Promise<InviteRecord[]> {
+  const threshold = new Date(Date.now() - minAgeHours * 60 * 60 * 1000)
+  const rows = await prisma.invite.findMany({
+    where: {
+      status: 'draft',
+      whatsapp: { not: null },
+      reminderSentAt: null,
+      updatedAt: { lte: threshold },
+    },
+  })
+  return rows.filter((r) => r.whatsapp && r.whatsapp.trim().length > 0).map(toRecord)
+}
+
+export async function markReminderSent(id: string): Promise<void> {
+  await prisma.invite.update({ where: { id }, data: { reminderSentAt: new Date() } })
 }
 
 export async function getInviteByDashboardToken(token: string): Promise<{ invite: InviteRecord; responses: RsvpResponseRecord[] } | null> {

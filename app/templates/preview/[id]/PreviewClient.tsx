@@ -24,13 +24,29 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
 
   const priceLabel = `₹${(pricePaise / 100).toLocaleString('en-IN')}`
 
-  // PayU redirects here after a failed/cancelled payment (success goes straight
-  // to /templates/invite/[id] from the callback route, never back through here).
+  // Cashfree only falls back to a real redirect (instead of resolving the
+  // modal's promise) in in-app browsers that can't host the modal — confirm
+  // the order the same way the modal path does, then unlock on success.
   useEffect(() => {
-    if (searchParams.get('payu_error')) {
-      setError('Payment did not go through — nothing was charged. Please try again.')
-    }
-  }, [searchParams])
+    const orderId = searchParams.get('cf_order_id')
+    if (!orderId) return
+    ;(async () => {
+      setPaying(true)
+      try {
+        const verifyRes = await fetch('/api/templates/checkout/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, orderId }),
+        })
+        const verify = await verifyRes.json()
+        if (!verifyRes.ok) throw new Error(verify.error || 'Could not confirm payment')
+        window.location.href = `/templates/invite/${id}`
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Payment did not go through — nothing was charged. Please try again.')
+        setPaying(false)
+      }
+    })()
+  }, [searchParams, id])
 
   const handleShare = async () => {
     setSharing(true)
@@ -49,10 +65,9 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
     }
   }
 
-  // PayU's hosted checkout is a full-page redirect, not a JS modal — we build
-  // a real <form> and submit it so the browser POSTs straight to PayU. There's
-  // nothing to verify client-side; PayU POSTs the result back to our own
-  // callback route, which is what actually unlocks the invitation.
+  // Cashfree's JS SDK renders the checkout as a modal on top of this page —
+  // no redirect. Its promise resolves once the user finishes or dismisses it,
+  // then we confirm the actual payment status server-side before unlocking.
   const handlePay = async () => {
     setError(null)
     setPaying(true)
@@ -65,18 +80,32 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
       const order = await orderRes.json()
       if (!orderRes.ok) throw new Error(order.error || 'Could not start checkout')
 
-      const form = document.createElement('form')
-      form.method = 'POST'
-      form.action = order.action
-      for (const [name, value] of Object.entries(order.fields as Record<string, string>)) {
-        const input = document.createElement('input')
-        input.type = 'hidden'
-        input.name = name
-        input.value = value
-        form.appendChild(input)
+      const { load } = await import('@cashfreepayments/cashfree-js')
+      const cashfree = await load({
+        mode: process.env.NEXT_PUBLIC_CASHFREE_ENV === 'PRODUCTION' ? 'production' : 'sandbox',
+      })
+
+      const result = await cashfree.checkout({
+        paymentSessionId: order.paymentSessionId,
+        redirectTarget: '_modal',
+      })
+
+      if (result.error) {
+        setError('Payment did not go through — nothing was charged. Please try again.')
+        setPaying(false)
+        return
       }
-      document.body.appendChild(form)
-      form.submit()
+      if (result.redirect) return // in-app-browser case — page is about to navigate away
+
+      const verifyRes = await fetch('/api/templates/checkout/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, orderId: order.orderId }),
+      })
+      const verify = await verifyRes.json()
+      if (!verifyRes.ok) throw new Error(verify.error || 'Could not confirm payment')
+
+      window.location.href = `/templates/invite/${id}`
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
       setPaying(false)
@@ -130,7 +159,7 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
           className="w-full max-w-sm py-3.5 rounded-full text-sm font-semibold text-white transition-transform hover:scale-[1.02] disabled:opacity-50"
           style={{ background: 'linear-gradient(135deg, #8B1A1A, #5C0E0E)' }}
         >
-          {paying ? 'Redirecting to payment…' : `Pay ${priceLabel} to unlock your invitation`}
+          {paying ? 'Opening payment…' : `Pay ${priceLabel} to unlock your invitation`}
         </button>
         <p className="text-[11px] text-white/50">
           Removes the watermark and unlocks your photo{songEnabled ? ', song,' : ''} &amp; final link

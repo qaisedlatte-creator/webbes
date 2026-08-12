@@ -17,6 +17,9 @@ model Invite {
   updatedAt  DateTime  @updatedAt
   paidAt     DateTime?
 
+  // Abandoned-cart WhatsApp reminder — set once sent, so it never repeats.
+  reminderSentAt DateTime?
+
   // Paid add-ons, chosen in the editor before checkout
   rsvpEnabled Boolean @default(false)
   songEnabled Boolean @default(false)
