@@ -93,6 +93,8 @@ export interface InviteRecord {
   createdAt: string;
   updatedAt: string;
   paidAt: string | null;
+  orderId: string | null;
+  amountPaidPaise: number | null;
   rsvpEnabled: boolean;
   songEnabled: boolean;
   rsvpDashboardToken: string | null;

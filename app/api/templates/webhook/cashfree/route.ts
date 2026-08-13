@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { markInvitePaid } from '@/lib/templates/invites'
-import { verifyCashfreeWebhookSignature, inviteIdFromOrderId } from '@/lib/templates/cashfree'
+import { getInvite, markInvitePaid } from '@/lib/templates/invites'
+import { verifyCashfreeWebhookSignature, inviteIdFromOrderId, getTotalPricePaise } from '@/lib/templates/cashfree'
 
 export async function POST(req: NextRequest) {
   const rawBody = await req.text()
@@ -28,7 +28,9 @@ export async function POST(req: NextRequest) {
 
     if (inviteId) {
       try {
-        await markInvitePaid(inviteId)
+        const invite = await getInvite(inviteId)
+        const amountPaidPaise = invite ? getTotalPricePaise({ rsvpEnabled: invite.rsvpEnabled, songEnabled: invite.songEnabled }) : undefined
+        await markInvitePaid(inviteId, { orderId, amountPaidPaise })
       } catch (err) {
         console.error('[templates/webhook/cashfree] failed to mark invite paid', inviteId, err)
         return NextResponse.json({ error: 'Could not update invite' }, { status: 500 })

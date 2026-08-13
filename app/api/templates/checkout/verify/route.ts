@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { markInvitePaid } from '@/lib/templates/invites'
-import { getCashfreeOrderStatus, isCashfreeConfigured } from '@/lib/templates/cashfree'
+import { getInvite, markInvitePaid } from '@/lib/templates/invites'
+import { getCashfreeOrderStatus, getTotalPricePaise, isCashfreeConfigured } from '@/lib/templates/cashfree'
 
 export async function POST(req: NextRequest) {
   if (!isCashfreeConfigured()) {
@@ -34,7 +34,9 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    await markInvitePaid(id)
+    const invite = await getInvite(id)
+    const amountPaidPaise = invite ? getTotalPricePaise({ rsvpEnabled: invite.rsvpEnabled, songEnabled: invite.songEnabled }) : undefined
+    await markInvitePaid(id, { orderId, amountPaidPaise })
   } catch (err) {
     console.error('[templates/checkout/verify] failed to mark paid', id, err)
     return NextResponse.json({ error: 'Could not update invite' }, { status: 500 })

@@ -1,7 +1,10 @@
 import crypto from 'crypto'
 import { prisma } from '@/lib/prisma'
 import { DEFAULT_PRESET_ID } from './religion-themes'
+import { styleLabel } from './display'
 import type { InviteData, InviteRecord, Religion, RsvpResponseRecord } from './types'
+
+export { styleLabel, displayOrderNumber } from './display'
 
 export const DEFAULT_INVITE_DATA: InviteData = {
   groomName: '',
@@ -37,6 +40,8 @@ interface InviteRow {
   createdAt: Date
   updatedAt: Date
   paidAt: Date | null
+  orderId: string | null
+  amountPaidPaise: number | null
   rsvpEnabled: boolean
   songEnabled: boolean
   rsvpDashboardToken: string | null
@@ -56,6 +61,8 @@ function toRecord(row: InviteRow): InviteRecord {
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
     paidAt: row.paidAt ? row.paidAt.toISOString() : null,
+    orderId: row.orderId,
+    amountPaidPaise: row.amountPaidPaise,
     rsvpEnabled: row.rsvpEnabled,
     songEnabled: row.songEnabled,
     rsvpDashboardToken: row.rsvpDashboardToken,
@@ -110,15 +117,20 @@ export async function upsertInvite(input: {
   return toRecord(row)
 }
 
-export async function markInvitePaid(id: string): Promise<InviteRecord> {
+export async function markInvitePaid(id: string, payment?: { orderId?: string; amountPaidPaise?: number }): Promise<InviteRecord> {
   const invite = await prisma.invite.findUnique({ where: { id } })
   if (!invite) throw new Error('Invite not found')
+
+  // Already marked paid (e.g. both the webhook and the client-side verify call landed) — don't clobber the original orderId/amount.
+  if (invite.status === 'paid') return toRecord(invite)
 
   const row = await prisma.invite.update({
     where: { id },
     data: {
       status: 'paid',
       paidAt: new Date(),
+      ...(payment?.orderId ? { orderId: payment.orderId } : {}),
+      ...(payment?.amountPaidPaise !== undefined ? { amountPaidPaise: payment.amountPaidPaise } : {}),
       // Only invites with RSVP enabled get a dashboard link.
       ...(invite.rsvpEnabled && !invite.rsvpDashboardToken ? { rsvpDashboardToken: crypto.randomBytes(16).toString('hex') } : {}),
     },
@@ -178,6 +190,129 @@ export async function getDraftsDueForReminder(minAgeHours: number): Promise<Invi
 
 export async function markReminderSent(id: string): Promise<void> {
   await prisma.invite.update({ where: { id }, data: { reminderSentAt: new Date() } })
+}
+
+/** Every invite regardless of status — the full Orders table (Shopify-style: order #, payment status, amount, customer). */
+export async function getAllInvites(): Promise<InviteRecord[]> {
+  const rows = await prisma.invite.findMany({ orderBy: { updatedAt: 'desc' } })
+  return rows.map(toRecord)
+}
+
+export interface RevenueStats {
+  totalPaise: number
+  orderCount: number
+  avgOrderPaise: number
+}
+
+/** Revenue realized (payment completed) within [from, to]. */
+export async function getRevenueStats(from: Date, to: Date): Promise<RevenueStats> {
+  const rows = await prisma.invite.findMany({
+    where: { status: 'paid', paidAt: { gte: from, lte: to } },
+    select: { amountPaidPaise: true },
+  })
+  const totalPaise = rows.reduce((sum, r) => sum + (r.amountPaidPaise ?? 0), 0)
+  const orderCount = rows.length
+  return { totalPaise, orderCount, avgOrderPaise: orderCount ? Math.round(totalPaise / orderCount) : 0 }
+}
+
+export interface BestSeller {
+  key: string
+  label: string
+  orders: number
+  revenuePaise: number
+}
+
+/** Which template style sells best, by paid orders in [from, to]. */
+export async function getBestSellers(from: Date, to: Date): Promise<BestSeller[]> {
+  const rows = await prisma.invite.findMany({
+    where: { status: 'paid', paidAt: { gte: from, lte: to } },
+    select: { religion: true, templateId: true, amountPaidPaise: true },
+  })
+  const byKey = new Map<string, BestSeller>()
+  for (const r of rows) {
+    const key = `${r.religion}:${r.templateId}`
+    const existing = byKey.get(key)
+    if (existing) {
+      existing.orders += 1
+      existing.revenuePaise += r.amountPaidPaise ?? 0
+    } else {
+      byKey.set(key, { key, label: styleLabel(r.religion as Religion, r.templateId), orders: 1, revenuePaise: r.amountPaidPaise ?? 0 })
+    }
+  }
+  return [...byKey.values()].sort((a, b) => b.orders - a.orders)
+}
+
+export interface FunnelBreakdown {
+  key: string
+  label: string
+  started: number
+  addedWhatsapp: number
+  paid: number
+}
+
+export interface FunnelStats {
+  started: number
+  addedWhatsapp: number
+  paid: number
+  byStyle: FunnelBreakdown[]
+}
+
+/** Where drafts started in [from, to] drop off, overall and per template style — "where people get stuck." */
+export async function getFunnelStats(from: Date, to: Date): Promise<FunnelStats> {
+  const rows = await prisma.invite.findMany({
+    where: { createdAt: { gte: from, lte: to } },
+    select: { religion: true, templateId: true, whatsapp: true, status: true },
+  })
+
+  let started = 0
+  let addedWhatsapp = 0
+  let paid = 0
+  const byKey = new Map<string, FunnelBreakdown>()
+
+  for (const r of rows) {
+    const hasWhatsapp = Boolean(r.whatsapp && r.whatsapp.trim().length > 0)
+    const isPaid = r.status === 'paid'
+    started++
+    if (hasWhatsapp) addedWhatsapp++
+    if (isPaid) paid++
+
+    const key = `${r.religion}:${r.templateId}`
+    const entry = byKey.get(key) ?? { key, label: styleLabel(r.religion as Religion, r.templateId), started: 0, addedWhatsapp: 0, paid: 0 }
+    entry.started++
+    if (hasWhatsapp) entry.addedWhatsapp++
+    if (isPaid) entry.paid++
+    byKey.set(key, entry)
+  }
+
+  return { started, addedWhatsapp, paid, byStyle: [...byKey.values()].sort((a, b) => b.started - a.started) }
+}
+
+export interface AddonStats {
+  paidCount: number
+  rsvpAttachRate: number
+  songAttachRate: number
+}
+
+/** Add-on attach rate among paid orders in [from, to] — how many buyers took the RSVP / custom-song upsells. */
+export async function getAddonStats(from: Date, to: Date): Promise<AddonStats> {
+  const rows = await prisma.invite.findMany({
+    where: { status: 'paid', paidAt: { gte: from, lte: to } },
+    select: { rsvpEnabled: true, songEnabled: true },
+  })
+  const paidCount = rows.length
+  const rsvpCount = rows.filter((r) => r.rsvpEnabled).length
+  const songCount = rows.filter((r) => r.songEnabled).length
+  return {
+    paidCount,
+    rsvpAttachRate: paidCount ? rsvpCount / paidCount : 0,
+    songAttachRate: paidCount ? songCount / paidCount : 0,
+  }
+}
+
+/** Wipes every invite (and cascades to its RSVPs) — the admin "Clear All Test Data" button. */
+export async function clearAllInvites(): Promise<number> {
+  const result = await prisma.invite.deleteMany({})
+  return result.count
 }
 
 export async function getInviteByDashboardToken(token: string): Promise<{ invite: InviteRecord; responses: RsvpResponseRecord[] } | null> {

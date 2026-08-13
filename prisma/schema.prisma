@@ -17,6 +17,10 @@ model Invite {
   updatedAt  DateTime  @updatedAt
   paidAt     DateTime?
 
+  // Set when payment succeeds — the gateway's order id and the amount actually paid.
+  orderId         String? @unique
+  amountPaidPaise Int?
+
   // Abandoned-cart WhatsApp reminder — set once sent, so it never repeats.
   reminderSentAt DateTime?
 
