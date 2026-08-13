@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getInvite, markInvitePaid } from '@/lib/templates/invites'
 import { getCashfreeOrderStatus, getTotalPricePaise, isCashfreeConfigured } from '@/lib/templates/cashfree'
+import { sendPurchaseEvent } from '@/lib/templates/meta-capi'
+
+const SITE_ORIGIN = 'https://www.webbes.in'
 
 export async function POST(req: NextRequest) {
   if (!isCashfreeConfigured()) {
@@ -36,7 +39,25 @@ export async function POST(req: NextRequest) {
   try {
     const invite = await getInvite(id)
     const amountPaidPaise = invite ? getTotalPricePaise({ rsvpEnabled: invite.rsvpEnabled, songEnabled: invite.songEnabled }) : undefined
-    await markInvitePaid(id, { orderId, amountPaidPaise })
+    const { invite: paidInvite, alreadyPaid } = await markInvitePaid(id, { orderId, amountPaidPaise })
+
+    // This call runs in the customer's own browser session, so we have real
+    // IP/UA/cookies for match quality — the Cashfree webhook (server-to-server)
+    // doesn't. `alreadyPaid` guards against firing Purchase twice if the
+    // webhook already confirmed this same payment first.
+    if (!alreadyPaid && paidInvite.amountPaidPaise != null) {
+      const result = await sendPurchaseEvent({
+        inviteId: id,
+        valueInr: paidInvite.amountPaidPaise / 100,
+        eventSourceUrl: `${SITE_ORIGIN}/templates/preview/${id}`,
+        whatsapp: paidInvite.whatsapp,
+        clientIp: req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? null,
+        userAgent: req.headers.get('user-agent'),
+        fbp: req.cookies.get('_fbp')?.value ?? null,
+        fbc: req.cookies.get('_fbc')?.value ?? null,
+      })
+      if (!result.ok) console.error('[templates/checkout/verify] Meta CAPI Purchase send failed', id, result.error)
+    }
   } catch (err) {
     console.error('[templates/checkout/verify] failed to mark paid', id, err)
     return NextResponse.json({ error: 'Could not update invite' }, { status: 500 })

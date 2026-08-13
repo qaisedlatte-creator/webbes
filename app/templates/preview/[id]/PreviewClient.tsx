@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import TemplateRenderer from '@/components/templates/TemplateRenderer'
+import { styleLabel } from '@/lib/templates/display'
+import { trackPixelEvent } from '@/lib/meta-pixel-client'
 import type { InviteData, Religion } from '@/lib/templates/types'
 
 interface Props {
@@ -79,6 +81,14 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
       })
       const order = await orderRes.json()
       if (!orderRes.ok) throw new Error(order.error || 'Could not start checkout')
+
+      trackPixelEvent('InitiateCheckout', {
+        content_name: styleLabel(religion, templateId),
+        content_type: 'product',
+        content_ids: [templateId],
+        value: pricePaise / 100,
+        currency: 'INR',
+      })
 
       const { load } = await import('@cashfreepayments/cashfree-js')
       const cashfree = await load({

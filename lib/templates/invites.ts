@@ -117,15 +117,20 @@ export async function upsertInvite(input: {
   return toRecord(row)
 }
 
-export async function markInvitePaid(id: string, payment?: { orderId?: string; amountPaidPaise?: number }): Promise<InviteRecord> {
+export interface MarkPaidResult {
+  invite: InviteRecord
+  /** True if this invite was already 'paid' before this call — the webhook and the client-side verify call can both race to confirm the same payment; callers use this to fire the Purchase conversion event exactly once. */
+  alreadyPaid: boolean
+}
+
+export async function markInvitePaid(id: string, payment?: { orderId?: string; amountPaidPaise?: number }): Promise<MarkPaidResult> {
   const invite = await prisma.invite.findUnique({ where: { id } })
   if (!invite) throw new Error('Invite not found')
 
-  // Already marked paid (e.g. both the webhook and the client-side verify call landed) — don't clobber the original orderId/amount.
-  if (invite.status === 'paid') return toRecord(invite)
-
-  const row = await prisma.invite.update({
-    where: { id },
+  // Atomic conditional transition (status must not already be 'paid') so the
+  // webhook and the client-side verify call, if they race, can't both "win".
+  const { count } = await prisma.invite.updateMany({
+    where: { id, status: { not: 'paid' } },
     data: {
       status: 'paid',
       paidAt: new Date(),
@@ -135,7 +140,9 @@ export async function markInvitePaid(id: string, payment?: { orderId?: string; a
       ...(invite.rsvpEnabled && !invite.rsvpDashboardToken ? { rsvpDashboardToken: crypto.randomBytes(16).toString('hex') } : {}),
     },
   })
-  return toRecord(row)
+
+  const row = await prisma.invite.findUniqueOrThrow({ where: { id } })
+  return { invite: toRecord(row), alreadyPaid: count === 0 }
 }
 
 export async function createPreviewShareLink(id: string): Promise<string> {

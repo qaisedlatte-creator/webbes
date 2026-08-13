@@ -7,6 +7,7 @@ import TemplateRenderer from '@/components/templates/TemplateRenderer'
 import { RELIGION_PRESETS, RELIGIONS, RELIGION_TERMINOLOGY } from '@/lib/templates/religion-themes'
 import { getVariant } from '@/lib/templates/posterVariants'
 import { BASE_PRICE_INR, LIST_PRICE_INR, RSVP_ADDON_PRICE_INR, SONG_ADDON_PRICE_INR, formatINR } from '@/lib/templates/pricing'
+import { trackPixelEvent } from '@/lib/meta-pixel-client'
 import type { InviteData, Religion } from '@/lib/templates/types'
 
 interface Props {
@@ -50,6 +51,19 @@ export default function Editor({
   const kind = variant?.kind ?? (templateId === 'custom' ? 'custom' : 'envelope')
   const religionLabel = RELIGIONS.find((r) => r.id === religion)?.label ?? religion
   const terminology = RELIGION_TERMINOLOGY[religion]
+
+  // Fires once per editor session — this is a customer opening a specific
+  // template's build page, not something that should re-fire on every edit.
+  useEffect(() => {
+    trackPixelEvent('ViewContent', {
+      content_name: `${religionLabel} · ${variant?.label ?? 'Custom'}`,
+      content_type: 'product',
+      content_ids: [templateId],
+      value: BASE_PRICE_INR,
+      currency: 'INR',
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const save = useCallback(async () => {
     setSaveState('saving')
