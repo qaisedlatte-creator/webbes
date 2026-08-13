@@ -8,7 +8,7 @@ import './invite-globals.css'
 export const metadata: Metadata = {
   title: 'Webbes Invitations — Wedding Invitation Website Builder',
   description:
-    'Build a personalized wedding invitation website with Webbes. Pick a style, add your names, date and venue, and get a shareable link — starting at ₹1,299.',
+    'Build a personalized wedding invitation website with Webbes. Pick a style, add your names, date and venue, and get a shareable link — starting at ₹759.',
   keywords: [
     'wedding invitation website',
     'online wedding invitation India',

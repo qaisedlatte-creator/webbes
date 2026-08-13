@@ -13,9 +13,9 @@ function envPaise(name: string, fallback: number): number {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback
 }
 
-/** Discounted base price — ₹1299, was ₹1599. */
+/** Discounted base price — ₹759, was ₹1599. */
 export function getInvitePricePaise(): number {
-  return envPaise('INVITE_PRICE_PAISE', 129900)
+  return envPaise('INVITE_PRICE_PAISE', 75900)
 }
 
 /** Struck-through "was" price shown next to the discounted price. */
