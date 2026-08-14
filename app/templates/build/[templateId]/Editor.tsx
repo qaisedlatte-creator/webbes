@@ -6,8 +6,7 @@ import Link from 'next/link'
 import TemplateRenderer from '@/components/templates/TemplateRenderer'
 import { RELIGION_PRESETS, RELIGIONS, RELIGION_TERMINOLOGY } from '@/lib/templates/religion-themes'
 import { getVariant } from '@/lib/templates/posterVariants'
-import { BASE_PRICE_INR, LIST_PRICE_INR, RSVP_ADDON_PRICE_INR, SONG_ADDON_PRICE_INR, formatINR } from '@/lib/templates/pricing'
-import { trackPixelEvent } from '@/lib/meta-pixel-client'
+import { RSVP_ADDON_PRICE_INR, SONG_ADDON_PRICE_INR, BASE_PRICE_INR, LIST_PRICE_INR, formatINR } from '@/lib/templates/pricing'
 import type { InviteData, Religion } from '@/lib/templates/types'
 
 interface Props {
@@ -15,7 +14,6 @@ interface Props {
   initialId: string | null
   initialReligion: Religion
   initialData: InviteData
-  initialWhatsapp: string | null
   initialRsvpEnabled: boolean
   initialSongEnabled: boolean
 }
@@ -27,7 +25,6 @@ export default function Editor({
   initialId,
   initialReligion,
   initialData,
-  initialWhatsapp,
   initialRsvpEnabled,
   initialSongEnabled,
 }: Props) {
@@ -35,7 +32,6 @@ export default function Editor({
   const [id, setId] = useState(initialId)
   const [religion] = useState<Religion>(initialReligion)
   const [data, setData] = useState<InviteData>(initialData)
-  const [whatsapp, setWhatsapp] = useState(initialWhatsapp ?? '')
   const [rsvpEnabled, setRsvpEnabled] = useState(initialRsvpEnabled)
   const [songEnabled, setSongEnabled] = useState(initialSongEnabled)
   const [saveState, setSaveState] = useState<SaveState>('idle')
@@ -52,19 +48,6 @@ export default function Editor({
   const religionLabel = RELIGIONS.find((r) => r.id === religion)?.label ?? religion
   const terminology = RELIGION_TERMINOLOGY[religion]
 
-  // Fires once per editor session — this is a customer opening a specific
-  // template's build page, not something that should re-fire on every edit.
-  useEffect(() => {
-    trackPixelEvent('ViewContent', {
-      content_name: `${religionLabel} · ${variant?.label ?? 'Custom'}`,
-      content_type: 'product',
-      content_ids: [templateId],
-      value: BASE_PRICE_INR,
-      currency: 'INR',
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   const save = useCallback(async () => {
     setSaveState('saving')
     try {
@@ -76,7 +59,6 @@ export default function Editor({
           templateId,
           religion,
           data,
-          whatsapp: whatsapp || undefined,
           rsvpEnabled,
           songEnabled,
         }),
@@ -91,7 +73,7 @@ export default function Editor({
     } catch {
       setSaveState('error')
     }
-  }, [templateId, religion, data, whatsapp, rsvpEnabled, songEnabled, router])
+  }, [templateId, religion, data, rsvpEnabled, songEnabled, router])
 
   useEffect(() => {
     if (!mounted.current) {
@@ -104,7 +86,7 @@ export default function Editor({
       if (saveTimer.current) clearTimeout(saveTimer.current)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [religion, data, whatsapp, rsvpEnabled, songEnabled])
+  }, [religion, data, rsvpEnabled, songEnabled])
 
   const update = (patch: Partial<InviteData>) => setData((d) => ({ ...d, ...patch }))
 
@@ -231,19 +213,6 @@ export default function Editor({
                   ))}
                 </div>
               </div>
-            </section>
-
-            {/* WhatsApp — captured early, before photo/color */}
-            <section>
-              <h2 className="text-sm font-semibold text-black/80 mb-1">WhatsApp number</h2>
-              <p className="text-xs text-black/40 mb-3">So we can send you the final link once it's ready.</p>
-              <input
-                type="tel"
-                placeholder="+91 9XXXXXXXXX"
-                value={whatsapp}
-                onChange={(e) => setWhatsapp(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-black/10 text-sm focus:outline-none focus:border-[#2563EB]"
-              />
             </section>
 
             {/* Date & venue */}

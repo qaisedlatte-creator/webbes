@@ -139,11 +139,12 @@ export default function OverviewTab() {
               </h3>
               <div className="space-y-2.5">
                 {[
-                  { label: 'Started a draft', count: stats.funnel.started },
-                  { label: 'Entered WhatsApp', count: stats.funnel.addedWhatsapp },
-                  { label: 'Paid', count: stats.funnel.paid },
-                ].map((stage, i) => {
-                  const pct = stats.funnel.started ? Math.round((stage.count / stats.funnel.started) * 100) : 0
+                  { label: 'Style selected', count: stats.funnel.styleSelected, color: '#94a3b8' },
+                  { label: 'Contact captured', count: stats.funnel.contactCaptured, color: '#2563EB' },
+                  { label: 'Customized', count: stats.funnel.customized, color: '#D4AF37' },
+                  { label: 'Paid', count: stats.funnel.paid, color: '#166534' },
+                ].map((stage) => {
+                  const pct = stats.funnel.styleSelected ? Math.round((stage.count / stats.funnel.styleSelected) * 100) : 0
                   return (
                     <div key={stage.label}>
                       <div className="flex items-center justify-between text-xs mb-1">
@@ -153,10 +154,7 @@ export default function OverviewTab() {
                         </span>
                       </div>
                       <div className="h-2 rounded-full bg-black/5 overflow-hidden">
-                        <div
-                          className="h-full rounded-full"
-                          style={{ width: `${pct}%`, background: i === 2 ? '#166534' : i === 1 ? '#2563EB' : '#94a3b8' }}
-                        />
+                        <div className="h-full rounded-full" style={{ width: `${pct}%`, background: stage.color }} />
                       </div>
                     </div>
                   )
@@ -168,12 +166,12 @@ export default function OverviewTab() {
                   <p className="text-xs text-black/40 mb-2.5">By style</p>
                   <div className="space-y-1.5">
                     {stats.funnel.byStyle.slice(0, 6).map((s) => {
-                      const convPct = s.started ? Math.round((s.paid / s.started) * 100) : 0
+                      const convPct = s.styleSelected ? Math.round((s.paid / s.styleSelected) * 100) : 0
                       return (
                         <div key={s.key} className="flex items-center justify-between text-xs">
                           <span className="text-black/60 truncate pr-2">{s.label}</span>
                           <span className="text-black/40 whitespace-nowrap">
-                            {s.started} started · {s.paid} paid ({convPct}%)
+                            {s.styleSelected} selected · {s.paid} paid ({convPct}%)
                           </span>
                         </div>
                       )

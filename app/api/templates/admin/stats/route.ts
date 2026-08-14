@@ -46,28 +46,37 @@ function buildRecommendations(input: {
   const { revenue, funnel, bestSellers, addons, abandonedCount } = input
   const tips: string[] = []
 
-  if (funnel.started === 0) {
-    tips.push('No new drafts started in this period — traffic to /templates is the bottleneck right now, not the funnel itself.')
+  if (funnel.styleSelected === 0) {
+    tips.push('No one opened a style this period — traffic to /templates is the bottleneck right now, not the funnel itself.')
     return tips
   }
 
-  const captureRate = funnel.addedWhatsapp / funnel.started
-  const conversionFromWhatsapp = funnel.addedWhatsapp ? funnel.paid / funnel.addedWhatsapp : 0
-  const overallConversion = funnel.paid / funnel.started
+  const captureRate = funnel.contactCaptured / funnel.styleSelected
+  const customizeRate = funnel.contactCaptured ? funnel.customized / funnel.contactCaptured : 0
+  const conversionFromCustomized = funnel.customized ? funnel.paid / funnel.customized : 0
+  const overallConversion = funnel.paid / funnel.styleSelected
 
   if (captureRate < 0.5) {
     tips.push(
-      `Only ${Math.round(captureRate * 100)}% of people who start a draft enter a WhatsApp number — that's the biggest leak. Consider nudging with a reason ("so we can save your draft") rather than just a bare field.`
+      `Only ${Math.round(captureRate * 100)}% of people who open a style actually submit their WhatsApp number on the quick-capture screen — that's the biggest leak right now. Consider trimming friction there further, or testing the copy.`
     )
   }
 
-  if (funnel.addedWhatsapp > 0 && conversionFromWhatsapp < 0.3) {
+  if (funnel.contactCaptured > 0 && customizeRate < 0.6) {
     tips.push(
-      `Of the ${funnel.addedWhatsapp} people who gave a WhatsApp number, only ${funnel.paid} paid (${Math.round(conversionFromWhatsapp * 100)}%). ${abandonedCount} draft${abandonedCount === 1 ? ' is' : 's are'} currently sitting as abandoned carts — that's recoverable revenue via the Abandoned Carts tab.`
+      `Of the ${funnel.contactCaptured} who gave contact info, only ${funnel.customized} went on to actually customize (name the couple) — ${Math.round(customizeRate * 100)}%. The builder itself may be where people bounce.`
     )
   }
 
-  const lowPerformers = funnel.byStyle.filter((s) => s.started >= 3 && s.started / funnel.started >= 0.05 && s.paid / s.started < overallConversion * 0.5)
+  if (funnel.customized > 0 && conversionFromCustomized < 0.3) {
+    tips.push(
+      `Of the ${funnel.customized} who customized their invite, only ${funnel.paid} paid (${Math.round(conversionFromCustomized * 100)}%). ${abandonedCount} draft${abandonedCount === 1 ? ' is' : 's are'} currently sitting as abandoned carts — that's recoverable revenue via the Abandoned Carts tab.`
+    )
+  }
+
+  const lowPerformers = funnel.byStyle.filter(
+    (s) => s.styleSelected >= 3 && s.styleSelected / funnel.styleSelected >= 0.05 && s.paid / s.styleSelected < overallConversion * 0.5
+  )
   if (lowPerformers.length > 0) {
     tips.push(
       `${lowPerformers.map((s) => s.label).join(', ')} convert${lowPerformers.length === 1 ? 's' : ''} well below average — worth checking if that preview looks off, the price feels high for the style, or the demo content doesn't land.`
@@ -89,7 +98,7 @@ function buildRecommendations(input: {
   }
 
   if (revenue.orderCount === 0) {
-    tips.push('Zero paid orders this period despite drafts being started — worth personally walking through checkout end-to-end to check for a broken step.')
+    tips.push('Zero paid orders this period despite people opening styles — worth personally walking through checkout end-to-end to check for a broken step.')
   }
 
   if (tips.length === 0) {

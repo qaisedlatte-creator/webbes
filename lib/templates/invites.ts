@@ -36,6 +36,7 @@ interface InviteRow {
   religion: string
   data: unknown
   whatsapp: string | null
+  contactName: string | null
   status: string
   createdAt: Date
   updatedAt: Date
@@ -57,6 +58,7 @@ function toRecord(row: InviteRow): InviteRecord {
     religion: row.religion as Religion,
     data: { ...DEFAULT_INVITE_DATA, ...(row.data as Partial<InviteData>) },
     whatsapp: row.whatsapp,
+    contactName: row.contactName,
     status: row.status as 'draft' | 'paid',
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
@@ -83,6 +85,7 @@ export async function upsertInvite(input: {
   religion: Religion
   data: Partial<InviteData>
   whatsapp?: string | null
+  contactName?: string | null
   rsvpEnabled?: boolean
   songEnabled?: boolean
 }): Promise<InviteRecord> {
@@ -97,6 +100,7 @@ export async function upsertInvite(input: {
         religion,
         data: data as object,
         ...(input.whatsapp !== undefined ? { whatsapp: input.whatsapp } : {}),
+        ...(input.contactName !== undefined ? { contactName: input.contactName } : {}),
         ...(input.rsvpEnabled !== undefined ? { rsvpEnabled: input.rsvpEnabled } : {}),
         ...(input.songEnabled !== undefined ? { songEnabled: input.songEnabled } : {}),
       },
@@ -110,11 +114,17 @@ export async function upsertInvite(input: {
       religion,
       data: data as object,
       whatsapp: input.whatsapp ?? null,
+      contactName: input.contactName ?? null,
       rsvpEnabled: input.rsvpEnabled ?? false,
       songEnabled: input.songEnabled ?? false,
     },
   })
   return toRecord(row)
+}
+
+/** Logs a render of the quick-capture screen — the "Style Selected" funnel stage, before any Invite row exists. */
+export async function logStyleView(religion: Religion, templateId: string): Promise<void> {
+  await prisma.styleView.create({ data: { religion, templateId } })
 }
 
 export interface MarkPaidResult {
@@ -252,46 +262,72 @@ export async function getBestSellers(from: Date, to: Date): Promise<BestSeller[]
 export interface FunnelBreakdown {
   key: string
   label: string
-  started: number
-  addedWhatsapp: number
+  styleSelected: number
+  contactCaptured: number
+  customized: number
   paid: number
 }
 
 export interface FunnelStats {
-  started: number
-  addedWhatsapp: number
+  styleSelected: number
+  contactCaptured: number
+  customized: number
   paid: number
   byStyle: FunnelBreakdown[]
 }
 
-/** Where drafts started in [from, to] drop off, overall and per template style — "where people get stuck." */
+/** A customer has actually started customizing once they've named the couple — the first thing the builder asks for after the quick-capture step. */
+function hasCustomized(data: unknown): boolean {
+  const d = data as Partial<InviteData> | null | undefined
+  return Boolean(d && ((d.brideName && d.brideName.trim().length > 0) || (d.groomName && d.groomName.trim().length > 0)))
+}
+
+/** Where visitors drop off in [from, to] — picking a style, giving contact info on the quick-capture screen, actually customizing the invite, then paying — overall and per template style. */
 export async function getFunnelStats(from: Date, to: Date): Promise<FunnelStats> {
-  const rows = await prisma.invite.findMany({
-    where: { createdAt: { gte: from, lte: to } },
-    select: { religion: true, templateId: true, whatsapp: true, status: true },
-  })
+  const [views, invites] = await Promise.all([
+    prisma.styleView.findMany({ where: { createdAt: { gte: from, lte: to } }, select: { religion: true, templateId: true } }),
+    prisma.invite.findMany({ where: { createdAt: { gte: from, lte: to } }, select: { religion: true, templateId: true, data: true, status: true } }),
+  ])
 
-  let started = 0
-  let addedWhatsapp = 0
-  let paid = 0
   const byKey = new Map<string, FunnelBreakdown>()
-
-  for (const r of rows) {
-    const hasWhatsapp = Boolean(r.whatsapp && r.whatsapp.trim().length > 0)
-    const isPaid = r.status === 'paid'
-    started++
-    if (hasWhatsapp) addedWhatsapp++
-    if (isPaid) paid++
-
-    const key = `${r.religion}:${r.templateId}`
-    const entry = byKey.get(key) ?? { key, label: styleLabel(r.religion as Religion, r.templateId), started: 0, addedWhatsapp: 0, paid: 0 }
-    entry.started++
-    if (hasWhatsapp) entry.addedWhatsapp++
-    if (isPaid) entry.paid++
-    byKey.set(key, entry)
+  const getEntry = (religion: string, templateId: string) => {
+    const key = `${religion}:${templateId}`
+    let entry = byKey.get(key)
+    if (!entry) {
+      entry = { key, label: styleLabel(religion as Religion, templateId), styleSelected: 0, contactCaptured: 0, customized: 0, paid: 0 }
+      byKey.set(key, entry)
+    }
+    return entry
   }
 
-  return { started, addedWhatsapp, paid, byStyle: [...byKey.values()].sort((a, b) => b.started - a.started) }
+  let styleSelected = 0
+  for (const v of views) {
+    styleSelected++
+    getEntry(v.religion, v.templateId).styleSelected++
+  }
+
+  let contactCaptured = 0
+  let customized = 0
+  let paid = 0
+  for (const inv of invites) {
+    // Every Invite row now implies the quick-capture step was completed —
+    // a WhatsApp number is required to create one — so this is the
+    // "Contact Captured" stage.
+    contactCaptured++
+    const entry = getEntry(inv.religion, inv.templateId)
+    entry.contactCaptured++
+
+    if (hasCustomized(inv.data)) {
+      customized++
+      entry.customized++
+    }
+    if (inv.status === 'paid') {
+      paid++
+      entry.paid++
+    }
+  }
+
+  return { styleSelected, contactCaptured, customized, paid, byStyle: [...byKey.values()].sort((a, b) => b.styleSelected - a.styleSelected) }
 }
 
 export interface AddonStats {

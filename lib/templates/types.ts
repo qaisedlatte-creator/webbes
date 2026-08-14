@@ -89,6 +89,7 @@ export interface InviteRecord {
   religion: Religion;
   data: InviteData;
   whatsapp: string | null;
+  contactName: string | null;
   status: 'draft' | 'paid';
   createdAt: string;
   updatedAt: string;

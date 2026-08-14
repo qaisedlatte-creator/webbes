@@ -11,8 +11,9 @@ model Invite {
   templateId String    @default("template-01")
   religion   String // "islamic" | "christian" | "hindu"
   data       Json // { groomName, brideName, date, time, venue, venueCity, colorPresetId, photoUrl, audioUrl, mapsUrl, showPetals, eventLabel, heroSubtitle, closingLine, footerBlessing }
-  whatsapp   String?
-  status     String    @default("draft") // draft | paid
+  whatsapp    String?
+  contactName String? // first name only, captured on the pre-builder quick-capture screen
+  status      String    @default("draft") // draft | paid
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   paidAt     DateTime?
@@ -39,6 +40,18 @@ model Invite {
 
   @@index([status])
   @@index([whatsapp])
+}
+
+// One row per render of the quick-capture screen — the "Style Selected" stage
+// of the funnel, logged before any Invite row exists (that only happens once
+// the customer submits their WhatsApp number).
+model StyleView {
+  id         String   @id @default(cuid())
+  religion   String
+  templateId String
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
 }
 
 model RsvpResponse {

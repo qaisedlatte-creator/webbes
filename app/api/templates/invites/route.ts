@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
       religion,
       data,
       whatsapp: typeof b.whatsapp === 'string' ? b.whatsapp : undefined,
+      contactName: typeof b.contactName === 'string' ? b.contactName : undefined,
       rsvpEnabled: typeof b.rsvpEnabled === 'boolean' ? b.rsvpEnabled : undefined,
       songEnabled: typeof b.songEnabled === 'boolean' ? b.songEnabled : undefined,
     })

@@ -32,7 +32,7 @@ export default function CategoryClient({ religion, label, variants }: { religion
           {variants.map((v, i) => (
             <motion.div key={v.id} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={VP} transition={{ duration: 0.5, ease: 'easeOut', delay: i * 0.06 }}>
               <Link
-                href={`/templates/build/${v.id}`}
+                href={`/templates/build/${v.id}/start`}
                 className="group block rounded-2xl overflow-hidden border border-black/8 transition-all hover:-translate-y-1 hover:shadow-xl"
                 style={{ background: '#fff' }}
               >
@@ -53,7 +53,7 @@ export default function CategoryClient({ religion, label, variants }: { religion
           {/* Custom tile — upload your own photo, always last */}
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={VP} transition={{ duration: 0.5, ease: 'easeOut', delay: variants.length * 0.06 }}>
             <Link
-              href={`/templates/build/custom?religion=${religion}`}
+              href={`/templates/build/custom/start?religion=${religion}`}
               className="group flex flex-col items-center justify-center h-full min-h-[220px] rounded-2xl border-2 border-dashed border-black/15 transition-all hover:-translate-y-1 hover:border-black/30"
               style={{ background: '#faf9f6' }}
             >
