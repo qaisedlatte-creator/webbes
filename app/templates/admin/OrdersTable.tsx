@@ -36,7 +36,7 @@ export default function OrdersTable({ orders }: { orders: InviteRecord[] }) {
 
   return (
     <div>
-      <div className="flex items-center gap-2 mb-6">
+      <div className="flex flex-wrap items-center gap-2 mb-6">
         {([
           ['all', `All (${orders.length})`],
           ['paid', `Paid (${paidCount})`],

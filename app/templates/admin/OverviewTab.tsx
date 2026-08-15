@@ -168,9 +168,9 @@ export default function OverviewTab() {
                     {stats.funnel.byStyle.slice(0, 6).map((s) => {
                       const convPct = s.styleSelected ? Math.round((s.paid / s.styleSelected) * 100) : 0
                       return (
-                        <div key={s.key} className="flex items-center justify-between text-xs">
-                          <span className="text-black/60 truncate pr-2">{s.label}</span>
-                          <span className="text-black/40 whitespace-nowrap">
+                        <div key={s.key} className="flex items-center justify-between gap-2 text-xs">
+                          <span className="text-black/60 truncate min-w-0">{s.label}</span>
+                          <span className="text-black/40 whitespace-nowrap shrink-0">
                             {s.styleSelected} selected · {s.paid} paid ({convPct}%)
                           </span>
                         </div>
@@ -195,12 +195,12 @@ export default function OverviewTab() {
                     const pct = maxOrders ? Math.round((s.orders / maxOrders) * 100) : 0
                     return (
                       <div key={s.key}>
-                        <div className="flex items-center justify-between text-xs mb-1">
-                          <span className="text-black/70 truncate pr-2">
+                        <div className="flex items-center justify-between gap-2 text-xs mb-1">
+                          <span className="text-black/70 truncate min-w-0">
                             {i === 0 && '🏆 '}
                             {s.label}
                           </span>
-                          <span className="font-semibold text-black whitespace-nowrap">
+                          <span className="font-semibold text-black whitespace-nowrap shrink-0">
                             {s.orders} order{s.orders === 1 ? '' : 's'} · {formatINR(s.revenuePaise)}
                           </span>
                         </div>

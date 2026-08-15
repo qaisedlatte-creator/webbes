@@ -43,12 +43,12 @@ export default function AdminDashboard({
           </div>
         </div>
 
-        <div className="flex items-center gap-1 mb-8 border-b border-black/8">
+        <div className="flex items-center gap-1 mb-8 border-b border-black/8 overflow-x-auto">
           {tabs.map((t) => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className="text-sm font-semibold px-4 py-2.5 -mb-px border-b-2 transition-colors"
+              className="text-sm font-semibold px-4 py-2.5 -mb-px border-b-2 whitespace-nowrap transition-colors"
               style={
                 tab === t.key
                   ? { borderColor: '#2563EB', color: '#2563EB' }
