@@ -352,10 +352,10 @@ export async function getAddonStats(from: Date, to: Date): Promise<AddonStats> {
   }
 }
 
-/** Wipes every invite (and cascades to its RSVPs) — the admin "Clear All Test Data" button. */
+/** Wipes every invite (cascades to its RSVPs) and every style-view log — the admin "Clear All Test Data" button. Resets the funnel to zero. */
 export async function clearAllInvites(): Promise<number> {
-  const result = await prisma.invite.deleteMany({})
-  return result.count
+  const [invites] = await prisma.$transaction([prisma.invite.deleteMany({}), prisma.styleView.deleteMany({})])
+  return invites.count
 }
 
 export async function getInviteByDashboardToken(token: string): Promise<{ invite: InviteRecord; responses: RsvpResponseRecord[] } | null> {
