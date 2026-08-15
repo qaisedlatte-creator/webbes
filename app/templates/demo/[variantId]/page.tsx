@@ -15,8 +15,15 @@ export async function generateMetadata({ params }: { params: Promise<{ variantId
   return { title: variant ? `${variant.label} — Demo` : 'Demo', robots: { index: false, follow: false } }
 }
 
-export default async function DemoPage({ params }: { params: Promise<{ variantId: string }> }) {
+export default async function DemoPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ variantId: string }>
+  searchParams: Promise<{ skip?: string }>
+}) {
   const { variantId } = await params
+  const { skip } = await searchParams
   const variant = getVariant(variantId)
   if (!variant) notFound()
 
@@ -31,5 +38,9 @@ export default async function DemoPage({ params }: { params: Promise<{ variantId
     colorPresetId: variant.kind === 'envelope' ? variant.colorPresetId : '',
   }
 
-  return <TemplateRenderer templateId={variant.id} religion={variant.religion} data={data} watermark={false} />
+  // `?skip=1` jumps straight past the sealed-envelope intro (which looks
+  // near-identical across templates — same gradient/envelope shape, just
+  // recolored) so storefront previews immediately show each template's
+  // actual distinguishing background/layout instead of a generic screen.
+  return <TemplateRenderer templateId={variant.id} religion={variant.religion} data={data} watermark={false} skipReveal={skip === '1'} />
 }

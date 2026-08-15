@@ -28,6 +28,18 @@ export default function CustomCursor() {
       }
     }
 
+    // Pointer events don't cross into an <iframe>'s own document, so plain
+    // window mousemove tracking freezes the dot the instant the cursor
+    // enters one (e.g. the phone-frame template preview). Hide the dot and
+    // let the iframe's own cursor show instead, then resume on re-entry.
+    const onOverIframe = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null
+      if (target?.tagName === 'IFRAME') {
+        visible = false
+        el.style.opacity = '0'
+      }
+    }
+
     const tick = () => {
       x += (tx - x) * 0.16
       y += (ty - y) * 0.16
@@ -36,10 +48,12 @@ export default function CustomCursor() {
     }
 
     window.addEventListener('mousemove', onMove, { passive: true })
+    window.addEventListener('mouseover', onOverIframe, { passive: true })
     raf = requestAnimationFrame(tick)
 
     return () => {
       window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseover', onOverIframe)
       cancelAnimationFrame(raf)
       document.body.classList.remove('has-custom-cursor')
     }
