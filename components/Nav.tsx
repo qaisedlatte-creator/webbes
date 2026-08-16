@@ -4,7 +4,13 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
-const NAV_LINKS = ['Work', 'Services', 'Blog', 'Team', 'Contact'] as const
+const NAV_LINKS = [
+  { label: 'AI Automation', href: '/ai-automation' },
+  { label: 'Wedding Invitations', href: '/wedding-invitations' },
+  { label: 'Websites', href: '/portfolio' },
+  { label: 'Blog', href: '/blog' },
+  { label: 'Contact', href: '/contact' },
+] as const
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
@@ -67,9 +73,9 @@ export default function Nav() {
         {/* Desktop links */}
         <ul className="hidden md:flex items-center gap-8" role="list">
           {NAV_LINKS.map((item) => (
-            <li key={item}>
+            <li key={item.label}>
               <Link
-                href={`/${item.toLowerCase()}`}
+                href={item.href}
                 className={cn(
                   'text-[13px] transition-colors duration-150',
                   pastHero
@@ -77,7 +83,7 @@ export default function Nav() {
                     : 'text-white/60 hover:text-white'
                 )}
               >
-                {item}
+                {item.label}
               </Link>
             </li>
           ))}
@@ -136,13 +142,13 @@ export default function Nav() {
       >
         {NAV_LINKS.map((item) => (
           <Link
-            key={item}
-            href={`/${item.toLowerCase()}`}
+            key={item.label}
+            href={item.href}
             className="text-3xl font-semibold text-[#0a0a0a] tracking-tight hover:text-[#0a0a0a]/40 transition-colors"
             style={{ fontFamily: "'Syne', sans-serif" }}
             onClick={() => setMobileOpen(false)}
           >
-            {item}
+            {item.label}
           </Link>
         ))}
         <Link

@@ -1,17 +1,15 @@
 import Link from 'next/link'
 
 const SERVICES_LINKS = [
-  { label: 'Website Development', href: '/services' },
-  { label: 'AI Automation', href: '/services' },
-  { label: 'E-Commerce', href: '/services' },
-  { label: 'SEO & AEO', href: '/services' },
-  { label: 'Web Design Kerala', href: '/web-design-kerala' },
+  { label: 'AI Automation', href: '/ai-automation' },
+  { label: 'Wedding Invitations', href: '/wedding-invitations' },
+  { label: 'Websites', href: '/portfolio' },
+  { label: 'All Services', href: '/services' },
 ]
 
 const COMPANY_LINKS = [
-  { label: 'About Webbes', href: '/#about' },
-  { label: 'Our Process', href: '/#process' },
-  { label: 'FAQ', href: '/#faq' },
+  { label: 'Case Studies', href: '/work' },
+  { label: 'FAQ', href: '/ai-automation#faq' },
   { label: 'Meet the Team', href: '/team' },
   { label: 'Blog', href: '/blog' },
   { label: 'Contact', href: '/contact' },
