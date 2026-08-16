@@ -1,4 +1,5 @@
 import crypto from 'crypto'
+import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { DEFAULT_PRESET_ID } from './religion-themes'
 import { styleLabel } from './display'
@@ -356,6 +357,17 @@ export async function getAddonStats(from: Date, to: Date): Promise<AddonStats> {
 export async function clearAllInvites(): Promise<number> {
   const [invites] = await prisma.$transaction([prisma.invite.deleteMany({}), prisma.styleView.deleteMany({})])
   return invites.count
+}
+
+/** Deletes a single invite by id (cascades to its RSVPs via the schema's onDelete: Cascade) — the admin per-row delete button. Returns false if it didn't exist. */
+export async function deleteInvite(id: string): Promise<boolean> {
+  try {
+    await prisma.invite.delete({ where: { id } })
+    return true
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') return false
+    throw err
+  }
 }
 
 export async function getInviteByDashboardToken(token: string): Promise<{ invite: InviteRecord; responses: RsvpResponseRecord[] } | null> {

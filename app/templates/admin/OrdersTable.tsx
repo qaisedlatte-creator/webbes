@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import type { InviteRecord } from '@/lib/templates/types'
 import { styleLabel, displayOrderNumber } from '@/lib/templates/display'
+import DeleteOrderButton from './DeleteOrderButton'
 
 const SITE_ORIGIN = 'https://www.webbes.in'
 
@@ -109,9 +110,12 @@ export default function OrdersTable({ orders }: { orders: InviteRecord[] }) {
                         {isPaid && invite.paidAt ? `Paid ${formatRelative(invite.paidAt)}` : formatRelative(invite.updatedAt)}
                       </td>
                       <td className="px-5 py-4 whitespace-nowrap">
-                        <a href={previewUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-black/40 hover:text-black underline">
-                          View
-                        </a>
+                        <div className="flex items-center gap-3">
+                          <a href={previewUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-black/40 hover:text-black underline">
+                            View
+                          </a>
+                          <DeleteOrderButton id={invite.id} />
+                        </div>
                       </td>
                     </tr>
                   )
