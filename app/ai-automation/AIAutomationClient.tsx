@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import HeroCinematic from '@/components/HeroCinematic'
 import ChatWidget from '@/components/ai-demo/ChatWidget'
+import { AI_AUTOMATION_FAQS } from '@/lib/ai-demo/faqs'
 
 const VP = { once: true, margin: '-60px' } as const
 
@@ -34,14 +35,7 @@ const STEPS = [
   { n: '04', title: 'It goes live', body: 'Connected to your WhatsApp Business number, answering instantly — while you sleep, while you\'re with a customer, always.' },
 ] as const
 
-const FAQS = [
-  { q: 'How is this different from a normal chatbot?', a: 'Most WhatsApp "chatbots" are rigid button menus. This is a real AI agent that understands what customers actually type, answers in plain language, and knows when to hand off to you.' },
-  { q: 'What does it cost?', a: 'It depends on how much of your business it needs to handle — a simple FAQ-and-booking agent costs less than a full lead-qualification system. Message us on WhatsApp and we\'ll give you a straight number after a quick call, no obligation.' },
-  { q: 'How long does setup take?', a: 'Most automations go live within 1–2 weeks of our first call, depending on how much information we need to gather from you.' },
-  { q: 'Will it ever say something wrong to a customer?', a: 'It\'s scoped tightly to your business and reviewed by you before launch. For anything sensitive — pricing exceptions, complaints, anything outside its scope — it hands off to a real person instead of guessing.' },
-  { q: 'Do I need any technical setup?', a: 'No. We handle the WhatsApp Business API connection, the automation, and the training. You just review and approve.' },
-  { q: 'Can it work alongside my existing staff?', a: 'Yes — that\'s usually the point. It handles the instant first reply and routine questions; your team steps in for anything that needs a real human.' },
-] as const
+const FAQS = AI_AUTOMATION_FAQS
 
 export default function AIAutomationClient() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
@@ -63,7 +57,7 @@ export default function AIAutomationClient() {
               Try the live demo ↓
             </a>
             <a
-              href="https://wa.me/919149681874"
+              href="https://wa.me/918075959157"
               target="_blank"
               rel="noopener noreferrer"
               className="glass-btn"
@@ -162,7 +156,7 @@ export default function AIAutomationClient() {
             A simple FAQ-and-booking agent and a full lead-qualification system cost very differently — so instead of a one-size price list, I'll give you a straight number after a short call about your business. No obligation, no hard sell.
           </motion.p>
           <a
-            href="https://wa.me/919149681874"
+            href="https://wa.me/918075959157"
             target="_blank"
             rel="noopener noreferrer"
             className="glass-btn"
@@ -210,7 +204,7 @@ export default function AIAutomationClient() {
             <Link href="/contact" className="glass-btn" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: '0.85rem', color: '#fff', background: '#0a0a0a', borderRadius: 100, padding: '13px 30px', textDecoration: 'none' }}>
               Start a project →
             </Link>
-            <a href="https://wa.me/919149681874" target="_blank" rel="noopener noreferrer" className="glass-btn"
+            <a href="https://wa.me/918075959157" target="_blank" rel="noopener noreferrer" className="glass-btn"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: "'Syne', sans-serif", fontWeight: 600, fontSize: '0.85rem', color: '#0a0a0a', border: '1.5px solid rgba(0,0,0,0.15)', borderRadius: 100, padding: '13px 28px', textDecoration: 'none' }}>
               Chat on WhatsApp
             </a>

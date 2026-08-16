@@ -28,6 +28,32 @@ function Label({ text, dark = true }: { text: string; dark?: boolean }) {
   )
 }
 
+function HeroPreview() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20, rotate: 2 }}
+      animate={{ opacity: 1, y: [0, -10, 0], rotate: 2 }}
+      transition={{ opacity: { duration: 0.7, ease: 'easeOut' }, y: { duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.7 } }}
+      className="relative mx-auto"
+      style={{ width: 'clamp(240px, 72vw, 320px)', aspectRatio: '390 / 844' }}
+    >
+      <div
+        className="absolute inset-0 overflow-hidden"
+        style={{ borderRadius: 34, border: '7px solid #1a0806', background: '#1a0806', boxShadow: '0 24px 60px rgba(0,0,0,0.45)' }}
+      >
+        <iframe
+          src="/templates/demo/muslim-red?skip=1"
+          title="Live wedding invitation preview"
+          tabIndex={-1}
+          aria-hidden="true"
+          className="w-full h-full"
+          style={{ border: 0, pointerEvents: 'none' }}
+        />
+      </div>
+    </motion.div>
+  )
+}
+
 export default function WeddingInvitationsClient() {
   const showcaseVariants = TEMPLATE_VARIANTS.filter((v) => v.kind === 'poster').slice(0, 6)
 
@@ -35,31 +61,41 @@ export default function WeddingInvitationsClient() {
     <>
       {/* HERO — warm, celebratory */}
       <section
-        className="relative flex flex-col items-center justify-center text-center px-6 pt-40 pb-24 md:pt-48 md:pb-32"
-        style={{ background: 'linear-gradient(160deg, #3A0D0A 0%, #5C1610 55%, #7A2413 100%)', minHeight: '64vh' }}
+        className="relative px-6 pt-40 pb-24 md:pt-48 md:pb-32"
+        style={{ background: 'linear-gradient(160deg, #3A0D0A 0%, #5C1610 55%, #7A2413 100%)' }}
       >
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: 'easeOut' }}>
-          <Label text="Webbes Wedding Invitations" />
-          <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 'clamp(2.2rem, 5.5vw, 3.8rem)', fontWeight: 700, color: '#FFF6EA', letterSpacing: '-1px', lineHeight: 1.1, maxWidth: 760, margin: '0 auto' }}>
-            You know those printed wedding cards everyone throws away?
-          </h1>
-          <p className="mt-6 mx-auto max-w-xl" style={{ fontFamily: 'var(--font-dm-sans), sans-serif', fontSize: '1.05rem', color: 'rgba(255,246,234,0.75)', lineHeight: 1.7 }}>
-            I make the same thing, but animated and digital — a wedding invitation website every guest opens on WhatsApp, keeps, and actually looks at more than once.
-          </p>
-          <p className="mt-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5" style={{ background: 'rgba(255,255,255,0.1)', fontFamily: 'var(--font-dm-sans), sans-serif', fontSize: '0.9rem', color: '#FFF6EA' }}>
-            Starting at <strong>{formatINR(BASE_PRICE_INR)}</strong>
-            <span style={{ color: 'rgba(255,246,234,0.5)', textDecoration: 'line-through' }}>{formatINR(LIST_PRICE_INR)}</span>
-          </p>
-          <div className="mt-8">
-            <Link
-              href="/templates"
-              className="inline-block px-8 py-3.5 rounded-full text-sm font-semibold transition-transform hover:scale-[1.02]"
-              style={{ fontFamily: "'Syne', sans-serif", background: '#FFF6EA', color: '#3A0D0A' }}
-            >
-              Browse templates & build yours →
-            </Link>
+        <div className="max-w-5xl mx-auto grid gap-10 md:gap-14 md:grid-cols-2 items-center">
+          <div className="order-1 md:order-2">
+            <HeroPreview />
           </div>
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            className="order-2 md:order-1 text-center md:text-left"
+          >
+            <Label text="Webbes Wedding Invitations" />
+            <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 'clamp(2.1rem, 5vw, 3.2rem)', fontWeight: 700, color: '#FFF6EA', letterSpacing: '-1px', lineHeight: 1.1 }}>
+              You know those printed wedding cards everyone throws away?
+            </h1>
+            <p className="mt-6 mx-auto md:mx-0 max-w-md" style={{ fontFamily: 'var(--font-dm-sans), sans-serif', fontSize: '1.02rem', color: 'rgba(255,246,234,0.75)', lineHeight: 1.7 }}>
+              I make the same thing, but animated and digital — a wedding invitation website every guest opens on WhatsApp, keeps, and actually looks at more than once.
+            </p>
+            <p className="mt-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5" style={{ background: 'rgba(255,255,255,0.1)', fontFamily: 'var(--font-dm-sans), sans-serif', fontSize: '0.9rem', color: '#FFF6EA' }}>
+              Starting at <strong>{formatINR(BASE_PRICE_INR)}</strong>
+              <span style={{ color: 'rgba(255,246,234,0.5)', textDecoration: 'line-through' }}>{formatINR(LIST_PRICE_INR)}</span>
+            </p>
+            <div className="mt-8">
+              <Link
+                href="/templates"
+                className="inline-block px-8 py-3.5 rounded-full text-sm font-semibold transition-transform hover:scale-[1.02]"
+                style={{ fontFamily: "'Syne', sans-serif", background: '#FFF6EA', color: '#3A0D0A' }}
+              >
+                Browse templates & build yours →
+              </Link>
+            </div>
+          </motion.div>
+        </div>
       </section>
 
       {/* TEMPLATE SHOWCASE */}
@@ -77,7 +113,7 @@ export default function WeddingInvitationsClient() {
             {showcaseVariants.map((v, i) => (
               <motion.div key={v.id} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={VP} transition={{ duration: 0.5, delay: (i % 6) * 0.06 }}>
                 <Link href={`/templates/demo/${v.id}`} target="_blank" className="group block rounded-2xl overflow-hidden border transition-all hover:-translate-y-1 hover:shadow-xl" style={{ borderColor: 'rgba(58,13,10,0.1)', background: '#fff' }}>
-                  <div className="relative h-52 overflow-hidden">
+                  <div className="relative overflow-hidden" style={{ aspectRatio: '9 / 16' }}>
                     <Image src={v.thumbnail} alt={v.label} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                   </div>
                   <div className="p-4">

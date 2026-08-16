@@ -40,9 +40,9 @@ export default function PortfolioPage() {
               className="group block rounded-2xl overflow-hidden border transition-all hover:-translate-y-1"
               style={{ borderColor: 'rgba(255,255,255,0.09)', background: '#111' }}
             >
-              <div className="relative h-40 overflow-hidden">
+              <div className="relative h-40 overflow-hidden flex items-center justify-center p-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={s.img} alt={s.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <img src={s.img} alt={s.name} className="max-w-full max-h-full w-auto h-auto object-contain transition-transform duration-500 group-hover:scale-105" />
               </div>
               <div className="p-4">
                 <p style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: '0.95rem', color: '#fff' }}>{s.name}</p>

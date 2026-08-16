@@ -470,7 +470,7 @@ export default function Editor({
                 webbes.in@gmail.com
               </a>{' '}
               ·{' '}
-              <a href="https://wa.me/919149681874" target="_blank" rel="noopener noreferrer" className="underline hover:text-black/50">
+              <a href="https://wa.me/918075959157" target="_blank" rel="noopener noreferrer" className="underline hover:text-black/50">
                 WhatsApp
               </a>
             </p>

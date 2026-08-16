@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import AIAutomationClient from './AIAutomationClient'
+import { AI_AUTOMATION_FAQS } from '@/lib/ai-demo/faqs'
 
 export const metadata: Metadata = {
   title: 'AI Automation Agency in Kerala — WhatsApp Bots & Business Automation | Webbes',
@@ -40,6 +41,20 @@ export default function AIAutomationPage() {
             ],
             description:
               'AI-powered WhatsApp automation, lead qualification, and 24/7 booking systems for small and medium businesses in Kerala and the GCC.',
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: AI_AUTOMATION_FAQS.map((f) => ({
+              '@type': 'Question',
+              name: f.q,
+              acceptedAnswer: { '@type': 'Answer', text: f.a },
+            })),
           }),
         }}
       />

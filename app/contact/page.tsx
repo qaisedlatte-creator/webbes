@@ -97,7 +97,7 @@ export default function ContactPage() {
                 {
                   label: 'WhatsApp',
                   value: '+91 91496 81874',
-                  href: 'https://wa.me/919149681874',
+                  href: 'https://wa.me/918075959157',
                 },
                 {
                   label: 'Instagram',
@@ -238,7 +238,7 @@ export default function ContactPage() {
                 </button>
 
                 <a
-                  href="https://wa.me/919149681874"
+                  href="https://wa.me/918075959157"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{

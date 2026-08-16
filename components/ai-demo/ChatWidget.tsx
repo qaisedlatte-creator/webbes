@@ -1,7 +1,14 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { GraduationCap, Home, Stethoscope, type LucideIcon } from 'lucide-react'
 import { PERSONAS, type DemoPersona } from '@/lib/ai-demo/personas'
+
+const PERSONA_ICONS: Record<string, LucideIcon> = {
+  'study-abroad': GraduationCap,
+  rentals: Home,
+  clinic: Stethoscope,
+}
 
 interface Message {
   role: 'user' | 'model'
@@ -38,27 +45,27 @@ function PersonaPicker({ onPick }: { onPick: (p: DemoPersona) => void }) {
         This is a real, working AI agent — the same kind we build for clients. Chat with it exactly like a customer would on WhatsApp.
       </p>
       <div className="grid gap-3">
-        {PERSONAS.map((p) => (
-          <button
-            key={p.id}
-            onClick={() => onPick(p)}
-            className="flex items-center gap-3.5 text-left p-4 rounded-2xl border transition-colors"
-            style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)' }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,0.08)')}
-            onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
-          >
-            <span
-              className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center font-bold text-white"
-              style={{ background: p.accent, fontFamily: "'Syne', sans-serif" }}
+        {PERSONAS.map((p) => {
+          const Icon = PERSONA_ICONS[p.id]
+          return (
+            <button
+              key={p.id}
+              onClick={() => onPick(p)}
+              className="flex items-center gap-3.5 text-left p-4 rounded-2xl border transition-colors"
+              style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)' }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,0.08)')}
+              onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
             >
-              {p.avatarInitial}
-            </span>
-            <span>
-              <span className="block text-white font-semibold text-[14px]">{p.niche}</span>
-              <span className="block text-white/40 text-[12.5px] mt-0.5">{p.tagline}</span>
-            </span>
-          </button>
-        ))}
+              <span className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center text-white" style={{ background: p.accent }}>
+                <Icon size={20} strokeWidth={2} />
+              </span>
+              <span>
+                <span className="block text-white font-semibold text-[14px]">{p.niche}</span>
+                <span className="block text-white/40 text-[12.5px] mt-0.5">{p.tagline}</span>
+              </span>
+            </button>
+          )
+        })}
       </div>
     </div>
   )
@@ -130,11 +137,11 @@ export default function ChatWidget() {
             <button onClick={switchPersona} aria-label="Switch persona" className="text-white/40 hover:text-white text-lg leading-none px-1">
               ‹
             </button>
-            <span
-              className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-[13px]"
-              style={{ background: persona.accent, fontFamily: "'Syne', sans-serif" }}
-            >
-              {persona.avatarInitial}
+            <span className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white" style={{ background: persona.accent }}>
+              {(() => {
+                const Icon = PERSONA_ICONS[persona.id]
+                return <Icon size={15} strokeWidth={2} />
+              })()}
             </span>
             <div className="min-w-0">
               <p className="text-white text-[13.5px] font-semibold truncate">{persona.agentName}</p>

@@ -86,7 +86,7 @@ export default function Footer() {
             className="block text-white/40 text-[13px] mb-2.5 hover:text-white transition-colors duration-150">
             webbes.in@gmail.com
           </a>
-          <a href="https://wa.me/919149681874" target="_blank" rel="noopener noreferrer"
+          <a href="https://wa.me/918075959157" target="_blank" rel="noopener noreferrer"
             className="block text-white/40 text-[13px] mb-2.5 hover:text-white transition-colors duration-150">
             WhatsApp
           </a>

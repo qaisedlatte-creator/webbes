@@ -57,6 +57,7 @@ const PORTFOLIO_SITES = [
 
 const FAQS = [
   { q: 'What does Webbes actually build?', a: 'AI automation for WhatsApp and business workflows is our primary focus, alongside digital wedding invitation websites and full custom websites/e-commerce stores.' },
+  { q: 'Can AI automation replace my staff?', a: "No — it replaces the delay, not the person. It handles instant first replies and routine questions 24/7; your team steps in for anything that needs real judgment or a relationship." },
   { q: 'How much does an AI automation cost?', a: 'It depends on scope — a simple FAQ-and-booking agent costs less than a full lead-qualification system. Message us on WhatsApp for a straight number after a quick call.' },
   { q: 'Do you work with clients outside India?', a: 'Yes. We actively serve clients across India and the GCC (UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, Oman).' },
   { q: 'What makes Webbes different?', a: 'Every project is handled directly by Qais — no middlemen, no outsourcing. AI-first approach, direct communication, fast delivery. You own everything we build.' },
@@ -69,6 +70,20 @@ export default function HomePage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: FAQS.map((f) => ({
+              '@type': 'Question',
+              name: f.q,
+              acceptedAnswer: { '@type': 'Answer', text: f.a },
+            })),
+          }),
+        }}
+      />
       {/* HERO — AI automation pain point, opens the page */}
       <HeroCinematic text="You message a business on WhatsApp. Nobody replies for six hours." speed={22}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
@@ -142,7 +157,7 @@ export default function HomePage() {
                 className="group block rounded-2xl overflow-hidden"
                 style={{ border: '1px solid rgba(255,255,255,0.15)' }}
               >
-                <div className="relative h-48 overflow-hidden">
+                <div className="relative overflow-hidden" style={{ aspectRatio: '9 / 16' }}>
                   <Image src={v.thumbnail} alt={v.label} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                 </div>
               </motion.a>
@@ -187,8 +202,8 @@ export default function HomePage() {
                 transition={{ duration: 0.45, delay: i * 0.07 }}
                 className="group block rounded-xl overflow-hidden border border-black/8"
               >
-                <div className="relative h-32 overflow-hidden">
-                  <Image src={s.img} alt={s.name} fill sizes="33vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                <div className="relative h-32 overflow-hidden flex items-center justify-center p-3" style={{ background: '#f7f5f0' }}>
+                  <Image src={s.img} alt={s.name} fill sizes="33vw" className="object-contain p-3 transition-transform duration-500 group-hover:scale-105" />
                 </div>
                 <p style={{ fontFamily: "'Syne', sans-serif", fontSize: '0.85rem', fontWeight: 700, color: '#0a0a0a', padding: '10px 12px' }}>{s.name}</p>
               </motion.a>
@@ -234,7 +249,7 @@ export default function HomePage() {
             <Link href="/contact" className="glass-btn" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: '0.88rem', color: '#0a0a0a', background: 'rgba(255,255,255,0.95)', border: '1.5px solid rgba(255,255,255,0.85)', borderRadius: 100, padding: '13px 32px', textDecoration: 'none' }}>
               Start a Project →
             </Link>
-            <a href="https://wa.me/919149681874" target="_blank" rel="noopener noreferrer" className="glass-btn"
+            <a href="https://wa.me/918075959157" target="_blank" rel="noopener noreferrer" className="glass-btn"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 8, border: '1.5px solid rgba(255,255,255,0.15)', color: '#ffffff', padding: '13px 28px', fontFamily: "'Syne', sans-serif", fontWeight: 600, fontSize: '0.88rem', background: 'rgba(255,255,255,0.07)', borderRadius: 100, textDecoration: 'none' }}>
               Chat on WhatsApp
             </a>
