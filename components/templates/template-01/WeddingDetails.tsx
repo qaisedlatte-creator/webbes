@@ -11,6 +11,8 @@ import { formatDateParts } from '@/lib/templates/date'
 
 interface Props {
   date: string
+  /** Multi-day events — optional end date, ISO string. Only shown when it differs from `date`. */
+  endDate?: string
   time: string
   eventLabel: string
   closingLine: string
@@ -82,11 +84,13 @@ function IconBox({ children, theme }: { children: React.ReactNode; theme: ColorP
   )
 }
 
-export default function WeddingDetails({ date, time, eventLabel, closingLine, theme }: Props) {
+export default function WeddingDetails({ date, endDate, time, eventLabel, closingLine, theme }: Props) {
   const [revealed, setRevealed] = useState(false)
   const sealWrapRef = useRef<HTMLDivElement>(null)
   const { particles, trigger } = useConfetti()
   const { weekday, day, month, year } = formatDateParts(date)
+  const showEndDate = Boolean(endDate && endDate.trim() && endDate !== date)
+  const endParts = showEndDate ? formatDateParts(endDate as string) : null
 
   const handleReveal = () => {
     if (revealed) return
@@ -140,6 +144,11 @@ export default function WeddingDetails({ date, time, eventLabel, closingLine, th
                     <p className="italic" style={{ fontFamily: 'var(--invite-serif)', fontSize: 'clamp(1.2rem, 3.5vw, 1.7rem)', color: theme.ink }}>{weekday}</p>
                     <p className="leading-none" style={{ fontFamily: 'var(--invite-heading)', fontSize: 'clamp(3rem, 8vw, 5rem)', color: theme.accent, fontWeight: 400 }}>{day}</p>
                     <p className="tracking-widest" style={{ fontFamily: 'var(--invite-serif)', fontSize: 'clamp(1rem, 2.5vw, 1.4rem)', color: theme.ink }}>{month} {year}</p>
+                    {showEndDate && endParts && (
+                      <p className="italic mt-2" style={{ fontFamily: 'var(--invite-serif)', fontSize: '0.78rem', color: withAlpha(theme.ink, 0.5) }}>
+                        through {endParts.day} {endParts.month}{endParts.year !== year ? ` ${endParts.year}` : ''}
+                      </p>
+                    )}
                   </div>
                 </div>
 

@@ -4,9 +4,11 @@ import type { InviteData, Religion } from '@/lib/templates/types'
 
 const VALID_RELIGIONS: Religion[] = ['islamic', 'christian', 'hindu']
 const DATA_FIELDS: (keyof InviteData)[] = [
-  'groomName', 'brideName', 'date', 'time', 'venue', 'venueCity', 'colorPresetId', 'photoUrl',
+  'groomName', 'brideName', 'date', 'time', 'venue', 'venueCity', 'venueAddress', 'endDate',
+  'brideParents', 'groomParents', 'colorPresetId', 'photoUrl',
   'audioUrl', 'mapsUrl', 'showPetals', 'eventLabel', 'heroSubtitle', 'closingLine', 'footerBlessing',
   'nameOrder', 'showCountdown', 'showWeddingDetails', 'showLocation', 'showFooter', 'rsvpStyle',
+  'photoAlbumEnabled', 'photoAlbum',
 ]
 
 export async function POST(req: NextRequest) {

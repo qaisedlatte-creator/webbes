@@ -4,8 +4,10 @@ import { useState, useCallback, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import LoadingScreen from './LoadingScreen'
 import Hero from './Hero'
+import FamilyNames from './FamilyNames'
 import WeddingDetails from './WeddingDetails'
 import Countdown from './Countdown'
+import Gallery from './Gallery'
 import Location from './Location'
 import Footer from './Footer'
 import MusicToggle from './MusicToggle'
@@ -158,14 +160,23 @@ export default function InviteTemplate({ religion, data, watermark = false, skip
                     theme={theme}
                   />
                 </ScrollParallax>
+                <FamilyNames
+                  brideName={data.brideName || 'Bride'}
+                  groomName={data.groomName || 'Groom'}
+                  brideParents={data.brideParents}
+                  groomParents={data.groomParents}
+                  theme={theme}
+                />
                 {data.showWeddingDetails && (
-                  <WeddingDetails date={data.date} time={data.time || '4:00 PM'} eventLabel={eventLabel} closingLine={closingLine} theme={theme} />
+                  <WeddingDetails date={data.date} endDate={data.endDate} time={data.time || '4:00 PM'} eventLabel={eventLabel} closingLine={closingLine} theme={theme} />
                 )}
                 {data.showCountdown && <Countdown date={data.date} time={data.time || '4:00 PM'} theme={theme} />}
+                {data.photoAlbumEnabled && <Gallery photos={data.photoAlbum} eventLabel={eventLabel} theme={theme} />}
                 {data.showLocation && (
                   <Location
                     venue={data.venue || 'Venue to be announced'}
                     venueCity={data.venueCity || ''}
+                    venueAddress={data.venueAddress}
                     date={data.date}
                     eventLabel={eventLabel}
                     mapsUrl={data.mapsUrl}

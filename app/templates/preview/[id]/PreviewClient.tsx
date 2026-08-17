@@ -2,7 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { Link2, Sparkles, ClipboardCheck } from 'lucide-react'
 import TemplateRenderer from '@/components/templates/TemplateRenderer'
+import StepIndicator from '@/components/templates/wizard/StepIndicator'
+import TemplateBrowser from './TemplateBrowser'
 import { styleLabel } from '@/lib/templates/display'
 import { trackPixelEvent } from '@/lib/meta-pixel-client'
 import type { InviteData, Religion } from '@/lib/templates/types'
@@ -17,12 +20,22 @@ interface Props {
   songEnabled: boolean
 }
 
+const BENEFITS = [
+  { icon: Link2, label: 'One shareable link' },
+  { icon: Sparkles, label: 'Cinematic opening' },
+  { icon: ClipboardCheck, label: 'Live RSVP tracking' },
+]
+
 export default function PreviewClient({ id, templateId, religion, data, pricePaise, rsvpEnabled, songEnabled }: Props) {
   const searchParams = useSearchParams()
+  const guestMode = searchParams.get('guest') === '1'
+
   const [paying, setPaying] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [shareLink, setShareLink] = useState<string | null>(null)
   const [sharing, setSharing] = useState(false)
+  const [showBrowser, setShowBrowser] = useState(false)
+  const [switching, setSwitching] = useState(false)
 
   const priceLabel = `₹${(pricePaise / 100).toLocaleString('en-IN')}`
 
@@ -64,6 +77,25 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
       // silent — share link is a nice-to-have, not critical
     } finally {
       setSharing(false)
+    }
+  }
+
+  // "Change template" (Preview step) — keeps all entered data, only swaps
+  // templateId/religion on the same draft, then reloads so the server
+  // re-applies its paywall-sanitization rules for the new template's kind.
+  const handleApplyTemplate = async (newTemplateId: string, newReligion: Religion) => {
+    setSwitching(true)
+    try {
+      const res = await fetch('/api/templates/invites', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, templateId: newTemplateId, religion: newReligion, data, rsvpEnabled, songEnabled }),
+      })
+      if (!res.ok) throw new Error('Could not switch template')
+      window.location.reload()
+    } catch {
+      setSwitching(false)
+      alert('Could not switch template — please try again.')
     }
   }
 
@@ -122,20 +154,42 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
     }
   }
 
+  // Guest mode — the exact same paywall-sanitized data, just with no
+  // watermark and no owner chrome, opened in a new tab from the Preview step.
+  if (guestMode) {
+    return <TemplateRenderer templateId={templateId} religion={religion} data={data} watermark={false} rsvpEnabled={rsvpEnabled} inviteId={id} />
+  }
+
   return (
     <div className="relative">
-      <TemplateRenderer templateId={templateId} religion={religion} data={data} watermark rsvpEnabled={rsvpEnabled} inviteId={id} />
+      <div className="fixed top-0 left-0 right-0 z-[310]">
+        <StepIndicator current="preview" hrefs={{ template: '/templates', customize: `/templates/build/${templateId}?id=${id}` }} />
+      </div>
 
-      <a
-        href="/"
-        className="fixed top-4 left-4 z-[300] text-xs font-bold tracking-tight bg-white/90 text-black/70 px-3 py-2 rounded-full shadow-lg hover:text-black"
-      >
-        webbes
-      </a>
+      <div style={{ paddingTop: 49 }}>
+        <TemplateRenderer templateId={templateId} religion={religion} data={data} watermark rsvpEnabled={rsvpEnabled} inviteId={id} />
+      </div>
 
-      <div
-        className="fixed top-4 right-4 z-[300]"
-      >
+      <div className="fixed top-[57px] left-4 z-[300] flex items-center gap-2">
+        <span className="text-[11px] font-semibold bg-black/80 text-white px-2.5 py-1 rounded-full">Draft</span>
+      </div>
+
+      <div className="fixed top-[57px] right-4 z-[300] flex flex-col items-end gap-2">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => window.open(`/templates/preview/${id}?guest=1`, '_blank')}
+            className="text-[11px] font-semibold bg-white/90 text-black/70 px-3 py-2 rounded-full shadow-lg hover:text-black"
+          >
+            Preview as Guest
+          </button>
+          <button
+            onClick={() => setShowBrowser(true)}
+            className="text-[11px] font-semibold text-white px-3 py-2 rounded-full shadow-lg"
+            style={{ background: '#2563EB' }}
+          >
+            Change template
+          </button>
+        </div>
         {shareLink ? (
           <div className="flex items-center gap-2 bg-white/95 rounded-full pl-3 pr-1 py-1 shadow-lg max-w-[280px]">
             <span className="text-[11px] text-black/60 truncate">{shareLink}</span>
@@ -159,9 +213,19 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
       </div>
 
       <div
-        className="fixed bottom-0 left-0 right-0 z-[300] flex flex-col items-center gap-2 px-4 py-4"
+        className="fixed bottom-0 left-0 right-0 z-[300] flex flex-col items-center gap-3 px-4 py-4"
         style={{ background: 'rgba(20,10,10,0.9)', backdropFilter: 'blur(10px)' }}
       >
+        {/* Benefits — reinforce value right before the pay CTA */}
+        <div className="flex items-center gap-4 flex-wrap justify-center">
+          {BENEFITS.map((b) => (
+            <span key={b.label} className="flex items-center gap-1.5 text-[11px] text-white/70">
+              <b.icon size={13} className="text-white/50" />
+              {b.label}
+            </span>
+          ))}
+        </div>
+
         {error && <p className="text-xs text-red-300">{error}</p>}
         <button
           onClick={handlePay}
@@ -201,6 +265,20 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
           </a>
         </p>
       </div>
+
+      {showBrowser && (
+        <TemplateBrowser
+          data={data}
+          currentTemplateId={templateId}
+          onApply={handleApplyTemplate}
+          onClose={() => setShowBrowser(false)}
+        />
+      )}
+      {switching && (
+        <div className="fixed inset-0 z-[500] flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.5)' }}>
+          <p className="bg-white rounded-full px-5 py-3 text-sm font-semibold text-black/70">Switching template…</p>
+        </div>
+      )}
     </div>
   )
 }

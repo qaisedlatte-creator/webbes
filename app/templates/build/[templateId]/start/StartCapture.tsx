@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { styleLabel } from '@/lib/templates/display'
 import { trackPixelEvent } from '@/lib/meta-pixel-client'
 import { BASE_PRICE_INR } from '@/lib/templates/pricing'
+import StepIndicator from '@/components/templates/wizard/StepIndicator'
 import type { Religion } from '@/lib/templates/types'
 
 interface Props {
@@ -74,6 +75,7 @@ export default function StartCapture({ templateId, religion, religionLabel, init
 
   return (
     <div className="min-h-[100dvh] flex flex-col" style={{ background: '#f7f5f0' }}>
+      <StepIndicator current="template" hrefs={{ template: `/templates/category/${religion}` }} />
       <div className="px-5 pt-6">
         <Link href={`/templates/category/${religion}`} className="text-xs text-black/40 hover:text-black/60 inline-block">
           ← Back

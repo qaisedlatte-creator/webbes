@@ -14,6 +14,10 @@ export const DEFAULT_INVITE_DATA: InviteData = {
   time: '4:00 PM – 7:00 PM',
   venue: '',
   venueCity: '',
+  venueAddress: '',
+  endDate: '',
+  brideParents: '',
+  groomParents: '',
   colorPresetId: '',
   photoUrl: null,
   audioUrl: null,
@@ -29,6 +33,8 @@ export const DEFAULT_INVITE_DATA: InviteData = {
   showLocation: true,
   showFooter: true,
   rsvpStyle: 'frosted',
+  photoAlbumEnabled: false,
+  photoAlbum: [],
 }
 
 interface InviteRow {
@@ -100,6 +106,9 @@ export async function upsertInvite(input: {
       data: {
         religion,
         data: data as object,
+        // Lets "Change template" (Preview step) swap the style on an existing
+        // draft — previously only set on create, so switching silently no-op'd.
+        ...(input.templateId !== undefined ? { templateId: input.templateId } : {}),
         ...(input.whatsapp !== undefined ? { whatsapp: input.whatsapp } : {}),
         ...(input.contactName !== undefined ? { contactName: input.contactName } : {}),
         ...(input.rsvpEnabled !== undefined ? { rsvpEnabled: input.rsvpEnabled } : {}),

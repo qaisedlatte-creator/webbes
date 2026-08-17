@@ -50,6 +50,13 @@ export interface InviteData {
   time: string;
   venue: string;
   venueCity: string;
+  /** Full street address — shown under the venue name and used for the "Get Directions" card. */
+  venueAddress: string;
+  /** Multi-day events — optional end date, ISO string. Blank means single-day. */
+  endDate: string;
+  /** "Daughter of Mr. & Mrs. ..." style line — optional. */
+  brideParents: string;
+  groomParents: string;
   colorPresetId: string;
   photoUrl: string | null;
   /** Paid add-on (+₹59) — customer's own uploaded track, replaces the default religion music. */
@@ -72,6 +79,9 @@ export interface InviteData {
   showFooter: boolean;
   /** Background treatment for the RSVP card. */
   rsvpStyle: 'frosted' | 'outline' | 'solid';
+  /** Photo album/gallery — separate from the single hero/cover photo above. */
+  photoAlbumEnabled: boolean;
+  photoAlbum: string[];
 }
 
 export interface RsvpResponseRecord {

@@ -4,6 +4,10 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import TemplateRenderer from '@/components/templates/TemplateRenderer'
+import StepIndicator from '@/components/templates/wizard/StepIndicator'
+import PhoneFrame from '@/components/templates/wizard/PhoneFrame'
+import YourEventTab from './YourEventTab'
+import StoryPhotosTab from './StoryPhotosTab'
 import { RELIGION_PRESETS, RELIGIONS, RELIGION_TERMINOLOGY } from '@/lib/templates/religion-themes'
 import { getVariant } from '@/lib/templates/posterVariants'
 import { RSVP_ADDON_PRICE_INR, SONG_ADDON_PRICE_INR, BASE_PRICE_INR, LIST_PRICE_INR, formatINR } from '@/lib/templates/pricing'
@@ -19,6 +23,7 @@ interface Props {
 }
 
 type SaveState = 'idle' | 'saving' | 'saved' | 'error'
+type Tab = 'event' | 'story'
 
 export default function Editor({
   templateId,
@@ -38,6 +43,7 @@ export default function Editor({
   const [uploading, setUploading] = useState(false)
   const [uploadingSong, setUploadingSong] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
+  const [tab, setTab] = useState<Tab>('event')
   const idRef = useRef(id)
   idRef.current = id
   const mounted = useRef(false)
@@ -75,6 +81,8 @@ export default function Editor({
     }
   }, [templateId, religion, data, rsvpEnabled, songEnabled, router])
 
+  // Autosave — debounced 800ms after any change, so a partial customization
+  // survives the user leaving mid-way and coming back later.
   useEffect(() => {
     if (!mounted.current) {
       mounted.current = true
@@ -113,46 +121,19 @@ export default function Editor({
   const presets = RELIGION_PRESETS[religion]
   const total = BASE_PRICE_INR + (rsvpEnabled ? RSVP_ADDON_PRICE_INR : 0) + (songEnabled ? SONG_ADDON_PRICE_INR : 0)
 
-  const PhotoSection = (
-    <section>
-      <h2 className="text-sm font-semibold text-black/80 mb-1">Photo</h2>
-      {kind === 'custom' && !data.photoUrl && (
-        <p className="text-xs text-black/40 mb-3">Upload your own background photo to build this invite on top of.</p>
-      )}
-      {data.photoUrl ? (
-        <div className="relative rounded-lg overflow-hidden border border-black/10">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={data.photoUrl} alt="" className="w-full h-40 object-cover" />
-          <button onClick={() => update({ photoUrl: null })} className="absolute top-2 right-2 text-xs bg-black/60 text-white px-2 py-1 rounded">
-            Remove
-          </button>
-        </div>
-      ) : (
-        <label className="flex items-center justify-center h-24 rounded-lg border border-dashed border-black/20 text-sm text-black/40 cursor-pointer hover:border-black/40">
-          {uploading ? 'Uploading…' : 'Click to upload a photo'}
-          <input
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            className="hidden"
-            onChange={(e) => {
-              const f = e.target.files?.[0]
-              if (f) handleUpload(f, 'photo')
-            }}
-          />
-        </label>
-      )}
-    </section>
-  )
-
   return (
-    <div className="min-h-screen" style={{ background: '#F7F5F0' }}>
-      <div className="flex flex-col lg:flex-row lg:h-screen">
+    <div className="min-h-screen flex flex-col" style={{ background: '#F7F5F0' }}>
+      <StepIndicator current="customize" hrefs={{ template: `/templates/category/${religion}` }} />
+
+      <div className="flex flex-col lg:flex-row flex-1 lg:h-[calc(100vh-49px)]">
         {/* Form column */}
         <div className="w-full lg:w-[440px] lg:h-full lg:overflow-y-auto border-b lg:border-b-0 lg:border-r border-black/10 bg-white">
-          <div className="px-6 py-6 border-b border-black/5 flex items-center justify-between sticky top-0 bg-white z-10">
+          <div className="px-6 py-5 border-b border-black/5 flex items-center justify-between sticky top-0 bg-white z-10">
             <div className="flex items-center gap-4">
               <Link href={`/templates/category/${religion}`} className="text-sm text-black/50 hover:text-black">← Back</Link>
-              <Link href="/" className="text-xs font-bold tracking-tight text-black/60 hover:text-black hidden sm:inline">webbes</Link>
+              <p className="text-[11px] uppercase tracking-[0.15em] font-semibold" style={{ color: '#2563EB' }}>
+                {religionLabel} · {variant?.label ?? 'Custom'}
+              </p>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-xs text-black/40">
@@ -171,263 +152,52 @@ export default function Editor({
             </div>
           </div>
 
-          <div className="px-6 pt-5">
-            <p className="text-[11px] uppercase tracking-[0.15em] font-semibold" style={{ color: '#2563EB' }}>
-              {religionLabel} · {variant?.label ?? 'Custom'}
-            </p>
+          {/* Sub-tabs */}
+          <div className={`flex border-b border-black/8 sticky top-[65px] bg-white z-10 ${showPreview ? 'hidden lg:flex' : 'flex'}`}>
+            {(
+              [
+                ['event', 'Your Event'],
+                ['story', 'Story & Photos'],
+              ] as const
+            ).map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setTab(key)}
+                className="flex-1 text-sm font-semibold py-3.5 border-b-2 transition-colors"
+                style={tab === key ? { borderColor: '#2563EB', color: '#2563EB' } : { borderColor: 'transparent', color: 'rgba(0,0,0,0.4)' }}
+              >
+                {label}
+              </button>
+            ))}
           </div>
 
-          <div className={`px-6 py-6 space-y-8 ${showPreview ? 'hidden lg:block' : ''}`}>
-            {/* Custom flow: photo comes first, before anything else */}
-            {kind === 'custom' && PhotoSection}
-
-            {/* Names */}
-            <section>
-              <h2 className="text-sm font-semibold text-black/80 mb-3">Names</h2>
-              <div className="space-y-3">
-                <input
-                  type="text"
-                  placeholder="Bride's name"
-                  value={data.brideName}
-                  onChange={(e) => update({ brideName: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-black/10 text-sm focus:outline-none focus:border-[#2563EB]"
-                />
-                <input
-                  type="text"
-                  placeholder="Groom's name"
-                  value={data.groomName}
-                  onChange={(e) => update({ groomName: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-black/10 text-sm focus:outline-none focus:border-[#2563EB]"
-                />
-                <div className="grid grid-cols-2 gap-2">
-                  {(['brideFirst', 'groomFirst'] as const).map((v) => (
-                    <button
-                      key={v}
-                      onClick={() => update({ nameOrder: v })}
-                      className={`py-2 rounded-lg text-xs font-medium border transition-colors ${
-                        data.nameOrder === v ? 'border-[#2563EB] bg-[#2563EB]/5 text-[#2563EB]' : 'border-black/10 text-black/60 hover:border-black/20'
-                      }`}
-                    >
-                      {v === 'brideFirst' ? "Bride's name first" : "Groom's name first"}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Date & venue */}
-            <section>
-              <h2 className="text-sm font-semibold text-black/80 mb-3">Date &amp; venue</h2>
-              <div className="space-y-3">
-                <input
-                  type="date"
-                  value={data.date}
-                  onChange={(e) => update({ date: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-black/10 text-sm focus:outline-none focus:border-[#2563EB]"
-                />
-                <input
-                  type="text"
-                  placeholder="Time, e.g. 4:00 PM – 7:00 PM"
-                  value={data.time}
-                  onChange={(e) => update({ time: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-black/10 text-sm focus:outline-none focus:border-[#2563EB]"
-                />
-                <input
-                  type="text"
-                  placeholder="Venue name"
-                  value={data.venue}
-                  onChange={(e) => update({ venue: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-black/10 text-sm focus:outline-none focus:border-[#2563EB]"
-                />
-                <input
-                  type="text"
-                  placeholder="City"
-                  value={data.venueCity}
-                  onChange={(e) => update({ venueCity: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-black/10 text-sm focus:outline-none focus:border-[#2563EB]"
-                />
-                <input
-                  type="url"
-                  placeholder="Paste Google Maps link (optional)"
-                  value={data.mapsUrl}
-                  onChange={(e) => update({ mapsUrl: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-black/10 text-sm focus:outline-none focus:border-[#2563EB]"
-                />
-                <p className="text-xs text-black/35 -mt-1">Leave blank and we'll build a map link from the venue + city instead.</p>
-              </div>
-            </section>
-
-            {/* Color theme — only the flexible envelope template has this */}
-            {kind === 'envelope' && (
-              <section>
-                <h2 className="text-sm font-semibold text-black/80 mb-3">Color theme</h2>
-                <div className="grid grid-cols-2 gap-2">
-                  {presets.map((p) => (
-                    <button
-                      key={p.id}
-                      onClick={() => update({ colorPresetId: p.id })}
-                      className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border text-left transition-colors ${
-                        data.colorPresetId === p.id ? 'border-[#2563EB]' : 'border-black/10 hover:border-black/20'
-                      }`}
-                    >
-                      <span className="w-6 h-6 rounded-full shrink-0" style={{ background: `linear-gradient(135deg, ${p.accent}, ${p.gold})` }} />
-                      <span className="text-xs font-medium text-black/70">{p.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </section>
+          <div className={`px-6 py-6 ${showPreview ? 'hidden lg:block' : ''}`}>
+            {tab === 'event' ? (
+              <YourEventTab
+                data={data}
+                update={update}
+                presets={presets}
+                showColorTheme={kind === 'envelope'}
+                eventLabelPlaceholder={terminology.eventLabel}
+              />
+            ) : (
+              <StoryPhotosTab
+                data={data}
+                update={update}
+                kind={kind}
+                heroSubtitlePlaceholder={terminology.heroSubtitle}
+                closingLinePlaceholder={terminology.closingLine}
+                footerBlessingPlaceholder={terminology.footerBlessing}
+                uploading={uploading}
+                uploadingSong={uploadingSong}
+                onUploadPhoto={(f) => handleUpload(f, 'photo')}
+                onUploadSong={(f) => handleUpload(f, 'song')}
+                rsvpEnabled={rsvpEnabled}
+                setRsvpEnabled={setRsvpEnabled}
+                songEnabled={songEnabled}
+                setSongEnabled={setSongEnabled}
+              />
             )}
-
-            {/* Envelope template also allows an optional ambient background photo */}
-            {kind === 'envelope' && PhotoSection}
-
-            {/* Wording — every line on the invite, editable */}
-            <section>
-              <h2 className="text-sm font-semibold text-black/80 mb-1">Wording</h2>
-              <p className="text-xs text-black/40 mb-3">Tweak any line, or leave blank to use the default for this style.</p>
-              <div className="space-y-3">
-                <div>
-                  <label className="text-xs text-black/45 mb-1 block">Badge label</label>
-                  <input
-                    type="text"
-                    placeholder={terminology.eventLabel}
-                    value={data.eventLabel}
-                    onChange={(e) => update({ eventLabel: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-black/10 text-sm focus:outline-none focus:border-[#2563EB]"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-black/45 mb-1 block">Hero subtitle</label>
-                  <textarea
-                    placeholder={terminology.heroSubtitle}
-                    value={data.heroSubtitle}
-                    onChange={(e) => update({ heroSubtitle: e.target.value })}
-                    rows={2}
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-black/10 text-sm focus:outline-none focus:border-[#2563EB] resize-none"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-black/45 mb-1 block">Closing line (after date reveal)</label>
-                  <input
-                    type="text"
-                    placeholder={terminology.closingLine}
-                    value={data.closingLine}
-                    onChange={(e) => update({ closingLine: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-black/10 text-sm focus:outline-none focus:border-[#2563EB]"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-black/45 mb-1 block">Footer blessing</label>
-                  <textarea
-                    placeholder={terminology.footerBlessing}
-                    value={data.footerBlessing}
-                    onChange={(e) => update({ footerBlessing: e.target.value })}
-                    rows={2}
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-black/10 text-sm focus:outline-none focus:border-[#2563EB] resize-none"
-                  />
-                </div>
-              </div>
-            </section>
-
-            {/* Effects */}
-            <section>
-              <h2 className="text-sm font-semibold text-black/80 mb-3">Effects</h2>
-              <label className="flex items-center justify-between px-3.5 py-3 rounded-lg border border-black/10">
-                <span className="text-sm text-black/70">Falling petals</span>
-                <input
-                  type="checkbox"
-                  checked={data.showPetals}
-                  onChange={(e) => update({ showPetals: e.target.checked })}
-                  className="w-4 h-4"
-                />
-              </label>
-            </section>
-
-            {/* Sections — Hero is always shown; everything else can be removed */}
-            <section>
-              <h2 className="text-sm font-semibold text-black/80 mb-1">Sections</h2>
-              <p className="text-xs text-black/40 mb-3">Turn off anything you don't need on your invite.</p>
-              <div className="space-y-2">
-                {(
-                  [
-                    ['showWeddingDetails', 'Date & time reveal card'],
-                    ['showCountdown', 'Countdown'],
-                    ['showLocation', 'Venue & map'],
-                    ['showFooter', 'Closing blessing footer'],
-                  ] as const
-                ).map(([key, label]) => (
-                  <label key={key} className="flex items-center justify-between px-3.5 py-3 rounded-lg border border-black/10">
-                    <span className="text-sm text-black/70">{label}</span>
-                    <input type="checkbox" checked={data[key]} onChange={(e) => update({ [key]: e.target.checked })} className="w-4 h-4" />
-                  </label>
-                ))}
-              </div>
-            </section>
-
-            {/* Music add-on */}
-            <section>
-              <div className="flex items-center justify-between mb-1">
-                <h2 className="text-sm font-semibold text-black/80">Your own song</h2>
-                <span className="text-xs font-semibold" style={{ color: '#2563EB' }}>+{formatINR(SONG_ADDON_PRICE_INR)}</span>
-              </div>
-              <label className="flex items-center justify-between px-3.5 py-3 rounded-lg border border-black/10 mb-3">
-                <span className="text-sm text-black/70">Use a custom track instead of the default</span>
-                <input type="checkbox" checked={songEnabled} onChange={(e) => setSongEnabled(e.target.checked)} className="w-4 h-4" />
-              </label>
-              {songEnabled &&
-                (data.audioUrl ? (
-                  <div className="flex items-center justify-between px-3.5 py-2.5 rounded-lg border border-black/10">
-                    <span className="text-xs text-black/60 truncate">Song uploaded</span>
-                    <button onClick={() => update({ audioUrl: null })} className="text-xs text-black/40 hover:text-black">
-                      Remove
-                    </button>
-                  </div>
-                ) : (
-                  <label className="flex items-center justify-center h-16 rounded-lg border border-dashed border-black/20 text-sm text-black/40 cursor-pointer hover:border-black/40">
-                    {uploadingSong ? 'Uploading…' : 'Click to upload MP3 / M4A / WAV'}
-                    <input
-                      type="file"
-                      accept="audio/mpeg,audio/mp4,audio/wav,audio/x-m4a"
-                      className="hidden"
-                      onChange={(e) => {
-                        const f = e.target.files?.[0]
-                        if (f) handleUpload(f, 'song')
-                      }}
-                    />
-                  </label>
-                ))}
-            </section>
-
-            {/* RSVP add-on */}
-            <section>
-              <div className="flex items-center justify-between mb-1">
-                <h2 className="text-sm font-semibold text-black/80">RSVP + guest dashboard</h2>
-                <span className="text-xs font-semibold" style={{ color: '#2563EB' }}>+{formatINR(RSVP_ADDON_PRICE_INR)}</span>
-              </div>
-              <p className="text-xs text-black/40 mb-3">Guests can RSVP right on the invite. You get a private dashboard link to see who's coming.</p>
-              <label className="flex items-center justify-between px-3.5 py-3 rounded-lg border border-black/10 mb-3">
-                <span className="text-sm text-black/70">Enable RSVP</span>
-                <input type="checkbox" checked={rsvpEnabled} onChange={(e) => setRsvpEnabled(e.target.checked)} className="w-4 h-4" />
-              </label>
-              {rsvpEnabled && (
-                <div>
-                  <label className="text-xs text-black/45 mb-1.5 block">RSVP card style</label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {(['frosted', 'outline', 'solid'] as const).map((s) => (
-                      <button
-                        key={s}
-                        onClick={() => update({ rsvpStyle: s })}
-                        className={`py-2 rounded-lg text-xs font-medium border capitalize transition-colors ${
-                          data.rsvpStyle === s ? 'border-[#2563EB] bg-[#2563EB]/5 text-[#2563EB]' : 'border-black/10 text-black/60 hover:border-black/20'
-                        }`}
-                      >
-                        {s}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </section>
           </div>
 
           <div className={`px-6 py-6 border-t border-black/5 ${showPreview ? 'hidden lg:block' : ''}`}>
@@ -477,13 +247,11 @@ export default function Editor({
           </div>
         </div>
 
-        {/* Preview column */}
+        {/* Live preview column */}
         <div className={`flex-1 lg:h-full lg:overflow-y-auto bg-[#e9e6de] items-start justify-center py-8 px-4 ${showPreview ? 'flex' : 'hidden lg:flex'}`}>
-          <div className="w-full max-w-[420px] rounded-2xl overflow-hidden shadow-2xl border border-black/10" style={{ height: 'min(80vh, 780px)' }}>
-            <div className="w-full h-full overflow-y-auto">
-              <TemplateRenderer templateId={templateId} religion={religion} data={data} skipReveal watermark={false} rsvpEnabled={rsvpEnabled} inviteId={id ?? undefined} />
-            </div>
-          </div>
+          <PhoneFrame>
+            <TemplateRenderer templateId={templateId} religion={religion} data={data} skipReveal watermark={false} rsvpEnabled={rsvpEnabled} inviteId={id ?? undefined} />
+          </PhoneFrame>
         </div>
       </div>
     </div>

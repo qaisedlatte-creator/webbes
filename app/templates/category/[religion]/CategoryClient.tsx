@@ -7,13 +7,17 @@ import { Upload } from 'lucide-react'
 import type { TemplateVariant } from '@/lib/templates/posterVariants'
 import type { Religion } from '@/lib/templates/types'
 import { BASE_PRICE_INR, LIST_PRICE_INR, formatINR } from '@/lib/templates/pricing'
+import StepIndicator from '@/components/templates/wizard/StepIndicator'
 
 const VP = { once: true, margin: '-60px' } as const
 
 export default function CategoryClient({ religion, label, variants }: { religion: Religion; label: string; variants: TemplateVariant[] }) {
   return (
     <div style={{ background: '#ffffff', minHeight: '100vh' }}>
-      <section className="px-6 pt-32 pb-14 md:pt-40 md:pb-16 text-center" style={{ background: '#f7f5f0' }}>
+      <div className="pt-16">
+        <StepIndicator current="template" />
+      </div>
+      <section className="px-6 pt-16 pb-14 md:pt-24 md:pb-16 text-center" style={{ background: '#f7f5f0' }}>
         <Link href="/templates" className="text-xs text-black/40 hover:text-black/70 mb-6 inline-block">← All categories</Link>
         <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 'clamp(1.9rem, 4.5vw, 2.8rem)', fontWeight: 700, color: '#0a0a0a', letterSpacing: '-0.5px' }}>
           {label} Wedding Invitations

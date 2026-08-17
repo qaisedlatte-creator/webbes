@@ -10,6 +10,8 @@ import { formatDateLong } from '@/lib/templates/date'
 interface Props {
   venue: string
   venueCity: string
+  /** Full street address — shown as a line under the venue name, above the date. */
+  venueAddress?: string
   date: string
   eventLabel: string
   theme: ColorPreset
@@ -19,7 +21,7 @@ interface Props {
   mapsUrl?: string
 }
 
-export default function Location({ venue, venueCity, date, eventLabel, theme, scrollStyle = 'scale', mapsUrl: customMapsUrl }: Props) {
+export default function Location({ venue, venueCity, venueAddress, date, eventLabel, theme, scrollStyle = 'scale', mapsUrl: customMapsUrl }: Props) {
   const mapsUrl = customMapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${venue}, ${venueCity}`)}`
 
   return (
@@ -77,6 +79,12 @@ export default function Location({ venue, venueCity, date, eventLabel, theme, sc
               <motion.p variants={fadeUp} className="font-semibold mb-1" style={{ fontFamily: 'var(--invite-serif)', fontSize: 'clamp(1rem, 2.5vw, 1.2rem)', color: theme.accentDeep }}>
                 {venue}
               </motion.p>
+
+              {venueAddress && venueAddress.trim() && (
+                <motion.p variants={fadeUp} className="mb-1" style={{ fontFamily: 'var(--invite-serif)', fontSize: '0.82rem', color: withAlpha(theme.ink, 0.45) }}>
+                  {venueAddress}
+                </motion.p>
+              )}
 
               <motion.p variants={fadeUp} className="italic mb-7" style={{ fontFamily: 'var(--invite-serif)', fontSize: '0.88rem', color: withAlpha(theme.ink, 0.5) }}>
                 {formatDateLong(date)} · {venueCity}
