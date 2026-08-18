@@ -379,6 +379,13 @@ export async function deleteInvite(id: string): Promise<boolean> {
   }
 }
 
+/** Deletes exactly the given invite ids (cascades to their RSVPs) — the admin Orders tab's "select rows, then delete" action. Ids not found are silently ignored. Returns the number actually deleted. */
+export async function deleteInvites(ids: string[]): Promise<number> {
+  if (ids.length === 0) return 0
+  const { count } = await prisma.invite.deleteMany({ where: { id: { in: ids } } })
+  return count
+}
+
 export async function getInviteByDashboardToken(token: string): Promise<{ invite: InviteRecord; responses: RsvpResponseRecord[] } | null> {
   const row = await prisma.invite.findUnique({ where: { rsvpDashboardToken: token }, include: { rsvps: { orderBy: { createdAt: 'desc' } } } })
   if (!row) return null

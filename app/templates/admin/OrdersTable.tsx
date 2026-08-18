@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import type { InviteRecord } from '@/lib/templates/types'
 import { styleLabel, displayOrderNumber } from '@/lib/templates/display'
 import DeleteOrderButton from './DeleteOrderButton'
@@ -25,7 +26,12 @@ function formatINR(paise: number): string {
 type Filter = 'all' | 'paid' | 'pending'
 
 export default function OrdersTable({ orders }: { orders: InviteRecord[] }) {
+  const router = useRouter()
   const [filter, setFilter] = useState<Filter>('all')
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [confirming, setConfirming] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const filtered = useMemo(() => {
     if (filter === 'all') return orders
@@ -35,27 +41,89 @@ export default function OrdersTable({ orders }: { orders: InviteRecord[] }) {
   const paidCount = orders.filter((o) => o.status === 'paid').length
   const pendingCount = orders.length - paidCount
 
+  const changeFilter = (f: Filter) => {
+    setFilter(f)
+    setSelected(new Set())
+  }
+
+  const toggleOne = (id: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const allVisibleSelected = filtered.length > 0 && filtered.every((o) => selected.has(o.id))
+  const toggleAllVisible = () => {
+    setSelected((prev) => {
+      if (allVisibleSelected) {
+        const next = new Set(prev)
+        filtered.forEach((o) => next.delete(o.id))
+        return next
+      }
+      const next = new Set(prev)
+      filtered.forEach((o) => next.add(o.id))
+      return next
+    })
+  }
+
+  const handleDeleteSelected = async () => {
+    setDeleting(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/templates/admin/orders', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: Array.from(selected) }),
+      })
+      if (!res.ok) {
+        const json = await res.json().catch(() => null)
+        throw new Error(json?.error || 'Failed to delete')
+      }
+      setSelected(new Set())
+      setConfirming(false)
+      router.refresh()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong')
+    } finally {
+      setDeleting(false)
+    }
+  }
+
   return (
     <div>
-      <div className="flex flex-wrap items-center gap-2 mb-6">
-        {([
-          ['all', `All (${orders.length})`],
-          ['paid', `Paid (${paidCount})`],
-          ['pending', `Pending (${pendingCount})`],
-        ] as [Filter, string][]).map(([key, label]) => (
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-6">
+        <div className="flex flex-wrap items-center gap-2">
+          {([
+            ['all', `All (${orders.length})`],
+            ['paid', `Paid (${paidCount})`],
+            ['pending', `Pending (${pendingCount})`],
+          ] as [Filter, string][]).map(([key, label]) => (
+            <button
+              key={key}
+              onClick={() => changeFilter(key)}
+              className="text-xs font-semibold px-3.5 py-1.5 rounded-full transition-colors"
+              style={
+                filter === key
+                  ? { background: '#2563EB', color: '#fff' }
+                  : { background: '#fff', color: 'rgba(0,0,0,0.5)', border: '1px solid rgba(0,0,0,0.1)' }
+              }
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {selected.size > 0 && (
           <button
-            key={key}
-            onClick={() => setFilter(key)}
-            className="text-xs font-semibold px-3.5 py-1.5 rounded-full transition-colors"
-            style={
-              filter === key
-                ? { background: '#2563EB', color: '#fff' }
-                : { background: '#fff', color: 'rgba(0,0,0,0.5)', border: '1px solid rgba(0,0,0,0.1)' }
-            }
+            onClick={() => setConfirming(true)}
+            className="text-xs font-semibold px-3.5 py-1.5 rounded-full text-red-700 border border-red-200 hover:bg-red-50"
           >
-            {label}
+            Delete selected ({selected.size})
           </button>
-        ))}
+        )}
       </div>
 
       {filtered.length === 0 ? (
@@ -66,6 +134,9 @@ export default function OrdersTable({ orders }: { orders: InviteRecord[] }) {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-black/8 text-left text-xs text-black/40 uppercase tracking-wide">
+                  <th className="px-5 py-3 font-semibold w-8">
+                    <input type="checkbox" checked={allVisibleSelected} onChange={toggleAllVisible} className="w-4 h-4" aria-label="Select all visible orders" />
+                  </th>
                   <th className="px-5 py-3 font-semibold">Order #</th>
                   <th className="px-5 py-3 font-semibold">Status</th>
                   <th className="px-5 py-3 font-semibold">Amount</th>
@@ -83,6 +154,15 @@ export default function OrdersTable({ orders }: { orders: InviteRecord[] }) {
                   const previewUrl = `${SITE_ORIGIN}/templates/preview/${invite.id}`
                   return (
                     <tr key={invite.id} className="border-b border-black/5 last:border-b-0 align-top">
+                      <td className="px-5 py-4">
+                        <input
+                          type="checkbox"
+                          checked={selected.has(invite.id)}
+                          onChange={() => toggleOne(invite.id)}
+                          className="w-4 h-4"
+                          aria-label={`Select order ${displayOrderNumber(invite)}`}
+                        />
+                      </td>
                       <td className="px-5 py-4 font-mono text-xs text-black/60 whitespace-nowrap">{displayOrderNumber(invite)}</td>
                       <td className="px-5 py-4 whitespace-nowrap">
                         <span
@@ -122,6 +202,38 @@ export default function OrdersTable({ orders }: { orders: InviteRecord[] }) {
                 })}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {confirming && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-6" style={{ background: 'rgba(0,0,0,0.4)' }}>
+          <div className="w-full max-w-sm bg-white rounded-xl border border-black/8 p-6">
+            <h2 style={{ fontFamily: "'Syne', sans-serif" }} className="text-lg font-bold text-black mb-2">
+              Delete {selected.size} order{selected.size === 1 ? '' : 's'}?
+            </h2>
+            <p className="text-sm text-black/50 mb-4">This permanently deletes the selected orders and their RSVPs. It cannot be undone.</p>
+            {error && <p className="text-xs text-red-600 mb-3">{error}</p>}
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  setConfirming(false)
+                  setError(null)
+                }}
+                disabled={deleting}
+                className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-black/60 border border-black/10 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteSelected}
+                disabled={deleting}
+                className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-40"
+                style={{ background: '#DC2626' }}
+              >
+                {deleting ? 'Deleting…' : 'Delete'}
+              </button>
+            </div>
           </div>
         </div>
       )}
