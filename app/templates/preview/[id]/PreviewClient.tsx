@@ -154,63 +154,70 @@ export default function PreviewClient({ id, templateId, religion, data, pricePai
     }
   }
 
-  // Guest mode — the exact same paywall-sanitized data, just with no
-  // watermark and no owner chrome, opened in a new tab from the Preview step.
-  if (guestMode) {
-    return <TemplateRenderer templateId={templateId} religion={religion} data={data} watermark={false} rsvpEnabled={rsvpEnabled} inviteId={id} />
-  }
-
+  // "Preview as Guest" — a decluttered read-through with the owner-only
+  // tools (step indicator, Draft badge, Change template, Share) hidden, so
+  // the invite scrolls uninterrupted. It deliberately still renders with
+  // the SAME watermark + pay bar as the normal preview: this is a link that
+  // can be opened by anyone who has it, so it must never be a way to get a
+  // clean, unpaid, shareable invite. Removing the watermark here would let
+  // an owner send this link straight to guests instead of ever paying.
   return (
     <div className="relative">
-      <div className="fixed top-0 left-0 right-0 z-[310]">
-        <StepIndicator current="preview" hrefs={{ template: '/templates', customize: `/templates/build/${templateId}?id=${id}` }} />
-      </div>
+      {!guestMode && (
+        <div className="fixed top-0 left-0 right-0 z-[310]">
+          <StepIndicator current="preview" hrefs={{ template: '/templates', customize: `/templates/build/${templateId}?id=${id}` }} />
+        </div>
+      )}
 
-      <div style={{ paddingTop: 49 }}>
+      <div style={{ paddingTop: guestMode ? 0 : 49 }}>
         <TemplateRenderer templateId={templateId} religion={religion} data={data} watermark rsvpEnabled={rsvpEnabled} inviteId={id} />
       </div>
 
-      <div className="fixed top-[57px] left-4 z-[300] flex items-center gap-2">
-        <span className="text-[11px] font-semibold bg-black/80 text-white px-2.5 py-1 rounded-full">Draft</span>
-      </div>
-
-      <div className="fixed top-[57px] right-4 z-[300] flex flex-col items-end gap-2">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => window.open(`/templates/preview/${id}?guest=1`, '_blank')}
-            className="text-[11px] font-semibold bg-white/90 text-black/70 px-3 py-2 rounded-full shadow-lg hover:text-black"
-          >
-            Preview as Guest
-          </button>
-          <button
-            onClick={() => setShowBrowser(true)}
-            className="text-[11px] font-semibold text-white px-3 py-2 rounded-full shadow-lg"
-            style={{ background: '#2563EB' }}
-          >
-            Change template
-          </button>
-        </div>
-        {shareLink ? (
-          <div className="flex items-center gap-2 bg-white/95 rounded-full pl-3 pr-1 py-1 shadow-lg max-w-[280px]">
-            <span className="text-[11px] text-black/60 truncate">{shareLink}</span>
-            <button
-              onClick={() => navigator.clipboard.writeText(shareLink)}
-              className="text-[11px] font-semibold px-2.5 py-1.5 rounded-full text-white shrink-0"
-              style={{ background: '#2563EB' }}
-            >
-              Copy
-            </button>
+      {!guestMode && (
+        <>
+          <div className="fixed top-[57px] left-4 z-[300] flex items-center gap-2">
+            <span className="text-[11px] font-semibold bg-black/80 text-white px-2.5 py-1 rounded-full">Draft</span>
           </div>
-        ) : (
-          <button
-            onClick={handleShare}
-            disabled={sharing}
-            className="text-[11px] font-semibold bg-white/90 text-black/70 px-3 py-2 rounded-full shadow-lg disabled:opacity-50"
-          >
-            {sharing ? 'Creating…' : 'Share preview (one-time view)'}
-          </button>
-        )}
-      </div>
+
+          <div className="fixed top-[57px] right-4 z-[300] flex flex-col items-end gap-2">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => window.open(`/templates/preview/${id}?guest=1`, '_blank')}
+                className="text-[11px] font-semibold bg-white/90 text-black/70 px-3 py-2 rounded-full shadow-lg hover:text-black"
+              >
+                Preview as Guest
+              </button>
+              <button
+                onClick={() => setShowBrowser(true)}
+                className="text-[11px] font-semibold text-white px-3 py-2 rounded-full shadow-lg"
+                style={{ background: '#2563EB' }}
+              >
+                Change template
+              </button>
+            </div>
+            {shareLink ? (
+              <div className="flex items-center gap-2 bg-white/95 rounded-full pl-3 pr-1 py-1 shadow-lg max-w-[280px]">
+                <span className="text-[11px] text-black/60 truncate">{shareLink}</span>
+                <button
+                  onClick={() => navigator.clipboard.writeText(shareLink)}
+                  className="text-[11px] font-semibold px-2.5 py-1.5 rounded-full text-white shrink-0"
+                  style={{ background: '#2563EB' }}
+                >
+                  Copy
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={handleShare}
+                disabled={sharing}
+                className="text-[11px] font-semibold bg-white/90 text-black/70 px-3 py-2 rounded-full shadow-lg disabled:opacity-50"
+              >
+                {sharing ? 'Creating…' : 'Share preview (one-time view)'}
+              </button>
+            )}
+          </div>
+        </>
+      )}
 
       <div
         className="fixed bottom-0 left-0 right-0 z-[300] flex flex-col items-center gap-3 px-4 py-4"
